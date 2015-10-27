@@ -6,7 +6,6 @@
 
 (enable-console-print!)
 
-
 (def window js/window)
 (def document js/document)
 
@@ -22,24 +21,24 @@
 (def camera (f/PerspectiveCamera. 50 (/ (.-innerWidth window)
                                         (.-innerHeight window))
                                   10000
-                                  10000))
+                                  1000))
 (set! (.. camera -position -z) 3000)
 
 (def scene (f/Scene.))
 
+(.. scene (add camera))
 (defn render []
   (.. renderer (render scene camera)))
 
 
 (def controls (f/TrackballControls. camera (.. renderer -domElement)))
 (set! (.. controls -rotateSpeed) 0.5)
-(set! (.. controls -minDistance) 500)
+(set! (.. controls -minDistance) 100)
 (set! (.. controls -maxDistance) 6000)
 (.. controls (addEventListener "change" render))
 
 
 (defn transform [target duration]
-  (println "transform")
   (.. f/tween removeAll)
   (doseq [[i o] (map-indexed (fn [i e] [i e]) @objects)
           :let [t (nth target i)]]
@@ -50,28 +49,15 @@
             (+ (* (rand) duration)
                duration))
         (easing (.. f/tween -Easing -Exponential -InOut))
-        (start))
+        (start)))
 
-    ;; (.. (f/Tween. (.. o -rotation))
-    ;;     (to (clj->js {:x (.. t -position -x)
-    ;;                   :y (.. t -position -y)
-    ;;                   :z (.. t -position -z)})
-    ;;         (+ (* (rand) duration)
-    ;;            duration))
-    ;;     (easing (.. f/tween -Easing -Exponential -InOut))
-    ;;     (start))
-    )
-
-  (.. (f/Tween. js/window)
-      (to (clj->js {}) (* duration 2))
-      (onUpdate render)
-      (start)
-      ))
+  )
 
 (defn animate []
   (f/animate (fn [time]
                (.. f/tween update)
                (.. controls update)
+               (render)
                ))
   )
 
@@ -101,8 +87,17 @@
         _ (set! (.. obj -position -x) (-> (* (rand) 4000) (- 2000)))
         _ (set! (.. obj -position -y) (-> (* (rand) 4000) (- 2000)))
         _ (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
-        _ (.. scene (add obj))
-        ]
+        _ (.. scene (add obj))]
+    (dom/on div "click" (fn [evt]
+                          (let [p (.. obj -position clone)]
+                            (set! (.. camera -position -x) (.. p -x))
+                            (set! (.. camera -position -y) (.. p -y))
+                            (set! (.. camera -position -z) 100)
+                            (set! (.. controls -target) p)
+                            (.. camera (lookAt p))
+                            )
+                          
+                          ))
     obj))
 
 (defn init []
