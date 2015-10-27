@@ -31,7 +31,7 @@
 
                         :figwheel { :on-jsload "four.core/on-js-reload" }
 
-                        :compiler {:main four.core
+                        :compiler {:main four.elements
                                    :asset-path "js/compiled/out"
                                    :output-to "resources/public/js/compiled/four.js"
                                    :output-dir "resources/public/js/compiled/out"
