@@ -1,5 +1,6 @@
 (ns four.core
-  (:require [cljsjs.three] ))
+  (:require [cljsjs.three]
+            [cljsjs.tween]))
 
 (enable-console-print!)
 

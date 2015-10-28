@@ -14,6 +14,7 @@
                  [org.clojure/clojurescript "1.7.122"]
                  [reagent "0.5.1"]
                  [cljsjs/three "0.0.72-css3d"]
+                 [cljsjs/tween "16.3.1"]
                  ]
 
   :plugins [[lein-cljsbuild "1.1.0"]
@@ -33,7 +34,6 @@
 
                         :compiler {:main four.elements
                                    :asset-path "js/compiled/out"
-                                   :externs ["externs/tween.js"]
                                    :output-to "resources/public/js/compiled/four.js"
                                    :output-dir "resources/public/js/compiled/out"
                                    :source-map-timestamp true}}
@@ -41,7 +41,6 @@
                         :source-paths ["src"]
                         :compiler {:output-to "resources/public/js/compiled/four.min.js"
                                    :main four.elements
-                                   :externs ["externs/tween.js"]
                                    :optimizations :advanced
                                    :pretty-print false}}]}
 
