@@ -89,7 +89,19 @@
         _ (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
         _ (.. scene (add obj))]
     (dom/on div "click" (fn [evt]
+                          (.. f/tween removeAll)
+
                           (let [p (.. obj -position clone)]
+
+                            (.. (f/Tween. 0)
+                                (to  (* 2  (.-PI js/Math))
+                                     2000)
+                                ;(easing (.. f/tween -Easing -Exponential -InOut))
+                                (onUpdate (fn [angle]
+                                                (println "foo" angle)
+                                                (.. obj (rotateY angle))))
+                                (start))
+                            
                             (set! (.. camera -position -x) (.. p -x))
                             (set! (.. camera -position -y) (.. p -y))
                             (set! (.. camera -position -z) 100)
