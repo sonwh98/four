@@ -89,22 +89,30 @@
         _ (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
         _ (.. scene (add obj))]
     (dom/on div "click" (fn [evt]
-                          (.. f/tween removeAll)
+                          ;(.. f/tween removeAll)
 
                           (let [p (.. obj -position clone)]
 
-                            (.. (f/Tween. 0)
-                                (to  (* 2  (.-PI js/Math))
+                            (.. (f/Tween. (clj->js {:theta  0}))
+                                (to (clj->js {:theta (* 2  (.-PI js/Math))})
                                      2000)
-                                ;(easing (.. f/tween -Easing -Exponential -InOut))
-                                (onUpdate (fn [angle]
-                                                (println "foo" angle)
-                                                (.. obj (rotateY angle))))
+                                (easing (.. f/tween -Easing -Exponential -InOut))
+                                (onUpdate (fn [a]
+                                            (this-as this
+                                                     (let [angle (js->clj this)]
+                                                       (set! (.. obj -rotation -y)
+                                                             (angle "theta"))))
+                                            ))
+                                (onComplete (fn []
+                                              (set! (.. obj -rotation -y)
+                                                    (* 2  (.-PI js/Math)))
+
+                                              ))
                                 (start))
                             
                             (set! (.. camera -position -x) (.. p -x))
                             (set! (.. camera -position -y) (.. p -y))
-                            (set! (.. camera -position -z) 100)
+                            (set! (.. camera -position -z) 500)
                             (set! (.. controls -target) p)
                             (.. camera (lookAt p))
                             )
