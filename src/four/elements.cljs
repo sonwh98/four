@@ -122,16 +122,16 @@
     obj))
 
 
-(def foo  (for [[i element] (map-indexed (fn [i element] [i element]) table/elements)
-                :let [color (-> (* (rand) 0.5) (+ 0.25))]]
-            [:div {:class "element"
-                   :style {:backgroundColor (str "rgba(0,127,127," color ")")}
-                   :onclick (fn [evt]
-                              (println "click")) }
-             [:div {:class "number"} i]
-             [:div {:class "symbol"} (:element/symbol element)]
-             [:div {:class "details"} (:element/name element)]
-             ]))
+;; (def foo  (for [[i element] (map-indexed (fn [i element] [i element]) table/elements)
+;;                 :let [color (-> (* (rand) 0.5) (+ 0.25))]]
+;;             [:div {:class "element"
+;;                    :style {:backgroundColor (str "rgba(0,127,127," color ")")}
+;;                    :onclick (fn [evt]
+;;                               (println "click")) }
+;;              [:div {:class "number"} i]
+;;              [:div {:class "symbol"} (:element/symbol element)]
+;;              [:div {:class "details"} (:element/name element)]
+;;              ]))
 
 
 (defn init []
@@ -162,4 +162,5 @@
 
 
 
-(.. (js/DOMParser.) (parseFromString (html [:span ]) "text/html"))
+;(.. (js/DOMParser.) (parseFromString (html [:span ]) "text/html"))
+
