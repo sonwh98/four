@@ -17,3 +17,8 @@
 
 (defn on [element event-str call-back-fn]
   (.. element (addEventListener event-str call-back-fn)))
+
+(defn str->dom-element [html-str]
+  (let [div (.. js/document (createElement "div"))]
+    (set! (.. div -innerHTML) html-str)
+    (.. div -firstChild)))
