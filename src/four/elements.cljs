@@ -2,7 +2,8 @@
   (:require [four.core :as f]
             [four.messaging :as m]
             [four.dom :as dom]
-            [four.table :as table]))
+            [four.table :as table]
+            [crate.core :as c]))
 
 (enable-console-print!)
 
@@ -92,7 +93,6 @@
                           ;(.. f/tween removeAll)
 
                           (let [p (.. obj -position clone)]
-
                             (.. (f/Tween. (clj->js {:theta  0}))
                                 (to (clj->js {:theta (* 2  (.-PI js/Math))})
                                      2000)
@@ -109,16 +109,30 @@
 
                                               ))
                                 (start))
-                            
-                            (set! (.. camera -position -x) (.. p -x))
-                            (set! (.. camera -position -y) (.. p -y))
-                            (set! (.. camera -position -z) 500)
-                            (set! (.. controls -target) p)
+                            ;(set!  (.. div -style -width) "90%")
+                            ;(set!  (.. div -style -height) "90%")
+                            ;; (set! (.. camera -position -x) (.. p -x))
+                            ;; (set! (.. camera -position -y) (.. p -y))
+                            ;; (set! (.. camera -position -z) 500)
+                            ;; (set! (.. controls -target) p)
                             (.. camera (lookAt p))
                             )
                           
                           ))
     obj))
+
+
+(def foo  (for [[i element] (map-indexed (fn [i element] [i element]) table/elements)
+                :let [color (-> (* (rand) 0.5) (+ 0.25))]]
+            [:div {:class "element"
+                   :style {:backgroundColor (str "rgba(0,127,127," color ")")}
+                   :onclick (fn [evt]
+                              (println "click")) }
+             [:div {:class "number"} i]
+             [:div {:class "symbol"} (:element/symbol element)]
+             [:div {:class "details"} (:element/name element)]
+             ]))
+
 
 (defn init []
   (reset! objects (doall (for [[i e] (map-indexed (fn [i e] [i e]) table/elements)]
@@ -148,3 +162,4 @@
 
 
 
+(.. (js/DOMParser.) (parseFromString (html [:span ]) "text/html"))
