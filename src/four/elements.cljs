@@ -42,11 +42,9 @@
 (defn transform [target duration]
   (.. f/tween removeAll)
   (doseq [[i o] (map-indexed (fn [i e] [i e]) @objects)
-          :let [t (nth target i)]]
+          :let [final-point (nth target i)]]
     (.. (f/Tween. (.. o -position))
-        (to (clj->js {:x (:x t)
-                      :y (:y t)
-                      :z 0})
+        (to (clj->js final-point)
             (+ (* (rand) duration)
                duration))
         (easing (.. f/tween -Easing -Exponential -InOut))
@@ -91,7 +89,8 @@
                                           :let [x (-> (* (:element/x e) 140) (- 1330))
                                                 y (-> (* (:element/y e) -180) (+ 1330))]]
                                       {:x x
-                                       :y y})))
+                                       :y y
+                                       :z 0})))
     (render)))
 
 
