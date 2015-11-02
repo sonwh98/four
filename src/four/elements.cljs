@@ -82,9 +82,10 @@
         css3d-objects (map div->css3d-object divs)]
     (doseq [css3d-obj css3d-objects]
       (.. scene (add css3d-obj)))
-    (doseq [[div obj] (partition 2 (interleave divs css3d-objects))]
+    
+    (doseq [[div css3d-obj] (partition 2 (interleave divs css3d-objects))]
       (dom/on div "click" (fn [evt]
-                            (let [p (.. obj -position clone)]
+                            (let [p (.. css3d-obj -position clone)]
                               (.. (f/Tween. (clj->js {:theta  0}))
                                   (to (clj->js {:theta (* 2  (.-PI js/Math))})
                                       2000)
@@ -92,10 +93,10 @@
                                   (onUpdate (fn [a]
                                               (this-as this
                                                        (let [angle (js->clj this)]
-                                                         (set! (.. obj -rotation -y)
+                                                         (set! (.. css3d-obj -rotation -y)
                                                                (angle "theta"))))))
                                   (onComplete (fn []
-                                                (set! (.. obj -rotation -y)
+                                                (set! (.. css3d-obj -rotation -y)
                                                       (* 2  (.-PI js/Math)))))
                                   (start))
                                         ;(set!  (.. div -style -width) "90%")
