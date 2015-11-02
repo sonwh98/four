@@ -64,15 +64,16 @@
   (let [elements (map-indexed (fn [i element] [i element]) table/elements)
         divs (for [[i element] elements
                    :let [color (-> (* (rand) 0.5) (+ 0.25))
-                         div [:div {:class "element"
-                                    :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
+                         div [:div {:id i
+                                    :class "element"
+                                    :style {:backgroundColor (str "rgba(0,127,127," color ")")}
+                                    :onclick (fn [evt] (println "click1"))
+                                    }
                               [:div {:class "number"} i]
                               [:div {:class "symbol"} (:element/symbol element)]
                               [:div {:class "details"} (:element/name element)]]
                          div-as-dom (c/html div)]]
-               (do
-                 (dom/on div-as-dom "click" (fn [evt] (println "click")))
-                 div-as-dom))
+               div-as-dom)
         
         css3d-objects (map (fn [div]
                              (let [obj (f/CSS3DObject. div)]
