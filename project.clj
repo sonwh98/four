@@ -15,7 +15,7 @@
                  [reagent "0.5.1"]
                  [cljsjs/three "0.0.72-css3d"]
                  [cljsjs/tween "16.3.1"]
-                 [crate "0.2.5"]
+                 ;[crate "0.2.5"]
                  ]
 
   :plugins [[lein-cljsbuild "1.1.0"]
