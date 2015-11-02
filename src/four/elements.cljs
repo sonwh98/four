@@ -80,10 +80,9 @@
                          div-as-dom (c/html div)]]
                div-as-dom)
         css3d-objects (map div->css3d-object divs)]
-    (doseq [css3d-obj css3d-objects]
-      (.. scene (add css3d-obj)))
     
     (doseq [[div css3d-obj] (partition 2 (interleave divs css3d-objects))]
+      (.. scene (add css3d-obj))
       (dom/on div "click" (fn [evt]
                             (let [p (.. css3d-obj -position clone)]
                               (.. (f/Tween. (clj->js {:theta  0}))
@@ -108,11 +107,9 @@
                               (.. camera (lookAt p))))))
     (reset! objects css3d-objects)
 
-    (reset! (:table targets) (doall (for [[i e] elements
-                                          :let [x (-> (* (:element/x e) 140) (- 1330))
-                                                y (-> (* (:element/y e) -180) (+ 1330))]]
-                                      {:x x
-                                       :y y
+    (reset! (:table targets) (doall (for [[i e] elements]
+                                      {:x (-> (* (:element/x e) 140) (- 1330))
+                                       :y (-> (* (:element/y e) -180) (+ 1330))
                                        :z 0})))
     (render)))
 
