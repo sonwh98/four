@@ -60,30 +60,51 @@
                ))
   )
 
+(defn div->css3d-object [div]
+  (let [obj (f/CSS3DObject. div)]
+    (set! (.. obj -position -x) (-> (* (rand) 4000) (- 2000)))
+    (set! (.. obj -position -y) (-> (* (rand) 4000) (- 2000)))
+    (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
+    obj))
+
 (defn init []
   (let [elements (map-indexed (fn [i element] [i element]) table/elements)
         divs (for [[i element] elements
                    :let [color (-> (* (rand) 0.5) (+ 0.25))
                          div [:div {:id i
                                     :class "element"
-                                    :style {:backgroundColor (str "rgba(0,127,127," color ")")}
-                                    :onclick (fn [evt] (println "click1"))
-                                    }
+                                    :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
                               [:div {:class "number"} i]
                               [:div {:class "symbol"} (:element/symbol element)]
                               [:div {:class "details"} (:element/name element)]]
                          div-as-dom (c/html div)]]
                div-as-dom)
-        
-        css3d-objects (map (fn [div]
-                             (let [obj (f/CSS3DObject. div)]
-                               (set! (.. obj -position -x) (-> (* (rand) 4000) (- 2000)))
-                               (set! (.. obj -position -y) (-> (* (rand) 4000) (- 2000)))
-                               (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
-                               obj))
-                           divs)]
-    (doseq [obj css3d-objects]
-      (.. scene (add obj)))
+        css3d-objects (map div->css3d-object divs)]
+    (doseq [css3d-obj css3d-objects]
+      (.. scene (add css3d-obj)))
+    (doseq [[div obj] (partition 2 (interleave divs css3d-objects))]
+      (dom/on div "click" (fn [evt]
+                            (let [p (.. obj -position clone)]
+                              (.. (f/Tween. (clj->js {:theta  0}))
+                                  (to (clj->js {:theta (* 2  (.-PI js/Math))})
+                                      2000)
+                                  (easing (.. f/tween -Easing -Exponential -InOut))
+                                  (onUpdate (fn [a]
+                                              (this-as this
+                                                       (let [angle (js->clj this)]
+                                                         (set! (.. obj -rotation -y)
+                                                               (angle "theta"))))))
+                                  (onComplete (fn []
+                                                (set! (.. obj -rotation -y)
+                                                      (* 2  (.-PI js/Math)))))
+                                  (start))
+                                        ;(set!  (.. div -style -width) "90%")
+                                        ;(set!  (.. div -style -height) "90%")
+                              ;; (set! (.. camera -position -x) (.. p -x))
+                              ;; (set! (.. camera -position -y) (.. p -y))
+                              ;; (set! (.. camera -position -z) 500)
+                              ;; (set! (.. controls -target) p)
+                              (.. camera (lookAt p))))))
     (reset! objects css3d-objects)
 
     (reset! (:table targets) (doall (for [[i e] elements
