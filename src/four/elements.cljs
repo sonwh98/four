@@ -72,11 +72,7 @@
             (+ (* (rand) duration)
                duration))
         (easing (.. f/tween -Easing -Exponential -InOut))
-        (start))
-
-    )
-
-  )
+        (start))))
 
 (defn animate []
   (f/animate (fn [time]
@@ -120,7 +116,7 @@
                      theta (* phi
                               (. js/Math sqrt (* length pi)))
                      object3d (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
-                                              :y (* 800 (. js/Math sin phi) (. js/Math sin phi))
+                                              :y (* 800 (. js/Math sin theta) (. js/Math sin phi))
                                               :z (* 800 (. js/Math cos phi))})]
                  (.. v (copy (. object3d -position)) (multiplyScalar 2))
                  (. object3d (lookAt v))
