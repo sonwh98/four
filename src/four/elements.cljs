@@ -11,7 +11,8 @@
 (def document js/document)
 
 (def objects (atom []))
-(def targets {:table (atom [])})
+(def targets {:table (atom [])
+              :sphere (atom [])})
 
 (def renderer (f/CSS3DRenderer.))
 (.. renderer (setSize (.. window -innerWidth)
@@ -39,12 +40,24 @@
 (.. controls (addEventListener "change" render))
 
 
-(defn transform [target duration]
+(defn map->object3d [ {:keys [x y z] :as point} ]
+  (let [obj (f/Object3D.)]
+    (set! (.. obj -position -x) x)
+    (set! (.. obj -position -y) y)
+    (set! (.. obj -position -z) z)
+    obj))
+
+(defn object3d->map [object3d]
+  {:x (.. object3d -position -x)
+   :y (.. object3d -position -y)
+   :z (.. object3d -position -z)})
+
+(defn transform [targets duration]
   (.. f/tween removeAll)
-  (doseq [[i o] (map-indexed (fn [i e] [i e]) @objects)
-          :let [final-point (nth target i)]]
-    (.. (f/Tween. (.. o -position))
-        (to (clj->js final-point)
+  (doseq [[i obj] (map-indexed (fn [i e] [i e]) @objects)
+          :let [target (nth targets i)]]
+    (.. (f/Tween. (.. obj -position))
+        (to (clj->js (object3d->map  target))
             (+ (* (rand) duration)
                duration))
         (easing (.. f/tween -Easing -Exponential -InOut))
@@ -68,7 +81,9 @@
     obj))
 
 (defn init []
-  (let [elements (map-indexed (fn [i element] [i element]) table/elements)]
+  (let [elements (map-indexed (fn [i element] [i element]) table/elements)
+        length (count elements)
+        pi (. js/Math -PI)]
     (doseq [[i element] elements
             :let [color (-> (* (rand) 0.5) (+ 0.25))
                   div [:div {:id    i
@@ -81,9 +96,21 @@
                   css3d (div->css3d-object div-as-dom)]]
       (.. scene (add css3d))
       (swap! objects conj css3d)
-      (swap! (:table targets) conj {:x (-> (* (:element/x element) 140) (- 1330))
-                                    :y (-> (* (:element/y element) -180) (+ 1330))
-                                    :z 0})
+      (swap! (:table targets) conj (map->object3d {:x (-> (* (:element/x element) 140) (- 1330))
+                                                   :y (-> (* (:element/y element) -180) (+ 1330))
+                                                   :z 0}))
+      (swap! (:sphere targets)
+             (fn [sphere]
+               (let [phi (. js/Math acos (+ (/ (* 2 i) length)
+                                            -1))
+                     theta (* phi
+                              (. js/Math sqrt (* length pi)))]
+
+                 (conj sphere {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
+                               :y (* 800 (. js/Math sin phi) (. js/Math sin phi))
+                               :z (* 800 (. js/Math cos phi))}))))
+
+      
 
       (dom/on div-as-dom "click" (fn [evt]
                                    (let [p (.. css3d -position clone)]
@@ -116,12 +143,11 @@
 (transform @(:table targets) 2000)
 (animate)
 
-;(transform @(:table targets) 2000)
+                                        ;(transform @(:table targets) 2000)
 (dom/on (dom/by-id "table") "click" (fn [event]
                                       (transform @(:table targets) 2000)))
 
+(dom/on (dom/by-id "sphere") "click" (fn [event]
+                                       (transform @(:sphere targets) 2000)))
+
 (.. (dom/by-id "container") (appendChild (.-domElement renderer)))
-
-
-
-
