@@ -57,18 +57,18 @@
 (defn transform [shape duration]
   (.. f/tween removeAll)
   (doseq [[i obj] (map-indexed (fn [i e] [i e]) @objects)
-          :let [target (nth shape i)]]
+          :let [object3d (nth shape i)]]
     (.. (f/Tween. (. obj -position))
-        (to (clj->js (object3d->map  target))
+        (to (clj->js (object3d->map  object3d))
             (+ (* (rand) duration)
                duration))
         (easing (.. f/tween -Easing -Exponential -InOut))
         (start))
 
     (.. (f/Tween. (. obj -rotation))
-        (to (clj->js {:x (.. target -rotation -x)
-                      :y (.. target -rotation -y)
-                      :z (.. target -rotation -z)})
+        (to (clj->js {:x (.. object3d -rotation -x)
+                      :y (.. object3d -rotation -y)
+                      :z (.. object3d -rotation -z)})
             (+ (* (rand) duration)
                duration))
         (easing (.. f/tween -Easing -Exponential -InOut))
