@@ -54,10 +54,11 @@
    :y (.. object3d -position -y)
    :z (.. object3d -position -z)})
 
-(defn transform [shape duration]
+(defn transform [shape ]
   (.. f/tween removeAll)
   (doseq [[i obj] (map-indexed (fn [i e] [i e]) @objects)
-          :let [object3d (nth shape i)]]
+          :let [object3d (nth shape i)
+                duration 2000]]
     (.. (f/Tween. (. obj -position))
         (to (clj->js (object3d->map  object3d))
             (+ (* (rand) duration)
@@ -182,12 +183,12 @@
 
 
 (init)
-(transform @(:table topologies) 2000)
+(transform @(:table topologies))
 (animate)
 
 (defn morph-into [shape]
   (dom/on (dom/by-id (name shape)) "click" (fn [event]
-                                             (transform @(shape topologies) 2000))))
+                                             (transform @(shape topologies)))))
 
 (defn register-listeners []
   (morph-into :table)
