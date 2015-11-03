@@ -115,11 +115,14 @@
                (let [phi (. js/Math acos (+ (/ (* 2 i) length)
                                             -1))
                      theta (* phi
-                              (. js/Math sqrt (* length pi)))]
-
-                 (conj sphere (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
+                              (. js/Math sqrt (* length pi)))
+                     object3d (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
                                               :y (* 800 (. js/Math sin phi) (. js/Math sin phi))
-                                              :z (* 800 (. js/Math cos phi))})))))
+                                              :z (* 800 (. js/Math cos phi))})
+                     v (f/Vector3.)]
+                 (.. v (copy (. object3d -position)) (multiplyScalar 2))
+                 (. object3d (lookAt v))
+                 (conj sphere object3d))))
 
       
 
