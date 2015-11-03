@@ -56,12 +56,23 @@
   (.. f/tween removeAll)
   (doseq [[i obj] (map-indexed (fn [i e] [i e]) @objects)
           :let [target (nth targets i)]]
-    (.. (f/Tween. (.. obj -position))
+    (.. (f/Tween. (. obj -position))
         (to (clj->js (object3d->map  target))
             (+ (* (rand) duration)
                duration))
         (easing (.. f/tween -Easing -Exponential -InOut))
-        (start)))
+        (start))
+
+    (.. (f/Tween. (. obj -rotation))
+        (to (clj->js {:x (.. target -rotation -x)
+                      :y (.. target -rotation -y)
+                      :z (.. target -rotation -z)})
+            (+ (* (rand) duration)
+               duration))
+        (easing (.. f/tween -Easing -Exponential -InOut))
+        (start))
+
+    )
 
   )
 
