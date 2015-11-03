@@ -9,6 +9,7 @@
 
 (def window js/window)
 (def document js/document)
+(def pi (. js/Math -PI))
 
 (def objects (atom []))
 (def topologies {:table (atom [])
@@ -86,11 +87,55 @@
     (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
     obj))
 
+(defn create-table [element]
+  (swap! (:table topologies) conj (map->object3d {:x (-> (* (:element/x element) 140) (- 1330))
+                                                  :y (-> (* (:element/y element) -180) (+ 1330))
+                                                  :z 0})))
+
+(defn create-sphere [i element]
+  (let [v (f/Vector3.)
+        length (count table/elements)]
+    (swap! (:sphere topologies)
+           (fn [sphere]
+             (let [phi (. js/Math acos (+ (/ (* 2 i) length)
+                                          -1))
+                   theta (* phi
+                            (. js/Math sqrt (* length pi)))
+                   object3d (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
+                                            :y (* 800 (. js/Math sin theta) (. js/Math sin phi))
+                                            :z (* 800 (. js/Math cos phi))})]
+               (.. v (copy (. object3d -position)) (multiplyScalar 2))
+               (. object3d (lookAt v))
+               (conj sphere object3d))))))
+
+(defn create-helix [i element]
+  (let [v (f/Vector3.)]
+    (swap! (:helix topologies) (fn [helix]
+                                 (let [phi (* i 0.175 pi)
+                                       object (map->object3d {:x (* 900 (. js/Math sin phi))
+                                                              :y (+ (* i -8)
+                                                                    450)
+                                                              :z (* 900 (. js/Math cos phi))})]
+                                   (set! (. v -x) (* 2 (.. object -position -x)))
+                                   (set! (. v -y) (.. object -position -y))
+                                   (set! (. v -z) (* 2 (.. object -position -z)))
+                                   (. object lookAt v)
+                                   (conj helix object)))))
+  )
+
+(defn create-grid [i element]
+  (swap! (:grid topologies) (fn [grid]
+                              (let [object3d (map->object3d {:x (- (* 400 (mod i 5))
+                                                                   800)
+                                                             :y (+ 800 (* -400 (mod (. js/Math floor (/ i 5))
+                                                                                    5)))
+                                                             :z (-  (* 1000
+                                                                       (. js/Math floor (/ i 25)))
+                                                                    2000)})]
+                                (conj grid object3d)))))
+
 (defn init []
-  (let [elements (map-indexed (fn [i element] [i element]) table/elements)
-        length (count elements)
-        pi (. js/Math -PI)
-        v (f/Vector3.)]
+  (let [elements (map-indexed (fn [i element] [i element]) table/elements)]
     (doseq [[i element] elements
             :let [color (-> (* (rand) 0.5) (+ 0.25))
                   div [:div {:id    i
@@ -103,44 +148,11 @@
                   css3d (div->css3d-object div-as-dom)]]
       (.. scene (add css3d))
       (swap! objects conj css3d)
-      (swap! (:table topologies) conj (map->object3d {:x (-> (* (:element/x element) 140) (- 1330))
-                                                      :y (-> (* (:element/y element) -180) (+ 1330))
-                                                      :z 0}))
-      (swap! (:sphere topologies)
-             (fn [sphere]
-               (let [phi (. js/Math acos (+ (/ (* 2 i) length)
-                                            -1))
-                     theta (* phi
-                              (. js/Math sqrt (* length pi)))
-                     object3d (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
-                                              :y (* 800 (. js/Math sin theta) (. js/Math sin phi))
-                                              :z (* 800 (. js/Math cos phi))})]
-                 (.. v (copy (. object3d -position)) (multiplyScalar 2))
-                 (. object3d (lookAt v))
-                 (conj sphere object3d))))
-
       
-      (swap! (:helix topologies) (fn [helix]
-                                   (let [phi (* i 0.175 pi)
-                                         object (map->object3d {:x (* 900 (. js/Math sin phi))
-                                                                :y (+ (* i -8)
-                                                                      450)
-                                                                :z (* 900 (. js/Math cos phi))})]
-                                     (set! (. v -x) (* 2 (.. object -position -x)))
-                                     (set! (. v -y) (.. object -position -y))
-                                     (set! (. v -z) (* 2 (.. object -position -z)))
-                                     (. object lookAt v)
-                                     (conj helix object))))
-
-      (swap! (:grid topologies) (fn [grid]
-                                  (let [object3d (map->object3d {:x (- (* 400 (mod i 5))
-                                                                     800)
-                                                               :y (+ 800 (* -400 (mod (. js/Math floor (/ i 5))
-                                                                                      5)))
-                                                               :z (-  (* 1000
-                                                                         (. js/Math floor (/ i 25)))
-                                                                      2000)})]
-                                    (conj grid object3d))))
+      (create-table element)
+      (create-sphere i element)
+      (create-helix i element)
+      (create-grid i element)
       
       (dom/on div-as-dom "click" (fn [evt]
                                    (let [p (.. css3d -position clone)]
