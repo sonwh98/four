@@ -106,9 +106,9 @@
                      theta (* phi
                               (. js/Math sqrt (* length pi)))]
 
-                 (conj sphere {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
-                               :y (* 800 (. js/Math sin phi) (. js/Math sin phi))
-                               :z (* 800 (. js/Math cos phi))}))))
+                 (conj sphere (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
+                                              :y (* 800 (. js/Math sin phi) (. js/Math sin phi))
+                                              :z (* 800 (. js/Math cos phi))})))))
 
       
 
