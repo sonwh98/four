@@ -54,10 +54,10 @@
    :y (.. object3d -position -y)
    :z (.. object3d -position -z)})
 
-(defn transform [targets duration]
+(defn transform [shape duration]
   (.. f/tween removeAll)
   (doseq [[i obj] (map-indexed (fn [i e] [i e]) @objects)
-          :let [target (nth targets i)]]
+          :let [target (nth shape i)]]
     (.. (f/Tween. (. obj -position))
         (to (clj->js (object3d->map  target))
             (+ (* (rand) duration)
