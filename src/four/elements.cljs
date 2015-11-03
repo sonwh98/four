@@ -98,19 +98,19 @@
                                                 (set! (.. css3d-obj -rotation -y)
                                                       (* 2  (.-PI js/Math)))))
                                   (start))
-                                        ;(set!  (.. div -style -width) "90%")
-                                        ;(set!  (.. div -style -height) "90%")
+                              ;;(set!  (.. div -style -width) "90%")
+                              ;;(set!  (.. div -style -height) "90%")
                               ;; (set! (.. camera -position -x) (.. p -x))
                               ;; (set! (.. camera -position -y) (.. p -y))
                               ;; (set! (.. camera -position -z) 500)
                               ;; (set! (.. controls -target) p)
                               (.. camera (lookAt p))))))
+    
     (reset! objects css3d-objects)
-
-    (reset! (:table targets) (doall (for [[i e] elements]
-                                      {:x (-> (* (:element/x e) 140) (- 1330))
-                                       :y (-> (* (:element/y e) -180) (+ 1330))
-                                       :z 0})))
+    (reset! (:table targets) (for [[i e] elements]
+                               {:x (-> (* (:element/x e) 140) (- 1330))
+                                :y (-> (* (:element/y e) -180) (+ 1330))
+                                :z 0}))
     (render)))
 
 
