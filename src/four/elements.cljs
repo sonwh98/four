@@ -11,9 +11,9 @@
 (def document js/document)
 
 (def objects (atom []))
-(def targets {:table (atom [])
-              :sphere (atom [])
-              :helix (atom [])})
+(def topologies {:table (atom [])
+                 :sphere (atom [])
+                 :helix (atom [])})
 
 (def renderer (f/CSS3DRenderer.))
 (.. renderer (setSize (.. window -innerWidth)
@@ -109,10 +109,10 @@
                   css3d (div->css3d-object div-as-dom)]]
       (.. scene (add css3d))
       (swap! objects conj css3d)
-      (swap! (:table targets) conj (map->object3d {:x (-> (* (:element/x element) 140) (- 1330))
-                                                   :y (-> (* (:element/y element) -180) (+ 1330))
-                                                   :z 0}))
-      (swap! (:sphere targets)
+      (swap! (:table topologies) conj (map->object3d {:x (-> (* (:element/x element) 140) (- 1330))
+                                                      :y (-> (* (:element/y element) -180) (+ 1330))
+                                                      :z 0}))
+      (swap! (:sphere topologies)
              (fn [sphere]
                (let [phi (. js/Math acos (+ (/ (* 2 i) length)
                                             -1))
@@ -126,17 +126,17 @@
                  (conj sphere object3d))))
 
       
-      (swap! (:helix targets) (fn [helix]
-                                (let [phi (* i 0.175 pi)
-                                      object (map->object3d {:x (* 900 (. js/Math sin phi))
-                                                             :y (+ (* i -8)
-                                                                   450)
-                                                             :z (* 900 (. js/Math cos phi))})]
-                                  (set! (. v -x) (* 2 (.. object -position -x)))
-                                  (set! (. v -y) (.. object -position -y))
-                                  (set! (. v -z) (* 2 (.. object -position -z)))
-                                  (. object lookAt v)
-                                  (conj helix object))))
+      (swap! (:helix topologies) (fn [helix]
+                                   (let [phi (* i 0.175 pi)
+                                         object (map->object3d {:x (* 900 (. js/Math sin phi))
+                                                                :y (+ (* i -8)
+                                                                      450)
+                                                                :z (* 900 (. js/Math cos phi))})]
+                                     (set! (. v -x) (* 2 (.. object -position -x)))
+                                     (set! (. v -y) (.. object -position -y))
+                                     (set! (. v -z) (* 2 (.. object -position -z)))
+                                     (. object lookAt v)
+                                     (conj helix object))))
       
       (dom/on div-as-dom "click" (fn [evt]
                                    (let [p (.. css3d -position clone)]
@@ -166,12 +166,12 @@
 
 
 (init)
-(transform @(:table targets) 2000)
+(transform @(:table topologies) 2000)
 (animate)
 
 (defn morph-into [shape]
   (dom/on (dom/by-id (name shape)) "click" (fn [event]
-                                      (transform @(shape targets) 2000))))
+                                             (transform @(shape topologies) 2000))))
 
 (defn register-listeners []
   (morph-into :table)
