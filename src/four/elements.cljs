@@ -169,15 +169,15 @@
 (transform @(:table targets) 2000)
 (animate)
 
-                                        ;(transform @(:table targets) 2000)
-(dom/on (dom/by-id "table") "click" (fn [event]
-                                      (transform @(:table targets) 2000)))
+(defn morph-into [shape]
+  (dom/on (dom/by-id (name shape)) "click" (fn [event]
+                                      (transform @(shape targets) 2000))))
 
-(dom/on (dom/by-id "sphere") "click" (fn [event]
-                                       (transform @(:sphere targets) 2000)))
-
-(dom/on (dom/by-id "helix") "click" (fn [event]
-                                       (transform @(:helix targets) 2000)))
-
+(defn register-listeners []
+  (morph-into :table)
+  (morph-into :sphere)
+  (morph-into :helix))
 
 (.. (dom/by-id "container") (appendChild (.-domElement renderer)))
+
+(register-listeners)
