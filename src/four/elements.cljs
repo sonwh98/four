@@ -133,15 +133,14 @@
                                      (conj helix object))))
 
       (swap! (:grid topologies) (fn [grid]
-                                  (let [object (f/Object3D.)]
-                                    (set! (.. object -position -x) (- (* 400 (mod i 5))
-                                                                      800))
-                                    (set! (.. object -position -y) (+ 800 (* -400 (mod (. js/Math floor (/ i 5))
-                                                                                       5))))
-                                    (set! (.. object -position -z) (-  (* 1000
-                                                                          (. js/Math floor (/ i 25)))
-                                                                       2000))
-                                    (conj grid object))))
+                                  (let [object3d (map->object3d {:x (- (* 400 (mod i 5))
+                                                                     800)
+                                                               :y (+ 800 (* -400 (mod (. js/Math floor (/ i 5))
+                                                                                      5)))
+                                                               :z (-  (* 1000
+                                                                         (. js/Math floor (/ i 25)))
+                                                                      2000)})]
+                                    (conj grid object3d))))
       
       (dom/on div-as-dom "click" (fn [evt]
                                    (let [p (.. css3d -position clone)]
