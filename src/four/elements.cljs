@@ -30,7 +30,6 @@
 
 (def scene (f/Scene.))
 
-(.. scene (add camera))
 (defn render []
   (.. renderer (render scene camera)))
 
@@ -78,9 +77,7 @@
   (f/animate (fn [time]
                (.. f/tween update)
                (.. controls update)
-               (render)
-               ))
-  )
+               (render))))
 
 (defn div->css3d-object [div]
   (let [obj (f/CSS3DObject. div)]
