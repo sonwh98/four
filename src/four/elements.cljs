@@ -94,7 +94,8 @@
 (defn init []
   (let [elements (map-indexed (fn [i element] [i element]) table/elements)
         length (count elements)
-        pi (. js/Math -PI)]
+        pi (. js/Math -PI)
+        v (f/Vector3.)]
     (doseq [[i element] elements
             :let [color (-> (* (rand) 0.5) (+ 0.25))
                   div [:div {:id    i
@@ -118,8 +119,7 @@
                               (. js/Math sqrt (* length pi)))
                      object3d (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
                                               :y (* 800 (. js/Math sin phi) (. js/Math sin phi))
-                                              :z (* 800 (. js/Math cos phi))})
-                     v (f/Vector3.)]
+                                              :z (* 800 (. js/Math cos phi))})]
                  (.. v (copy (. object3d -position)) (multiplyScalar 2))
                  (. object3d (lookAt v))
                  (conj sphere object3d))))
