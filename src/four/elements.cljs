@@ -12,7 +12,8 @@
 
 (def objects (atom []))
 (def targets {:table (atom [])
-              :sphere (atom [])})
+              :sphere (atom [])
+              :helix (atom [])})
 
 (def renderer (f/CSS3DRenderer.))
 (.. renderer (setSize (.. window -innerWidth)
@@ -125,7 +126,18 @@
                  (conj sphere object3d))))
 
       
-
+      (swap! (:helix targets) (fn [helix]
+                                (let [phi (* i 0.175 pi)
+                                      object (map->object3d {:x (* 900 (. js/Math sin phi))
+                                                             :y (+ (* i -8)
+                                                                   450)
+                                                             :z (* 900 (. js/Math cos phi))})]
+                                  (set! (. v -x) (* 2 (.. object -position -x)))
+                                  (set! (. v -y) (.. object -position -y))
+                                  (set! (. v -z) (* 2 (.. object -position -z)))
+                                  (. object lookAt v)
+                                  (conj helix object))))
+      
       (dom/on div-as-dom "click" (fn [evt]
                                    (let [p (.. css3d -position clone)]
                                      (.. (f/Tween. (clj->js {:theta 0}))
@@ -163,5 +175,9 @@
 
 (dom/on (dom/by-id "sphere") "click" (fn [event]
                                        (transform @(:sphere targets) 2000)))
+
+(dom/on (dom/by-id "helix") "click" (fn [event]
+                                       (transform @(:helix targets) 2000)))
+
 
 (.. (dom/by-id "container") (appendChild (.-domElement renderer)))
