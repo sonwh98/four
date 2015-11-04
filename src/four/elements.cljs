@@ -165,35 +165,35 @@
   (dom/on (dom/by-id (name shape)) "click" (fn [event]
                                              (morph-into @(shape topologies)))))
 
+(defn create-topologies []
+  (doseq [ [i element] (map-indexed (fn [i element] [i element]) table/elements)
+          :let [color (-> (* (rand) 0.5) (+ 0.25))
+                div [:div {:id    i
+                           :class "element"
+                           :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
+                     [:div {:class "number"} i]
+                     [:div {:class "symbol"} (:element/symbol element)]
+                     [:div {:class "details"} (:element/name element)]]
+                css3d-object (div->css3d-object (c/html div))]]
+    (.. scene (add css3d-object))
+    (swap! css3d-objects conj css3d-object)
+    
+    (create-table element)
+    (create-sphere i element)
+    (create-helix i element)
+    (create-grid i element)
+    (rotate css3d-object :when-clicked)))
+
 (defn init []
-  (let [elements (map-indexed (fn [i element] [i element]) table/elements)]
-    (doseq [[i element] elements
-            :let [color (-> (* (rand) 0.5) (+ 0.25))
-                  div [:div {:id    i
-                             :class "element"
-                             :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
-                       [:div {:class "number"} i]
-                       [:div {:class "symbol"} (:element/symbol element)]
-                       [:div {:class "details"} (:element/name element)]]
-                  css3d-object (div->css3d-object (c/html div))]]
-      (.. scene (add css3d-object))
-      (swap! css3d-objects conj css3d-object)
-      
-      (create-table element)
-      (create-sphere i element)
-      (create-helix i element)
-      (create-grid i element)
-      (rotate css3d-object :when-clicked))
+  (create-topologies)
+  (on-click-change-to :table)
+  (on-click-change-to :sphere)
+  (on-click-change-to :helix)
+  (on-click-change-to :grid)
 
-    (on-click-change-to :table)
-    (on-click-change-to :sphere)
-    (on-click-change-to :helix)
-    (on-click-change-to :grid)
-
-
-    (.. (dom/by-id "container") (appendChild (. renderer -domElement )))
-    (morph-into @(:table topologies))
-    (animate)
-    (render)))
+  (.. (dom/by-id "container") (appendChild (. renderer -domElement )))
+  (morph-into @(:table topologies))
+  (animate)
+  (render))
 
 (init)
