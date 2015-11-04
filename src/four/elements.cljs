@@ -190,7 +190,6 @@
 
   (. (dom/by-id "container") (appendChild (. renderer -domElement)))
   (morph-into @(:table topologies))
-  (animate)
-  (render))
+  (animate))
 
 (init)
