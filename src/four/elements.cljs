@@ -17,8 +17,8 @@
                  :grid (atom [])})
 
 (def renderer (f/CSS3DRenderer.))
-(.. renderer (setSize (.. window -innerWidth)
-                      (.. window -innerHeight)))
+(.. renderer (setSize (. window -innerWidth)
+                      (. window -innerHeight)))
 (set! (.. renderer -domElement -style -position) "absolute")
 
 
