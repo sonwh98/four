@@ -92,7 +92,7 @@
                                                   :y (-> (* (:element/y element) -180) (+ 1330))
                                                   :z 0})))
 
-(defn create-sphere [i element]
+(defn create-sphere [i]
   (let [v (f/Vector3.)
         length (count table/elements)]
     (swap! (:sphere topologies)
@@ -108,7 +108,7 @@
                (. object3d (lookAt v))
                (conj sphere object3d))))))
 
-(defn create-helix [i element]
+(defn create-helix [i]
   (let [v (f/Vector3.)]
     (swap! (:helix topologies) (fn [helix]
                                  (let [phi (* i 0.175 PI)
@@ -123,7 +123,7 @@
                                    (conj helix object)))))
   )
 
-(defn create-grid [i element]
+(defn create-grid [i]
   (swap! (:grid topologies) (fn [grid]
                               (let [object3d (map->object3d {:x (- (* 400 (mod i 5))
                                                                    800)
@@ -178,9 +178,9 @@
     (swap! css3d-objects conj css3d-object)
     
     (create-table element)
-    (create-sphere i element)
-    (create-helix i element)
-    (create-grid i element)
+    (create-sphere i)
+    (create-helix i)
+    (create-grid i)
     (rotate css3d-object :when-clicked)))
 
 (defn init []
