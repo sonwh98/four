@@ -11,16 +11,10 @@
 (def PI (. js/Math -PI))
 
 (def css3d-objects (atom []))
-(def topologies {:table (atom [])
+(def topologies {:table  (atom [])
                  :sphere (atom [])
-                 :helix (atom [])
-                 :grid (atom [])})
-
-(def renderer (f/CSS3DRenderer.))
-(.. renderer (setSize (. window -innerWidth)
-                      (. window -innerHeight)))
-(set! (.. renderer -domElement -style -position) "absolute")
-
+                 :helix  (atom [])
+                 :grid   (atom [])})
 
 (def camera (f/PerspectiveCamera. 50 (/ (.-innerWidth window)
                                         (.-innerHeight window))
@@ -30,10 +24,7 @@
 
 (def scene (f/Scene.))
 
-(defn render []
-  (.. renderer (render scene camera)))
-
-(defn map->object3d [ {:keys [x y z] :as point} ]
+(defn map->object3d [{:keys [x y z] :as point}]
   (let [obj (f/Object3D.)]
     (set! (.. obj -position -x) x)
     (set! (.. obj -position -y) y)
@@ -51,7 +42,7 @@
           :let [object3d (nth topology i)
                 duration 2000]]
     (.. (f/Tween. (. obj -position))
-        (to (clj->js (object3d->map  object3d))
+        (to (clj->js (object3d->map object3d))
             (+ (* (rand) duration)
                duration))
         (easing (.. f/tween -Easing -Exponential -InOut))
@@ -67,7 +58,16 @@
         (start))))
 
 (defn animate []
-  (let [controls (f/TrackballControls. camera (.. renderer -domElement))]
+  (let [renderer (f/CSS3DRenderer.)
+        _ (.. renderer (setSize (. window -innerWidth)
+                                (. window -innerHeight)))
+        _ (set! (.. renderer -domElement -style -position) "absolute")
+        _ (. (dom/by-id "container") (appendChild (. renderer -domElement)))
+
+        render (fn [] (.. renderer (render scene camera)))
+        domElement (.. renderer -domElement)
+        controls (f/TrackballControls. camera domElement)]
+
     (set! (.. controls -rotateSpeed) 0.5)
     (set! (.. controls -minDistance) 100)
     (set! (.. controls -maxDistance) 6000)
@@ -127,35 +127,35 @@
                                                                    800)
                                                              :y (+ 800 (* -400 (mod (. js/Math floor (/ i 5))
                                                                                     5)))
-                                                             :z (-  (* 1000
-                                                                       (. js/Math floor (/ i 25)))
-                                                                    2000)})]
+                                                             :z (- (* 1000
+                                                                      (. js/Math floor (/ i 25)))
+                                                                   2000)})]
                                 (conj grid object3d)))))
 
 (defn rotate [css3d-object _]
   (let [div (. css3d-object -element)]
-    (dom/on div"click" (fn [evt]
-                         (let [p (.. css3d-object -position clone)]
-                           (.. (f/Tween. (clj->js {:theta 0}))
-                               (to (clj->js {:theta (* 2 PI)})
-                                   1000)
-                               (easing (.. f/tween -Easing -Exponential -InOut))
-                               (onUpdate (fn [a]
-                                           (this-as this
-                                                    (let [angle (js->clj this)]
-                                                      (set! (.. css3d-object -rotation -y)
-                                                            (angle "theta"))))))
-                               (onComplete (fn []
-                                             (set! (.. css3d-object -rotation -y)
-                                                   (* 2 PI))))
-                               (start))
-                           ;;(set!  (.. div -style -width) "90%")
-                           ;;(set!  (.. div -style -height) "90%")
-                           ;; (set! (.. camera -position -x) (.. p -x))
-                           ;; (set! (.. camera -position -y) (.. p -y))
-                           ;; (set! (.. camera -position -z) 500)
-                           ;; (set! (.. controls -target) p)
-                           (.. camera (lookAt p)))))))
+    (dom/on div "click" (fn [evt]
+                          (let [p (.. css3d-object -position clone)]
+                            (.. (f/Tween. (clj->js {:theta 0}))
+                                (to (clj->js {:theta (* 2 PI)})
+                                    1000)
+                                (easing (.. f/tween -Easing -Exponential -InOut))
+                                (onUpdate (fn [a]
+                                            (this-as this
+                                              (let [angle (js->clj this)]
+                                                (set! (.. css3d-object -rotation -y)
+                                                      (angle "theta"))))))
+                                (onComplete (fn []
+                                              (set! (.. css3d-object -rotation -y)
+                                                    (* 2 PI))))
+                                (start))
+                            ;;(set!  (.. div -style -width) "90%")
+                            ;;(set!  (.. div -style -height) "90%")
+                            ;; (set! (.. camera -position -x) (.. p -x))
+                            ;; (set! (.. camera -position -y) (.. p -y))
+                            ;; (set! (.. camera -position -z) 500)
+                            ;; (set! (.. controls -target) p)
+                            (.. camera (lookAt p)))))))
 
 
 (defn on-click-change-to [shape]
@@ -163,18 +163,18 @@
                                              (morph-into @(shape topologies)))))
 
 (defn create-topologies []
-  (doseq [ [i element] (map-indexed (fn [i element] [i element]) table/elements)
-           :let [color (-> (* (rand) 0.5) (+ 0.25))
-                 div [:div {:id    i
-                            :class "element"
-                            :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
-                      [:div {:class "number"} i]
-                      [:div {:class "symbol"} (:element/symbol element)]
-                      [:div {:class "details"} (:element/name element)]]
-                 css3d-object (div->css3d-object (c/html div))]]
+  (doseq [[i element] (map-indexed (fn [i element] [i element]) table/elements)
+          :let [color (-> (* (rand) 0.5) (+ 0.25))
+                div [:div {:id    i
+                           :class "element"
+                           :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
+                     [:div {:class "number"} i]
+                     [:div {:class "symbol"} (:element/symbol element)]
+                     [:div {:class "details"} (:element/name element)]]
+                css3d-object (div->css3d-object (c/html div))]]
     (.. scene (add css3d-object))
     (swap! css3d-objects conj css3d-object)
-    
+
     (create-table element)
     (create-sphere i)
     (create-helix i)
@@ -188,8 +188,8 @@
   (on-click-change-to :helix)
   (on-click-change-to :grid)
 
-  (. (dom/by-id "container") (appendChild (. renderer -domElement)))
   (morph-into @(:table topologies))
   (animate))
+
 
 (init)
