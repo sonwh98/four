@@ -160,6 +160,11 @@
                            ;; (set! (.. controls -target) p)
                            (.. camera (lookAt p)))))))
 
+
+(defn on-click-change-to [shape]
+  (dom/on (dom/by-id (name shape)) "click" (fn [event]
+                                             (morph-into @(shape topologies)))))
+
 (defn init []
   (let [elements (map-indexed (fn [i element] [i element]) table/elements)]
     (doseq [[i element] elements
@@ -170,8 +175,7 @@
                        [:div {:class "number"} i]
                        [:div {:class "symbol"} (:element/symbol element)]
                        [:div {:class "details"} (:element/name element)]]
-                  div-as-dom (c/html div)
-                  css3d-object (div->css3d-object div-as-dom)]]
+                  css3d-object (div->css3d-object (c/html div))]]
       (.. scene (add css3d-object))
       (swap! css3d-objects conj css3d-object)
       
@@ -181,24 +185,15 @@
       (create-grid i element)
       (rotate css3d-object :when-clicked))
 
+    (on-click-change-to :table)
+    (on-click-change-to :sphere)
+    (on-click-change-to :helix)
+    (on-click-change-to :grid)
+
+
+    (.. (dom/by-id "container") (appendChild (. renderer -domElement )))
+    (morph-into @(:table topologies))
+    (animate)
     (render)))
 
-
-
 (init)
-(morph-into @(:table topologies))
-(animate)
-
-(defn change-shape [shape]
-  (dom/on (dom/by-id (name shape)) "click" (fn [event]
-                                             (morph-into @(shape topologies)))))
-
-(defn register-listeners []
-  (change-shape :table)
-  (change-shape :sphere)
-  (change-shape :helix)
-  (change-shape :grid))
-
-(.. (dom/by-id "container") (appendChild (.-domElement renderer)))
-
-(register-listeners)
