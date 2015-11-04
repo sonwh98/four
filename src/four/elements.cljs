@@ -69,7 +69,7 @@
 
     
     (set! (.. controls -rotateSpeed) 0.5)
-    (set! (.. controls -minDistance) 100)
+    (set! (.. controls -minDistance) 500)
     (set! (.. controls -maxDistance) 6000)
     (.. controls (addEventListener "change" render-scene))
 
