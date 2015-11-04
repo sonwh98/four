@@ -135,6 +135,31 @@
                                                                     2000)})]
                                 (conj grid object3d)))))
 
+(defn rotate [css3d-object _]
+  (let [div (. css3d-object -element)]
+    (dom/on div"click" (fn [evt]
+                         (let [p (.. css3d-object -position clone)]
+                           (.. (f/Tween. (clj->js {:theta 0}))
+                               (to (clj->js {:theta (* 2 PI)})
+                                   1000)
+                               (easing (.. f/tween -Easing -Exponential -InOut))
+                               (onUpdate (fn [a]
+                                           (this-as this
+                                                    (let [angle (js->clj this)]
+                                                      (set! (.. css3d-object -rotation -y)
+                                                            (angle "theta"))))))
+                               (onComplete (fn []
+                                             (set! (.. css3d-object -rotation -y)
+                                                   (* 2 PI))))
+                               (start))
+                           ;;(set!  (.. div -style -width) "90%")
+                           ;;(set!  (.. div -style -height) "90%")
+                           ;; (set! (.. camera -position -x) (.. p -x))
+                           ;; (set! (.. camera -position -y) (.. p -y))
+                           ;; (set! (.. camera -position -z) 500)
+                           ;; (set! (.. controls -target) p)
+                           (.. camera (lookAt p)))))))
+
 (defn init []
   (let [elements (map-indexed (fn [i element] [i element]) table/elements)]
     (doseq [[i element] elements
@@ -146,37 +171,15 @@
                        [:div {:class "symbol"} (:element/symbol element)]
                        [:div {:class "details"} (:element/name element)]]
                   div-as-dom (c/html div)
-                  element-css3d-object (div->css3d-object div-as-dom)]]
-      (.. scene (add element-css3d-object))
-      (swap! element-css3d-objects conj element-css3d-object)
+                  css3d-object (div->css3d-object div-as-dom)]]
+      (.. scene (add css3d-object))
+      (swap! element-css3d-objects conj css3d-object)
       
       (create-table element)
       (create-sphere i element)
       (create-helix i element)
       (create-grid i element)
-      
-      (dom/on div-as-dom "click" (fn [evt]
-                                   (let [p (.. element-css3d-object -position clone)]
-                                     (.. (f/Tween. (clj->js {:theta 0}))
-                                         (to (clj->js {:theta (* 2 PI)})
-                                             1000)
-                                         (easing (.. f/tween -Easing -Exponential -InOut))
-                                         (onUpdate (fn [a]
-                                                     (this-as this
-                                                              (let [angle (js->clj this)]
-                                                                (set! (.. element-css3d-object -rotation -y)
-                                                                      (angle "theta"))))))
-                                         (onComplete (fn []
-                                                       (set! (.. element-css3d-object -rotation -y)
-                                                             (* 2 PI))))
-                                         (start))
-                                     ;;(set!  (.. div -style -width) "90%")
-                                     ;;(set!  (.. div -style -height) "90%")
-                                     ;; (set! (.. camera -position -x) (.. p -x))
-                                     ;; (set! (.. camera -position -y) (.. p -y))
-                                     ;; (set! (.. camera -position -z) 500)
-                                     ;; (set! (.. controls -target) p)
-                                     (.. camera (lookAt p))))))
+      (rotate css3d-object :when-clicked))
 
     (render)))
 
