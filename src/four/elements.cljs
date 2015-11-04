@@ -11,7 +11,7 @@
 (def document js/document)
 (def PI (. js/Math -PI))
 
-(def element-css3d-objects (atom []))
+(def css3d-objects (atom []))
 (def topologies {:table (atom [])
                  :sphere (atom [])
                  :helix (atom [])
@@ -56,7 +56,7 @@
 
 (defn transform [shape ]
   (.. f/tween removeAll)
-  (doseq [[i obj] (map-indexed (fn [i e] [i e]) @element-css3d-objects)
+  (doseq [[i obj] (map-indexed (fn [i e] [i e]) @css3d-objects)
           :let [object3d (nth shape i)
                 duration 2000]]
     (.. (f/Tween. (. obj -position))
@@ -173,7 +173,7 @@
                   div-as-dom (c/html div)
                   css3d-object (div->css3d-object div-as-dom)]]
       (.. scene (add css3d-object))
-      (swap! element-css3d-objects conj css3d-object)
+      (swap! css3d-objects conj css3d-object)
       
       (create-table element)
       (create-sphere i element)
