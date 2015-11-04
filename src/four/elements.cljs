@@ -57,7 +57,7 @@
         (easing (.. f/tween -Easing -Exponential -InOut))
         (start))))
 
-(defn animate []
+(defn setup-animation []
   (let [renderer (f/CSS3DRenderer.)
         domElement (. renderer -domElement)
         _ (. (dom/by-id "container") appendChild domElement)
@@ -67,7 +67,6 @@
     (. renderer (setSize (. window -innerWidth)
                          (. window -innerHeight)))
 
-    
     (set! (.. controls -rotateSpeed) 0.5)
     (set! (.. controls -minDistance) 500)
     (set! (.. controls -maxDistance) 6000)
@@ -188,8 +187,8 @@
   (on-click-change-to :helix)
   (on-click-change-to :grid)
 
-  (morph-into @(:table topologies))
-  (animate))
+  (setup-animation)
+  (morph-into @(:sphere topologies)))
 
 
 (init)
