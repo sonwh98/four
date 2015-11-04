@@ -59,24 +59,24 @@
 
 (defn animate []
   (let [renderer (f/CSS3DRenderer.)
-        _ (.. renderer (setSize (. window -innerWidth)
-                                (. window -innerHeight)))
-        _ (set! (.. renderer -domElement -style -position) "absolute")
-        _ (. (dom/by-id "container") (appendChild (. renderer -domElement)))
-
-        render (fn [] (.. renderer (render scene camera)))
-        domElement (.. renderer -domElement)
+        domElement (. renderer -domElement)
+        _ (. (dom/by-id "container") appendChild domElement)
+        render-scene (fn [] (. renderer (render scene camera)))
         controls (f/TrackballControls. camera domElement)]
+    (set! (.. domElement -style -position) "absolute")
+    (. renderer (setSize (. window -innerWidth)
+                         (. window -innerHeight)))
 
+    
     (set! (.. controls -rotateSpeed) 0.5)
     (set! (.. controls -minDistance) 100)
     (set! (.. controls -maxDistance) 6000)
-    (.. controls (addEventListener "change" render))
+    (.. controls (addEventListener "change" render-scene))
 
     (f/animate (fn [time]
                  (.. f/tween update)
                  (.. controls update)
-                 (render)))))
+                 (render-scene)))))
 
 (defn div->css3d-object [div]
   (let [obj (f/CSS3DObject. div)]
