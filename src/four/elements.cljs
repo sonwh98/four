@@ -9,9 +9,9 @@
 
 (def window js/window)
 (def document js/document)
-(def pi (. js/Math -PI))
+(def PI (. js/Math -PI))
 
-(def objects (atom []))
+(def element-css3d-objects (atom []))
 (def topologies {:table (atom [])
                  :sphere (atom [])
                  :helix (atom [])
@@ -56,7 +56,7 @@
 
 (defn transform [shape ]
   (.. f/tween removeAll)
-  (doseq [[i obj] (map-indexed (fn [i e] [i e]) @objects)
+  (doseq [[i obj] (map-indexed (fn [i e] [i e]) @element-css3d-objects)
           :let [object3d (nth shape i)
                 duration 2000]]
     (.. (f/Tween. (. obj -position))
@@ -101,7 +101,7 @@
              (let [phi (. js/Math acos (+ (/ (* 2 i) length)
                                           -1))
                    theta (* phi
-                            (. js/Math sqrt (* length pi)))
+                            (. js/Math sqrt (* length PI)))
                    object3d (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
                                             :y (* 800 (. js/Math sin theta) (. js/Math sin phi))
                                             :z (* 800 (. js/Math cos phi))})]
@@ -112,7 +112,7 @@
 (defn create-helix [i element]
   (let [v (f/Vector3.)]
     (swap! (:helix topologies) (fn [helix]
-                                 (let [phi (* i 0.175 pi)
+                                 (let [phi (* i 0.175 PI)
                                        object (map->object3d {:x (* 900 (. js/Math sin phi))
                                                               :y (+ (* i -8)
                                                                     450)
@@ -148,7 +148,7 @@
                   div-as-dom (c/html div)
                   css3d (div->css3d-object div-as-dom)]]
       (.. scene (add css3d))
-      (swap! objects conj css3d)
+      (swap! element-css3d-objects conj css3d)
       
       (create-table element)
       (create-sphere i element)
@@ -158,7 +158,7 @@
       (dom/on div-as-dom "click" (fn [evt]
                                    (let [p (.. css3d -position clone)]
                                      (.. (f/Tween. (clj->js {:theta 0}))
-                                         (to (clj->js {:theta (* 2 (.-PI js/Math))})
+                                         (to (clj->js {:theta (* 2 PI)})
                                              1000)
                                          (easing (.. f/tween -Easing -Exponential -InOut))
                                          (onUpdate (fn [a]
@@ -168,7 +168,7 @@
                                                                       (angle "theta"))))))
                                          (onComplete (fn []
                                                        (set! (.. css3d -rotation -y)
-                                                             (* 2 (.-PI js/Math)))))
+                                                             (* 2 PI))))
                                          (start))
                                      ;;(set!  (.. div -style -width) "90%")
                                      ;;(set!  (.. div -style -height) "90%")
