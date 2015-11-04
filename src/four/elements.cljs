@@ -33,14 +33,6 @@
 (defn render []
   (.. renderer (render scene camera)))
 
-
-(def controls (f/TrackballControls. camera (.. renderer -domElement)))
-(set! (.. controls -rotateSpeed) 0.5)
-(set! (.. controls -minDistance) 100)
-(set! (.. controls -maxDistance) 6000)
-(.. controls (addEventListener "change" render))
-
-
 (defn map->object3d [ {:keys [x y z] :as point} ]
   (let [obj (f/Object3D.)]
     (set! (.. obj -position -x) x)
@@ -75,10 +67,16 @@
         (start))))
 
 (defn animate []
-  (f/animate (fn [time]
-               (.. f/tween update)
-               (.. controls update)
-               (render))))
+  (let [controls (f/TrackballControls. camera (.. renderer -domElement))]
+    (set! (.. controls -rotateSpeed) 0.5)
+    (set! (.. controls -minDistance) 100)
+    (set! (.. controls -maxDistance) 6000)
+    (.. controls (addEventListener "change" render))
+
+    (f/animate (fn [time]
+                 (.. f/tween update)
+                 (.. controls update)
+                 (render)))))
 
 (defn div->css3d-object [div]
   (let [obj (f/CSS3DObject. div)]
