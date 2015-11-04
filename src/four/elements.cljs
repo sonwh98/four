@@ -146,9 +146,9 @@
                        [:div {:class "symbol"} (:element/symbol element)]
                        [:div {:class "details"} (:element/name element)]]
                   div-as-dom (c/html div)
-                  css3d (div->css3d-object div-as-dom)]]
-      (.. scene (add css3d))
-      (swap! element-css3d-objects conj css3d)
+                  element-css3d-object (div->css3d-object div-as-dom)]]
+      (.. scene (add element-css3d-object))
+      (swap! element-css3d-objects conj element-css3d-object)
       
       (create-table element)
       (create-sphere i element)
@@ -156,7 +156,7 @@
       (create-grid i element)
       
       (dom/on div-as-dom "click" (fn [evt]
-                                   (let [p (.. css3d -position clone)]
+                                   (let [p (.. element-css3d-object -position clone)]
                                      (.. (f/Tween. (clj->js {:theta 0}))
                                          (to (clj->js {:theta (* 2 PI)})
                                              1000)
@@ -164,10 +164,10 @@
                                          (onUpdate (fn [a]
                                                      (this-as this
                                                               (let [angle (js->clj this)]
-                                                                (set! (.. css3d -rotation -y)
+                                                                (set! (.. element-css3d-object -rotation -y)
                                                                       (angle "theta"))))))
                                          (onComplete (fn []
-                                                       (set! (.. css3d -rotation -y)
+                                                       (set! (.. element-css3d-object -rotation -y)
                                                              (* 2 PI))))
                                          (start))
                                      ;;(set!  (.. div -style -width) "90%")
