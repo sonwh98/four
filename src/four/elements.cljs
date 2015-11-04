@@ -8,7 +8,6 @@
 (enable-console-print!)
 
 (def window js/window)
-(def document js/document)
 (def PI (. js/Math -PI))
 
 (def css3d-objects (atom []))
