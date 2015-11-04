@@ -54,10 +54,10 @@
    :y (.. object3d -position -y)
    :z (.. object3d -position -z)})
 
-(defn transform [shape ]
+(defn morph-into [topology]
   (.. f/tween removeAll)
   (doseq [[i obj] (map-indexed (fn [i e] [i e]) @css3d-objects)
-          :let [object3d (nth shape i)
+          :let [object3d (nth topology i)
                 duration 2000]]
     (.. (f/Tween. (. obj -position))
         (to (clj->js (object3d->map  object3d))
@@ -186,18 +186,18 @@
 
 
 (init)
-(transform @(:table topologies))
+(morph-into @(:table topologies))
 (animate)
 
-(defn morph-into [shape]
+(defn change-shape [shape]
   (dom/on (dom/by-id (name shape)) "click" (fn [event]
-                                             (transform @(shape topologies)))))
+                                             (morph-into @(shape topologies)))))
 
 (defn register-listeners []
-  (morph-into :table)
-  (morph-into :sphere)
-  (morph-into :helix)
-  (morph-into :grid))
+  (change-shape :table)
+  (change-shape :sphere)
+  (change-shape :helix)
+  (change-shape :grid))
 
 (.. (dom/by-id "container") (appendChild (.-domElement renderer)))
 
