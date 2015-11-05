@@ -1,6 +1,6 @@
 (ns four.server
   (:require [datomic.api :as d]
-            [org.httpkit.server :as hk]))
+            [org.httpkit.server :as s]))
 
 (defn app [req]
   {:status  200
@@ -10,5 +10,5 @@
 
 (defn -main [& args]
   (println "running")
-  (hk/run-server app {:port 8080})
+  (s/run-server app {:port 8080})
   )
