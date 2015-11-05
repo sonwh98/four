@@ -84,10 +84,11 @@
     (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
     obj))
 
-(defn create-table [element]
-  (swap! (:table topologies) conj (map->object3d {:x (-> (* (:element/x element) 140) (- 1330))
-                                                  :y (-> (* (:element/y element) -180) (+ 1330))
-                                                  :z 0})))
+(defn create-table [i]
+  (let [point (nth table/coordinates i)]
+    (swap! (:table topologies) conj (map->object3d {:x (-> (* (:x point) 140) (- 1330))
+                                                    :y (-> (* (:y point) -180) (+ 1330))
+                                                    :z 0}))))
 
 (defn create-sphere [i]
   (let [v (three/Vector3.)
@@ -174,7 +175,7 @@
     (.. scene (add css3d-object))
     (swap! css3d-objects conj css3d-object)
 
-    (create-table element)
+    (create-table i)
     (create-sphere i)
     (create-helix i)
     (create-grid i)
