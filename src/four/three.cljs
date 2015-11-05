@@ -1,4 +1,4 @@
-(ns four.core
+(ns four.three
   (:require [cljsjs.three]
             [cljsjs.tween]))
 

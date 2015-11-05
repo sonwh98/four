@@ -1,5 +1,5 @@
 (ns four.elements
-  (:require [four.core :as f]
+  (:require [four.three :as three]
             [four.messaging :as m]
             [four.dom :as dom]
             [four.table :as table]
@@ -16,16 +16,16 @@
                  :helix  (atom [])
                  :grid   (atom [])})
 
-(def camera (f/PerspectiveCamera. 50 (/ (.-innerWidth window)
+(def camera (three/PerspectiveCamera. 50 (/ (.-innerWidth window)
                                         (.-innerHeight window))
                                   10000
                                   1000))
 (set! (.. camera -position -z) 3000)
 
-(def scene (f/Scene.))
+(def scene (three/Scene.))
 
 (defn map->object3d [{:keys [x y z] :as point}]
-  (let [obj (f/Object3D.)]
+  (let [obj (three/Object3D.)]
     (set! (.. obj -position -x) x)
     (set! (.. obj -position -y) y)
     (set! (.. obj -position -z) z)
@@ -37,32 +37,32 @@
    :z (.. object3d -position -z)})
 
 (defn morph-into [topology]
-  (.. f/tween removeAll)
+  (.. three/tween removeAll)
   (doseq [[i obj] (map-indexed (fn [i e] [i e]) @css3d-objects)
           :let [object3d (nth topology i)
                 duration 2000]]
-    (.. (f/Tween. (. obj -position))
+    (.. (three/Tween. (. obj -position))
         (to (clj->js (object3d->map object3d))
             (+ (* (rand) duration)
                duration))
-        (easing (.. f/tween -Easing -Exponential -InOut))
+        (easing (.. three/tween -Easing -Exponential -InOut))
         (start))
 
-    (.. (f/Tween. (. obj -rotation))
+    (.. (three/Tween. (. obj -rotation))
         (to (clj->js {:x (.. object3d -rotation -x)
                       :y (.. object3d -rotation -y)
                       :z (.. object3d -rotation -z)})
             (+ (* (rand) duration)
                duration))
-        (easing (.. f/tween -Easing -Exponential -InOut))
+        (easing (.. three/tween -Easing -Exponential -InOut))
         (start))))
 
 (defn setup-animation []
-  (let [renderer (f/CSS3DRenderer.)
+  (let [renderer (three/CSS3DRenderer.)
         domElement (. renderer -domElement)
         _ (. (dom/by-id "container") appendChild domElement)
         render-scene (fn [] (. renderer (render scene camera)))
-        controls (f/TrackballControls. camera domElement)]
+        controls (three/TrackballControls. camera domElement)]
     (set! (.. domElement -style -position) "absolute")
     (. renderer (setSize (. window -innerWidth)
                          (. window -innerHeight)))
@@ -72,13 +72,13 @@
     (set! (.. controls -maxDistance) 6000)
     (.. controls (addEventListener "change" render-scene))
 
-    (f/animate (fn [time]
-                 (.. f/tween update)
+    (three/animate (fn [time]
+                 (.. three/tween update)
                  (.. controls update)
                  (render-scene)))))
 
 (defn div->css3d-object [div]
-  (let [obj (f/CSS3DObject. div)]
+  (let [obj (three/CSS3DObject. div)]
     (set! (.. obj -position -x) (-> (* (rand) 4000) (- 2000)))
     (set! (.. obj -position -y) (-> (* (rand) 4000) (- 2000)))
     (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
@@ -90,7 +90,7 @@
                                                   :z 0})))
 
 (defn create-sphere [i]
-  (let [v (f/Vector3.)
+  (let [v (three/Vector3.)
         length (count table/elements)]
     (swap! (:sphere topologies)
            (fn [sphere]
@@ -106,7 +106,7 @@
                (conj sphere object3d))))))
 
 (defn create-helix [i]
-  (let [v (f/Vector3.)]
+  (let [v (three/Vector3.)]
     (swap! (:helix topologies) (fn [helix]
                                  (let [phi (* i 0.175 PI)
                                        object (map->object3d {:x (* 900 (. js/Math sin phi))
@@ -135,10 +135,10 @@
   (let [div (. css3d-object -element)]
     (dom/on div "click" (fn [evt]
                           (let [p (.. css3d-object -position clone)]
-                            (.. (f/Tween. (clj->js {:theta 0}))
+                            (.. (three/Tween. (clj->js {:theta 0}))
                                 (to (clj->js {:theta (* 2 PI)})
                                     1000)
-                                (easing (.. f/tween -Easing -Exponential -InOut))
+                                (easing (.. three/tween -Easing -Exponential -InOut))
                                 (onUpdate (fn [a]
                                             (this-as this
                                               (let [angle (js->clj this)]
