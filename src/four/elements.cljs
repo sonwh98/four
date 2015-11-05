@@ -72,6 +72,8 @@
     (set! (.. controls -maxDistance) 6000)
     (.. controls (addEventListener "change" render-scene))
 
+    (def controls controls)
+    
     (three/animate (fn [time]
                  (.. three/tween update)
                  (.. controls update)
@@ -187,9 +189,17 @@
   (on-click-change-to :sphere)
   (on-click-change-to :helix)
   (on-click-change-to :grid)
-
+  
+  (dom/on (dom/by-id "reset") "click" (fn [event]
+                                        (println "reset")
+                                        (. controls reset)
+                                        ;; (set! (.. camera -position -x) 0)
+                                        ;; (set! (.. camera -position -y) 0)
+                                        ;; (set! (.. camera -position -z) 3000)
+                                        ))
+  
   (setup-animation)
-  (morph-into @(:sphere topologies)))
+  (morph-into @(:table topologies)))
 
 
 (init)
