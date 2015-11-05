@@ -11,9 +11,13 @@
 
 (defn handler [request]
   (s/with-channel request channel
-    (.on-close channel (fn [status] (println "channel closed: " status)))
-    (.on-receive channel (fn [data] ;; echo it back
-                           (.send! channel data)))))
+    (s/on-close channel (fn [status] (println "channel closed: " status)))
+
+    (s/on-receive channel (fn [data] ;; echo it back
+                            (println "echo " data)
+                            (s/send! channel data)))
+    )
+  )
 
 (defn -main [& args]
   (println "running")

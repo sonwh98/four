@@ -203,3 +203,20 @@
 
 
 (init)
+
+(def ws  (js/WebSocket. "ws://localhost:9090"))
+
+(set! (. ws -onopen) (fn [evt]
+                       (println "openopen " evt)
+                       (. ws send "foo")))
+(set! (. ws -onclose) (fn [evt]
+                        (println "onclose " evt)
+                        ))
+
+(set! (. ws -onmessage) (fn [evt]
+                          (println "onmessage " (. evt -data))
+                          ))
+
+(set! (. ws -onerror) (fn [evt]
+                        (println "onerror " evt)
+                        ))
