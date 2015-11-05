@@ -21,7 +21,8 @@
                  [com.datomic/datomic-free "0.9.5327" :exclusions [joda-time]]
                  [ring/ring-core "1.4.0"]
                  [http-kit "2.1.19"]
-                 ]
+                 [com.cognitect/transit-clj "0.8.285"]
+                 [com.cognitect/transit-cljs "0.8.225"]]
 
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.4.1"]
