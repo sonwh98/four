@@ -16,14 +16,19 @@
                  [cljsjs/three "0.0.72-css3d"]
                  [cljsjs/tween "16.3.1"]
                  [krate "0.2.5-SNAPSHOT"]
-                 [com.datomic/datomic-free "0.9.5327"]]
+                 
+                 [org.codehaus.groovy/groovy-all "2.4.5"]
+                 [com.datomic/datomic-free "0.9.5327" :exclusions [joda-time]]
+                 [ring/ring-core "1.4.0"]
+                 [http-kit "2.1.19"]
+                 ]
 
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.4.1"]
             ]
 
   :source-paths ["src"]
-
+  :main four.server
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
   
