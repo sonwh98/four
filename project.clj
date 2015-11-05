@@ -16,7 +16,7 @@
                  [cljsjs/three "0.0.72-css3d"]
                  [cljsjs/tween "16.3.1"]
                  [krate "0.2.5-SNAPSHOT"]
-                 ]
+                 [com.datomic/datomic-free "0.9.5327"]]
 
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.4.1"]
