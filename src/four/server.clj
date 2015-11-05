@@ -9,10 +9,14 @@
    :body    "hello HTTP!"})
 
 
+(defn handler [request]
+  (s/with-channel request channel
+    (.on-close channel (fn [status] (println "channel closed: " status)))
+    (.on-receive channel (fn [data] ;; echo it back
+                           (.send! channel data)))))
+
 (defn -main [& args]
   (println "running")
-  (let [foo (t/serialize {:a 1})]
-    (println foo)
-    (println (t/deserialize foo)))
-  (s/run-server app {:port 8080})
+  (s/run-server handler {:port 9090})
+                                        ;(s/run-server app {:port 8080})
   )
