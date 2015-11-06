@@ -32,6 +32,8 @@ To create a production build run:
 And open your browser in `resources/public/index.html`. You will not
 get live reloading, nor a REPL. 
 
+Live demo http://shiva.kaicode.com/elements.html
+
 ## License
 
 Copyright © 2014 FIXME
