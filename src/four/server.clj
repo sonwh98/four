@@ -1,7 +1,8 @@
 (ns four.server
   (:require [datomic.api :as d]
             [org.httpkit.server :as s]
-            [four.transit :as t]))
+            [four.transit :as t]
+            [clojure.java.io :as io]))
 
 (defn app [req]
   {:status  200
@@ -13,8 +14,11 @@
   (s/with-channel request channel
     (s/on-close channel (fn [status] (println "channel closed: " status)))
 
-    (s/on-receive channel (fn [data] ;; echo it back
-                            (s/send! channel (t/serialize {:first "Connor" :last "To"}))))))
+    (s/on-receive channel (fn [data]
+                            (let [elements-edn-file (io/file (io/resource "public/elements.edn"))
+                                  elements-edn (-> elements-edn-file slurp read-string)]
+                              (s/send! channel (t/serialize elements-edn)))
+))))
 
 (defn -main [& args]
   (println "running")
