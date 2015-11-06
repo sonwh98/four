@@ -1,6 +1,9 @@
 (ns four.server
   (:require [datomic.api :as d]
             [org.httpkit.server :as s]
+            [compojure.route :as route]
+            [compojure.handler :refer [site]]
+            [compojure.core :refer [defroutes]]
             [four.transit :as t]
             [clojure.java.io :as io]))
 
@@ -9,6 +12,9 @@
    :headers {"Content-Type" "text/html"}
    :body    "hello HTTP!"})
 
+(defroutes all-routes
+  (route/resources "/" )
+  )
 
 (defn handler [request]
   (s/with-channel request channel
@@ -22,5 +28,4 @@
 (defn -main [& args]
   (println "running")
   (s/run-server handler {:port 9090})
-  ;;(s/run-server app {:port 8080})
-  )
+  (s/run-server (site #'all-routes) {:port 8080}))

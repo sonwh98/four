@@ -19,8 +19,12 @@
                  
                  [org.codehaus.groovy/groovy-all "2.4.5"]
                  [com.datomic/datomic-free "0.9.5327" :exclusions [joda-time]]
+                 
                  [ring/ring-core "1.4.0"]
+                 [ring/ring-defaults "0.1.5"]
+                 [compojure "1.4.0"]
                  [http-kit "2.1.19"]
+                 
                  [com.cognitect/transit-clj "0.8.285"]
                  [com.cognitect/transit-cljs "0.8.225"]]
 
