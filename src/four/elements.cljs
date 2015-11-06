@@ -3,6 +3,7 @@
             [four.messaging :as m]
             [four.dom :as dom]
             [four.table :as table]
+            [four.transit :as t]
             [crate.core :as c]))
 
 (enable-console-print!)
@@ -214,8 +215,10 @@
                         ))
 
 (set! (. ws -onmessage) (fn [evt]
-                          (println "onmessage " (. evt -data))
-                          ))
+                          (let [data-str (. evt -data)
+                                data (t/deserialize data-str)]
+                            (println "data-str=" data-str)
+                            (println "data=" data))))
 
 (set! (. ws -onerror) (fn [evt]
                         (println "onerror " evt)

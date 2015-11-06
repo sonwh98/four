@@ -14,10 +14,7 @@
     (s/on-close channel (fn [status] (println "channel closed: " status)))
 
     (s/on-receive channel (fn [data] ;; echo it back
-                            (println "echo " data)
-                            (s/send! channel data)))
-    )
-  )
+                            (s/send! channel (t/serialize {:first "Connor" :last "To"}))))))
 
 (defn -main [& args]
   (println "running")
