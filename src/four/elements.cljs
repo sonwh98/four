@@ -161,7 +161,6 @@
 
 
 (defn on-click-change-to [shape]
-  (println shape)
   (dom/on (dom/by-id (name shape)) "click" (fn [event]
                                              (morph-into @(shape topologies)))))
 
