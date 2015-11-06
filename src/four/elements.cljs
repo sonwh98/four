@@ -202,7 +202,8 @@
   (morph-into @(:table topologies)))
 
 (m/on :dom/content-loaded (fn []
-                            (let [ws  (js/WebSocket. "ws://localhost:9090")]
+                            (let [host (.. window -location -hostname)
+                                  ws (js/WebSocket. (str "ws://" host ":9090"))]
                               (set! (. ws -onopen) (fn [evt]
                                                      (println "openopen " evt)
                                                      (. ws send "foo")))
