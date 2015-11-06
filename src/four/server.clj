@@ -17,11 +17,10 @@
     (s/on-receive channel (fn [data]
                             (let [elements-edn-file (io/file (io/resource "public/elements.edn"))
                                   elements-edn (-> elements-edn-file slurp read-string)]
-                              (s/send! channel (t/serialize elements-edn)))
-))))
+                              (s/send! channel (t/serialize elements-edn)))))))
 
 (defn -main [& args]
   (println "running")
   (s/run-server handler {:port 9090})
-                                        ;(s/run-server app {:port 8080})
+  ;;(s/run-server app {:port 8080})
   )

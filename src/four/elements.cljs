@@ -93,9 +93,8 @@
                                                     :y (-> (* (:y point) -180) (+ 1330))
                                                     :z 0}))))
 
-(defn create-sphere [i]
-  (let [v (three/Vector3.)
-        length (count table/elements)]
+(defn create-sphere [i length]
+  (let [v (three/Vector3.)]
     (swap! (:sphere topologies)
            (fn [sphere]
              (let [phi (. js/Math acos (+ (/ (* 2 i) length)
@@ -162,11 +161,12 @@
 
 
 (defn on-click-change-to [shape]
+  (println shape)
   (dom/on (dom/by-id (name shape)) "click" (fn [event]
                                              (morph-into @(shape topologies)))))
 
-(defn create-topologies []
-  (doseq [[i element] (map-indexed (fn [i element] [i element]) table/elements)
+(defn create-topologies [elements]
+  (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
           :let [color (-> (* (rand) 0.5) (+ 0.25))
                 div [:div {:id    i
                            :class "element"
@@ -179,13 +179,13 @@
     (swap! css3d-objects conj css3d-object)
 
     (create-table i)
-    (create-sphere i)
+    (create-sphere i (count elements))
     (create-helix i)
     (create-grid i)
     (rotate css3d-object :when-clicked)))
 
-(defn init []
-  (create-topologies)
+(defn init [elements]
+  (create-topologies elements)
   (on-click-change-to :table)
   (on-click-change-to :sphere)
   (on-click-change-to :helix)
@@ -202,24 +202,21 @@
   (setup-animation)
   (morph-into @(:table topologies)))
 
-
-(init)
-
-(def ws  (js/WebSocket. "ws://localhost:9090"))
-
-(set! (. ws -onopen) (fn [evt]
-                       (println "openopen " evt)
-                       (. ws send "foo")))
-(set! (. ws -onclose) (fn [evt]
-                        (println "onclose " evt)
-                        ))
-
-(set! (. ws -onmessage) (fn [evt]
-                          (let [data-str (. evt -data)
-                                data (t/deserialize data-str)]
-                            (println "data-str=" data-str)
-                            (println "data=" data))))
-
-(set! (. ws -onerror) (fn [evt]
-                        (println "onerror " evt)
-                        ))
+(m/on :dom/content-loaded (fn []
+                            (let [ws  (js/WebSocket. "ws://localhost:9090")]
+                              (set! (. ws -onopen) (fn [evt]
+                                                     (println "openopen " evt)
+                                                     (. ws send "foo")))
+                              (set! (. ws -onclose) (fn [evt]
+                                                      (println "onclose " evt)
+                                                      ))
+                              
+                              (set! (. ws -onmessage) (fn [evt]
+                                                        (let [data-str (. evt -data)
+                                                              elements (t/deserialize data-str)]
+                                                          (init elements)
+                                                          )))
+                              
+                              (set! (. ws -onerror) (fn [evt]
+                                                      (println "onerror " evt)
+                                                      )))))
