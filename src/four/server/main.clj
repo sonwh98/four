@@ -7,11 +7,6 @@
             [four.transit :as t]
             [clojure.java.io :as io]))
 
-(defn app [req]
-  {:status  200
-   :headers {"Content-Type" "text/html"}
-   :body    "hello HTTP!"})
-
 (defroutes all-routes
   (route/resources "/" )
   )
