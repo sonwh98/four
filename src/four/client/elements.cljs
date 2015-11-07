@@ -1,10 +1,14 @@
 (ns four.client.elements
+  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [four.client.three :as three]
-            [four.messaging :as m]
             [four.client.dom :as dom]
             [four.client.table :as table]
+            [four.client.websocket :as ws]
+
+            [four.messaging :as m]
             [four.transit :as t]
-            [crate.core :as c]))
+            [crate.core :as c]
+            [cljs.core.async :refer [<!]]))
 
 (enable-console-print!)
 
@@ -202,21 +206,7 @@
   (morph-into @(:table topologies)))
 
 (m/on :dom/content-loaded (fn []
-                            (let [host (.. window -location -hostname)
-                                  ws (js/WebSocket. (str "ws://" host ":9090"))]
-                              (set! (. ws -onopen) (fn [evt]
-                                                     (println "openopen " evt)
-                                                     (. ws send "foo")))
-                              (set! (. ws -onclose) (fn [evt]
-                                                      (println "onclose " evt)
-                                                      ))
-                              
-                              (set! (. ws -onmessage) (fn [evt]
-                                                        (let [data-str (. evt -data)
-                                                              elements (t/deserialize data-str)]
-                                                          (init elements)
-                                                          )))
-                              
-                              (set! (. ws -onerror) (fn [evt]
-                                                      (println "onerror " evt)
-                                                      )))))
+                            (ws/send! [:ping "hi"])
+                            (let [c (m/subscribe-to :elements)]
+                              (go (let [ [_ elements] (<! c)]
+                                    (init elements))))))

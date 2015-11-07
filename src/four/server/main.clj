@@ -21,9 +21,11 @@
     (s/on-close channel (fn [status] (println "channel closed: " status)))
 
     (s/on-receive channel (fn [data]
+                            (println "got from client=" data)
                             (let [elements-edn-file (io/file (io/resource "public/elements.edn"))
-                                  elements-edn (-> elements-edn-file slurp read-string)]
-                              (s/send! channel (t/serialize elements-edn)))))))
+                                  elements-edn (-> elements-edn-file slurp read-string)
+                                  msg [:elements elements-edn]]
+                              (s/send! channel (t/serialize msg)))))))
 
 (defn -main [& args]
   (println "running")
