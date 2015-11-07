@@ -1,6 +1,7 @@
 (ns four.messaging
-  (:require-macros [cljs.core.async.macros :refer [go ]])
-  (:require [cljs.core.async :refer [put! <! >! chan pub sub unsub ]]))
+  #?(:cljs (:require-macros [cljs.core.async.macros :refer [go]]))
+  (:require [#?(:cljs cljs.core.async
+                :clj clojure.core.async) :refer [put! <! >! chan pub sub unsub]]))
 
 (enable-console-print!)
 
@@ -9,8 +10,7 @@
                                                 (if (vector? msg)
                                                   (first msg)
                                                   :no-topic))))
-(defn broadcast
-  [msg]
+(defn broadcast [msg]
   (println "boradcast " (first msg))
   (put! message-bus msg))
 
