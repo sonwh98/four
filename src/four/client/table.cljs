@@ -1,4 +1,4 @@
-(ns four.table)
+(ns four.client.table)
 
 (def coordinates [{:x 1, :y 1}
                   {:x 18, :y 1}

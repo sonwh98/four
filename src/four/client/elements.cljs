@@ -1,8 +1,8 @@
-(ns four.elements
-  (:require [four.three :as three]
+(ns four.client.elements
+  (:require [four.client.three :as three]
             [four.messaging :as m]
-            [four.dom :as dom]
-            [four.table :as table]
+            [four.client.dom :as dom]
+            [four.client.table :as table]
             [four.transit :as t]
             [crate.core :as c]))
 

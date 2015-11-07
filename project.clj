@@ -41,9 +41,9 @@
               :builds [{:id "dev"
                         :source-paths ["src"]
 
-                        :figwheel { :on-jsload "four.three/on-js-reload" }
+                        :figwheel { :on-jsload "four.client.three/on-js-reload" }
 
-                        :compiler {:main four.elements
+                        :compiler {:main four.client.elements
                                    :asset-path "js/compiled/out"
                                    :output-to "resources/public/js/compiled/four.js"
                                    :output-dir "resources/public/js/compiled/out"
