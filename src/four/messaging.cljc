@@ -1,9 +1,9 @@
 (ns four.messaging
   #?(:cljs (:require-macros [cljs.core.async.macros :refer [go]]))
-  (:require [#?(:cljs cljs.core.async
-                :clj clojure.core.async) :refer [put! <! >! chan pub sub unsub]]))
+  #?(:cljs (:require [cljs.core.async :refer [put! <! >! chan pub sub unsub]]))
+  #?(:clj  (:require [clojure.core.async :refer [put! <! >! chan pub sub unsub go]])))
 
-(enable-console-print!)
+#?(:cljs (enable-console-print!))
 
 (defonce message-bus (chan 10))
 (defonce message-publication (pub message-bus (fn [msg]
