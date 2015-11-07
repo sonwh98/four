@@ -1,4 +1,4 @@
-(ns four.server
+(ns four.server.main
   (:require [datomic.api :as d]
             [org.httpkit.server :as s]
             [compojure.route :as route]
