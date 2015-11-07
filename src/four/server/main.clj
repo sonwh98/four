@@ -8,10 +8,9 @@
             [clojure.java.io :as io]))
 
 (defroutes all-routes
-  (route/resources "/" )
-  )
+  (route/resources "/" ))
 
-(defn handler [request]
+(defn websocket-handler [request]
   (s/with-channel request channel
     (s/on-close channel (fn [status] (println "channel closed: " status)))
 
@@ -24,5 +23,5 @@
 
 (defn -main [& args]
   (println "running")
-  (s/run-server handler {:port 9090})
+  (s/run-server websocket-handler {:port 9090})
   (s/run-server (site #'all-routes) {:port 8080}))
