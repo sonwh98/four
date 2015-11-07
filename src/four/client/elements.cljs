@@ -206,7 +206,7 @@
   (morph-into @(:table topologies)))
 
 (m/on :dom/content-loaded (fn []
-                            (ws/send! [:ping "hi"])
+                            (ws/send! [:get-elements nil])
                             (let [c (m/subscribe-to :elements)]
                               (go (let [ [_ elements] (<! c)]
                                     (init elements))))))
