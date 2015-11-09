@@ -3,12 +3,11 @@
   (:require [four.client.three :as three]
             [four.client.dom :as dom]
             [four.client.table :as table]
-            [four.client.websocket :as ws]
-
+            [chord.client :refer [ws-ch]]
             [four.messaging :as m]
             [four.transit :as t]
             [crate.core :as c]
-            [cljs.core.async :refer [<!]]))
+            [cljs.core.async :refer [<! >! put! close!]]))
 
 (enable-console-print!)
 
@@ -206,7 +205,10 @@
   (morph-into @(:table topologies)))
 
 (m/on :dom/content-loaded (fn []
-                            (ws/send! [:get-elements nil])
-                            (let [c (m/subscribe-to :elements)]
-                              (go (let [ [_ elements] (<! c)]
+                            (go (let [host (.. js/window -location -hostname)
+                                      url (str "ws://" host ":9090")
+                                      {:keys [ws-channel error]} (<! (ws-ch url))]
+                                  (>! ws-channel [:get-elements true])
+                                  (let [{:keys [message]} (<! ws-channel)
+                                        elements (t/deserialize message)]
                                     (init elements))))))

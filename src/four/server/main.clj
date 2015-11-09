@@ -1,6 +1,8 @@
 (ns four.server.main
   (:require [datomic.api :as d]
             [org.httpkit.server :as s]
+            [chord.http-kit :refer [with-channel]]
+            [clojure.core.async :refer [<! >! put! close! go]]
             [compojure.route :as route]
             [compojure.handler :refer [site]]
             [compojure.core :refer [defroutes]]
@@ -11,15 +13,13 @@
   (route/resources "/" ))
 
 (defn websocket-handler [request]
-  (s/with-channel request channel
-    (s/on-close channel (fn [status] (println "channel closed: " status)))
-
-    (s/on-receive channel (fn [data]
-                            (println "got from client=" data)
-                            (let [elements-edn-file (io/file (io/resource "public/elements.edn"))
-                                  elements-edn (-> elements-edn-file slurp read-string)
-                                  msg [:elements elements-edn]]
-                              (s/send! channel (t/serialize msg)))))))
+  (with-channel request ws-ch
+    (go (let [{:keys [message]} (<! ws-ch)
+              elements-edn-file (io/file (io/resource "public/elements.edn"))
+              elements-edn (-> elements-edn-file slurp read-string)
+              transit-msg (t/serialize elements-edn)]
+          (prn "got " message)
+          (>! ws-ch transit-msg)))))
 
 (defn -main [& args]
   (println "running")
