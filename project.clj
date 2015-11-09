@@ -12,6 +12,7 @@
                  [com.taoensso/timbre "4.1.4"]
                  
                  [org.clojure/clojurescript "1.7.145"]
+                 ;[org.clojure/clojurescript "1.7.170"]
                  [reagent "0.5.1"]
                  [cljsjs/three "0.0.72-css3d"]
                  [cljsjs/tween "16.3.1"]
