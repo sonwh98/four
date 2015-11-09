@@ -11,7 +11,7 @@
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [com.taoensso/timbre "4.1.4"]
                  
-                 [org.clojure/clojurescript "1.7.170"]
+                 [org.clojure/clojurescript "1.7.145"]
                  [reagent "0.5.1"]
                  [cljsjs/three "0.0.72-css3d"]
                  [cljsjs/tween "16.3.1"]
@@ -52,7 +52,7 @@
                        {:id "min"
                         :source-paths ["src"]
                         :compiler {:output-to "resources/public/js/compiled/four.min.js"
-                                   :main four.elements
+                                   :main four.client.elements
                                    :optimizations :advanced
                                    :pretty-print false}}]}
 
