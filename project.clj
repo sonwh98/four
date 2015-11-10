@@ -10,6 +10,9 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [com.taoensso/timbre "4.1.4"]
+                 [com.stuartsierra/component "0.2.3"]
+                 [org.danielsz/system "0.1.9"]
+                 [environ "1.0.0"]
                  
                  [org.clojure/clojurescript "1.7.145"]
                  ;[org.clojure/clojurescript "1.7.170"]
@@ -32,7 +35,7 @@
 
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.4.1"]
-            ]
+            [lein-environ "1.0.0"]]
 
   :source-paths ["src"]
   :main four.server.main
