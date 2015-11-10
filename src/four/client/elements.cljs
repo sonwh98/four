@@ -216,6 +216,4 @@
             (put! result elements))))
     result))
 
-(m/on :dom/content-loaded (fn []
-                            (go  (let [elements (<! (get-elements))]
-                                   (init elements)))))
+(m/on :dom/content-loaded #(go (init (<! (get-elements)))))
