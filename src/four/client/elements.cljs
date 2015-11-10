@@ -7,7 +7,7 @@
             [four.messaging :as m]
             [four.transit :as t]
             [crate.core :as c]
-            [cljs.core.async :refer [<! >! put! close!]]))
+            [cljs.core.async :refer [<! >! put! chan]]))
 
 (enable-console-print!)
 
@@ -204,11 +204,18 @@
   (setup-animation)
   (morph-into @(:table topologies)))
 
+(defn get-elements []
+  (let [result (chan 1)]
+    (go (let [host (.. js/window -location -hostname)
+              url (str "ws://" host ":9090")
+              {:keys [ws-channel error]} (<! (ws-ch url))
+              ]
+          (>! ws-channel [:get-elements true])
+          (let [{:keys [message]} (<! ws-channel)
+                elements (t/deserialize message)]
+            (put! result elements))))
+    result))
+
 (m/on :dom/content-loaded (fn []
-                            (go (let [host (.. js/window -location -hostname)
-                                      url (str "ws://" host ":9090")
-                                      {:keys [ws-channel error]} (<! (ws-ch url))]
-                                  (>! ws-channel [:get-elements true])
-                                  (let [{:keys [message]} (<! ws-channel)
-                                        elements (t/deserialize message)]
-                                    (init elements))))))
+                            (go  (let [elements (<! (get-elements))]
+                                   (init elements)))))
