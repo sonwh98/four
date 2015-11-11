@@ -7,14 +7,14 @@
 
 (def client-channels (atom []))
 
+(defmulti process-msg (fn [[ws-channel [kw msg]]]
+                        kw))
 (defn clean-up! [ws-channel]
   (println "clean-up " ws-channel)
   (reset! client-channels (filter #(not= % ws-channel) @client-channels))
   (close! ws-channel))
 
-(defmulti process-msg (fn [[ws-channel [kw msg]]]
-                        kw))
-(defn process-messages! [ws-channel]
+(defn listen-for-messages-on [ws-channel]
   (go-loop []
     (if-let [{:keys  [message]} (<! ws-channel)]
       (do
@@ -25,4 +25,4 @@
 
 (defn websocket-handler [request]
   (with-channel request ws-channel
-                (process-messages! ws-channel)))
+                (listen-for-messages-on ws-channel)))
