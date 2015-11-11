@@ -1,6 +1,5 @@
 (ns four.server.main
-  (:require [datomic.api :as d]
-            [org.httpkit.server :as s]
+  (:require [org.httpkit.server :as s]
             [compojure.route :as route]
             [compojure.handler :refer [site]]
             [compojure.core :refer [defroutes]]
