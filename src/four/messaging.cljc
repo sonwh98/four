@@ -1,7 +1,7 @@
 (ns four.messaging
-  #?(:cljs (:require-macros [cljs.core.async.macros :refer [go]]))
+  #?(:cljs (:require-macros [cljs.core.async.macros :refer [go go-loop]]))
   #?(:cljs (:require [cljs.core.async :refer [put! <! >! chan pub sub unsub]]))
-  #?(:clj  (:require [clojure.core.async :refer [put! <! >! chan pub sub unsub go]])))
+  #?(:clj  (:require [clojure.core.async :refer [put! <! >! chan pub sub unsub go go-loop]])))
 
 #?(:cljs (enable-console-print!))
 
@@ -30,5 +30,16 @@
     (go (while true
           (call-back-fn (<! topic-chan))))))
 
-
-
+(defn create-topic-fn-handler
+  [topic]
+  (let [recieved? (atom false)
+        topic-channel (subscribe-to topic)]
+    (go-loop []
+      (reset! recieved? (second (<! topic-channel)))
+      (recur))
+    (fn [call-back-fn]
+      (if @recieved?
+        (call-back-fn)
+        (let [sub (subscribe-to topic)]
+          (go-loop []
+            (if (second (<! sub)) (call-back-fn) (recur))))))))

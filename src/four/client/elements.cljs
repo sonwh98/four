@@ -188,7 +188,6 @@
     (rotate css3d-object :when-clicked)))
 
 (defn init [elements]
-  (println "elements=" elements)
   (create-topologies elements)
   (on-click-change-to :table)
   (on-click-change-to :sphere)
@@ -219,6 +218,8 @@
 ;;     result))
 
 (defn get-elements []
-  (go (<! (ws/send! [:get-elements true]))))
+  (go (let [transit-msg (<! (ws/send! [:get-elements true]))
+            elements (t/deserialize transit-msg)]
+        elements)))
 
 (m/on :dom/content-loaded #(go (init (<! (get-elements)))))
