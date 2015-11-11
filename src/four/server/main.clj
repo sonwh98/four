@@ -21,9 +21,10 @@
 (defroutes all-routes
   (route/resources "/" ))
 
-(defn clean-up! [ws-chanel]
-  (println "clean-up " ws-chanel)
-  (close! ws-chanel))
+(defn clean-up! [ws-channel]
+  (println "clean-up " ws-channel)
+  (reset! client-channels (filter #(not= % ws-channel) @client-channels))
+  (close! ws-channel))
 
 (defmulti process-msg (fn [[ch [kw msg]]]
                         kw))
@@ -38,6 +39,7 @@
   (go-loop []
     (if-let [{:keys  [message]} (<! ws-channel)]
       (do
+        (swap! client-channels conj ws-channel)
         (process-msg [ws-channel message])
         (recur))
       (clean-up! ws-channel))))
