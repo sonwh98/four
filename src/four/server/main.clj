@@ -2,7 +2,7 @@
   (:require [datomic.api :as d]
             [org.httpkit.server :as s]
             [chord.http-kit :refer [with-channel]]
-            [clojure.core.async :refer [<! >! put! close! go]]
+            [clojure.core.async :refer [<! >! put! close! go go-loop]]
             [compojure.route :as route]
             [compojure.handler :refer [site]]
             [compojure.core :refer [defroutes]]
@@ -16,17 +16,35 @@
              [repl-server :refer [new-repl-server]])
             [reloaded.repl]))
 
+(def client-channels (atom []))
+
 (defroutes all-routes
   (route/resources "/" ))
 
+(defn clean-up! [ws-chanel]
+  (println "clean-up " ws-chanel)
+  (close! ws-chanel))
+
+(defmulti process-msg (fn [[ch [kw msg]]]
+                        kw))
+
+(defmethod process-msg :get-elements [[ws-channel [kw msg]]]
+  (let [elements-edn-file (io/file (io/resource "public/elements.edn"))
+        elements-edn (-> elements-edn-file slurp read-string)
+        transit-msg (t/serialize elements-edn)]
+    (go (>! ws-channel transit-msg))))
+
+(defn process-messages! [ws-channel]
+  (go-loop []
+    (if-let [{:keys  [message]} (<! ws-channel)]
+      (do
+        (process-msg [ws-channel message])
+        (recur))
+      (clean-up! ws-channel))))
+
 (defn websocket-handler [request]
   (with-channel request ws-ch
-    (go (let [{:keys [message]} (<! ws-ch)
-              elements-edn-file (io/file (io/resource "public/elements.edn"))
-              elements-edn (-> elements-edn-file slurp read-string)
-              transit-msg (t/serialize elements-edn)]
-          (prn "got " message)
-          (>! ws-ch transit-msg)))))
+    (process-messages! ws-ch)))
 
 (defn dev-system []
   (component/system-map
