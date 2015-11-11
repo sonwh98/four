@@ -9,9 +9,13 @@
 
 (defmulti process-msg (fn [[ws-channel [kw msg]]]
                         kw))
+
+(defn remove-channel [ws-channel]
+  (reset! client-channels (filter #(not= % ws-channel) @client-channels)))
+
 (defn clean-up! [ws-channel]
   (println "clean-up " ws-channel)
-  (reset! client-channels (filter #(not= % ws-channel) @client-channels))
+  (remove-channel ws-channel)
   (close! ws-channel))
 
 (defn listen-for-messages-on [ws-channel]
