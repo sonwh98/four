@@ -23,6 +23,7 @@
     (if-let [{:keys  [message]} (<! ws-channel)]
       (do
         (swap! client-channels conj ws-channel)
+        (println "message=" message)
         (process-msg [ws-channel message])
         (recur))
       (clean-up! ws-channel))))

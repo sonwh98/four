@@ -3,6 +3,7 @@
   (:require [four.client.three :as three]
             [four.client.dom :as dom]
             [four.client.table :as table]
+            [four.client.ws :as ws]
             [chord.client :refer [ws-ch]]
             [four.messaging :as m]
             [four.transit :as t]
@@ -187,6 +188,7 @@
     (rotate css3d-object :when-clicked)))
 
 (defn init [elements]
+  (println "elements=" elements)
   (create-topologies elements)
   (on-click-change-to :table)
   (on-click-change-to :sphere)
@@ -204,16 +206,19 @@
   (setup-animation)
   (morph-into @(:table topologies)))
 
+;; (defn get-elements []
+;;   (let [result (chan 1)]
+;;     (go (let [host (.. js/window -location -hostname)
+;;               url (str "ws://" host ":9090")
+;;               {:keys [ws-channel error]} (<! (ws-ch url))
+;;               ]
+;;           (>! ws-channel [:get-elements true])
+;;           (let [{:keys [message]} (<! ws-channel)
+;;                 elements (t/deserialize message)]
+;;             (put! result elements))))
+;;     result))
+
 (defn get-elements []
-  (let [result (chan 1)]
-    (go (let [host (.. js/window -location -hostname)
-              url (str "ws://" host ":9090")
-              {:keys [ws-channel error]} (<! (ws-ch url))
-              ]
-          (>! ws-channel [:get-elements true])
-          (let [{:keys [message]} (<! ws-channel)
-                elements (t/deserialize message)]
-            (put! result elements))))
-    result))
+  (go (<! (ws/send! [:get-elements true]))))
 
 (m/on :dom/content-loaded #(go (init (<! (get-elements)))))
