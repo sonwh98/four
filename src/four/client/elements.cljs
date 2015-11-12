@@ -3,7 +3,7 @@
   (:require [four.client.three :as three]
             [four.client.dom :as dom]
             [four.client.table :as table]
-            [four.client.ws :as ws]
+            [four.client.ws :as ws :refer [process-msg]]
             [chord.client :refer [ws-ch]]
             [four.messaging :as m]
             [four.transit :as t]
@@ -195,7 +195,6 @@
   (on-click-change-to :grid)
   
   (dom/on (dom/by-id "reset") "click" (fn [event]
-                                        (println "reset")
                                         (. controls reset)
                                         ;; (set! (.. camera -position -x) 0)
                                         ;; (set! (.. camera -position -y) 0)
@@ -205,9 +204,9 @@
   (setup-animation)
   (morph-into @(:table topologies)))
 
-(defn get-elements []
-  (go (let [transit-msg (<! (ws/send! [:get-elements true]))
-            elements (t/deserialize transit-msg)]
-        elements)))
+(defmethod process-msg :elements [[kw elements]]
+  (init elements))
 
-(m/on :dom/content-loaded #(go (init (<! (get-elements)))))
+;(m/on :dom/content-loaded #(go (init (<! (get-elements)))))
+
+(m/on :dom/content-loaded #(ws/send! [:get-elements true]))

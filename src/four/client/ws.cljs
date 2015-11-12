@@ -2,12 +2,16 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [chord.client :refer [ws-ch]]
             [cljs.core.async :refer [<! >! put! chan]]
-            [four.messaging :as m]))
+            [four.messaging :as m]
+            [four.transit :as t]))
 
 (def to-server-queue (chan 10))
-(def from-server-queue (chan 10))
 
 (def websocket-channel (atom nil))
+
+(defmulti process-msg (fn [[kw msg]]
+                        kw))
+
 
 (defn init []
   (go (let [host (.. js/window -location -hostname)
@@ -18,7 +22,7 @@
 
 (defn send! [msg]
   (put! to-server-queue msg)
-  from-server-queue)
+  )
 
 (defn send-to-server []
   (go-loop []
@@ -26,14 +30,16 @@
       (>! @websocket-channel msg))
     (recur)))
 
-(defn read-from-server []
+
+(defn listen-for-messages []
   (go-loop []
-    (let [data-from-server (<! @websocket-channel)]
-      (put! from-server-queue (:message data-from-server))
-      (recur))))
+    (if-let [{:keys  [message]} (<! @websocket-channel)]
+      (let [msg (t/deserialize message)]
+        (process-msg msg)
+        (recur)))))
 
 (def when-ws-open (m/create-topic-fn-handler :ws/open))
 
 (init)
 (when-ws-open send-to-server)
-(when-ws-open read-from-server)
+(when-ws-open listen-for-messages)

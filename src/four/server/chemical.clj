@@ -6,6 +6,6 @@
 
 (defmethod process-msg :get-elements [[ws-channel [kw msg]]]
   (let [elements-edn-file (io/file (io/resource "public/elements.edn"))
-        elements-edn (-> elements-edn-file slurp read-string)
+        elements-edn [:elements (-> elements-edn-file slurp read-string)]
         transit-msg (t/serialize elements-edn)]
     (go (>! ws-channel transit-msg))))
