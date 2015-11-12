@@ -13,23 +13,23 @@
 (defmulti process-msg (fn [[websocket-channel [kw msg]]]
                         kw))
 
-(defn remove-channel [ws-channel]
-  (reset! websocket-channels (filter #(not= % ws-channel) @websocket-channels)))
+(defn remove-channel [websocket-channel]
+  (reset! websocket-channels (filter #(not= % websocket-channel) @websocket-channels)))
 
-(defn clean-up! [ws-channel]
-  (println "clean-up " ws-channel)
-  (remove-channel ws-channel)
-  (close! ws-channel))
+(defn clean-up! [websocket-channel]
+  (println "clean-up " websocket-channel)
+  (remove-channel websocket-channel)
+  (close! websocket-channel))
 
-(defn listen-for-messages-on [ws-channel]
+(defn listen-for-messages-on [websocket-channel]
   (go-loop []
-    (if-let [{:keys  [message]} (<! ws-channel)]
+    (if-let [{:keys  [message]} (<! websocket-channel)]
       (do
-        (process-msg [ws-channel message])
+        (process-msg [websocket-channel message])
         (recur))
-      (clean-up! ws-channel))))
+      (clean-up! websocket-channel))))
 
 (defn websocket-handler [request]
-  (with-channel request ws-channel
-    (swap! websocket-channels conj ws-channel)
-    (listen-for-messages-on ws-ochannel)))
+  (with-channel request websocket-channel
+    (swap! websocket-channels conj websocket-channel)
+    (listen-for-messages-on websocket-channel)))
