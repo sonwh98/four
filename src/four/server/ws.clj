@@ -5,13 +5,16 @@
             [chord.http-kit :refer [with-channel]]
             [environ.core :refer [env]]))
 
-(def client-channels (atom []))
+;websocket-channel is a bidirectional core.async channel to read from and write messages to clients via websocket
+;websocket-channels contains all active websocket-channel. If you need to send messages to all clients
+;you can iterate over websocket-channels and use core.async/put! to send messages to clients
+(def websocket-channels (atom []))
 
-(defmulti process-msg (fn [[ws-channel [kw msg]]]
+(defmulti process-msg (fn [[websocket-channel [kw msg]]]
                         kw))
 
 (defn remove-channel [ws-channel]
-  (reset! client-channels (filter #(not= % ws-channel) @client-channels)))
+  (reset! websocket-channels (filter #(not= % ws-channel) @websocket-channels)))
 
 (defn clean-up! [ws-channel]
   (println "clean-up " ws-channel)
@@ -22,7 +25,7 @@
   (go-loop []
     (if-let [{:keys  [message]} (<! ws-channel)]
       (do
-        (swap! client-channels conj ws-channel)
+        (swap! websocket-channels conj ws-channel)
         (println "message=" message)
         (process-msg [ws-channel message])
         (recur))
