@@ -12,7 +12,6 @@
 (defmulti process-msg (fn [[kw msg]]
                         kw))
 
-
 (defn init []
   (go (let [host (.. js/window -location -hostname)
             url (str "ws://" host ":9090")
@@ -21,15 +20,13 @@
         (m/broadcast [:ws/open true]))))
 
 (defn send! [msg]
-  (put! to-server-queue msg)
-  )
+  (put! to-server-queue msg))
 
 (defn send-to-server []
   (go-loop []
     (let [msg (<! to-server-queue)]
       (>! @websocket-channel msg))
     (recur)))
-
 
 (defn listen-for-messages []
   (go-loop []
