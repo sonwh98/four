@@ -202,9 +202,7 @@
   (setup-animation)
   (morph-into @(:table topologies)))
 
-(defmethod process-msg :elements [[kw elements]]
+(defmethod process-msg :elements [[_ elements]]
   (init elements))
-
-                                        ;(m/on :dom/content-loaded #(go (init (<! (get-elements)))))
 
 (m/on :dom/content-loaded #(ws/send! [:get-elements true]))
