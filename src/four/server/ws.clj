@@ -6,8 +6,7 @@
             [environ.core :refer [env]]))
 
 ;;a client-websocket-channel is a bidirectional core.async channel to read from and write messages to clients via websocket
-;;client-websocket-channels contains all active/opened client-websocket-channel. If you need to send messages to all clients
-;;you can iterate over client-websocket-channels and use core.async/put! to send messages to clients
+;;client-websocket-channels contains all active/opened client-websocket-channel.
 (def client-websocket-channels (atom []))
 
 (defmulti process-msg (fn [[client-websocket-channel [kw msg]]]
@@ -15,6 +14,12 @@
 
 (defn send! [client-websocket-channel transit-msg]
   (go (>! client-websocket-channel transit-msg)))
+
+(defn broadcast!
+  "send transit-msg to all connected client-websocket-channels"
+  [transit-msg]
+  (doseq [ws-channel @client-websocket-channels]
+    (send! ws-channel transit-msg)))
 
 (defn- remove-channel [client-websocket-channel]
   (reset! client-websocket-channels (filter #(not= % client-websocket-channel) @client-websocket-channels)))
