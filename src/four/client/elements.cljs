@@ -71,7 +71,15 @@
     (set! (.. controls -maxDistance) 6000)
     (.. controls (addEventListener "change" render-scene))
 
-    (def controls controls)
+    (b/on (b/by-id "reset") "click" (fn [event]
+                                      (. controls reset)
+                                      (set! (.. controls -rotateSpeed) 0.5)
+                                      (set! (.. controls -minDistance) 500)
+                                      (set! (.. controls -maxDistance) 6000)
+
+                                      (set! (.. camera -position -x) 0)
+                                      (set! (.. camera -position -y) 0)
+                                      (set! (.. camera -position -z) 3000)))
     
     (three/animate (fn [time]
                      (.. three/tween update)
@@ -157,10 +165,6 @@
                           )))))
 
 
-;(defn on-click-change-to [shape]
-;  (b/on (b/by-id (name shape)) "click" (fn [event]
-;                                         (morph @(shape topologies)))))
-
 (defn create-scene [elements]
   (let [scene (three/Scene.)]
     (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
@@ -175,9 +179,8 @@
       (.. scene (add css3d-object)))
     scene))
 
-(defn on-click [shape morphy]
-  (b/on (b/by-id (name shape)) "click" (fn [event]
-                                         (morphy))))
+(defn on-click [shape morph-fn]
+  (b/on (b/by-id (name shape)) "click" #(morph-fn)))
 
 (defn init [elements]
   (let [scene (create-scene elements)
@@ -191,17 +194,12 @@
     (on-click :sphere #(morph css3d-objects :into sphere))
     (on-click :helix #(morph css3d-objects :into helix))
 
-    ;(on-click-change-to table)
-    ;(on-click-change-to :sphere)
-    ;(on-click-change-to :helix)
-    ;(on-click-change-to :grid)
+                                        ;(on-click-change-to table)
+                                        ;(on-click-change-to :sphere)
+                                        ;(on-click-change-to :helix)
+                                        ;(on-click-change-to :grid)
     
-    (b/on (b/by-id "reset") "click" (fn [event]
-                                      (. controls reset)
-                                      ;; (set! (.. camera -position -x) 0)
-                                      ;; (set! (.. camera -position -y) 0)
-                                      ;; (set! (.. camera -position -z) 3000)
-                                      ))
+
     
     (setup-animation scene)
     (morph css3d-objects :into table)))
