@@ -25,7 +25,6 @@
                                       1000))
 (set! (.. camera -position -z) 3000)
 
-(def scene (three/Scene.))
 
 (defn map->object3d [{:keys [x y z] :as point}]
   (let [obj (three/Object3D.)]
@@ -60,7 +59,7 @@
         (easing (.. three/tween -Easing -Exponential -InOut))
         (start))))
 
-(defn setup-animation []
+(defn setup-animation [scene]
   (let [renderer (three/CSS3DRenderer.)
         domElement (. renderer -domElement)
         _ (. (b/by-id "container") appendChild domElement)
@@ -166,41 +165,54 @@
   (b/on (b/by-id (name shape)) "click" (fn [event]
                                          (morph-into @(shape topologies)))))
 
-(defn create-topologies [elements]
-  (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
-          :let [color (-> (* (rand) 0.5) (+ 0.25))
-                div [:div {:id    i
-                           :class "element"
-                           :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
-                     [:div {:class "number"} i]
-                     [:div {:class "symbol"} (:element/symbol element)]
-                     [:div {:class "details"} (:element/name element)]]
-                css3d-object (div->css3d-object (c/html div))]]
-    (.. scene (add css3d-object))
-    (swap! css3d-objects conj css3d-object)
+(defn create-scene [elements]
+  (let [scene (three/Scene.)]
+    (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
+            :let [color (-> (* (rand) 0.5) (+ 0.25))
+                  div [:div {:id    i
+                             :class "element"
+                             :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
+                       [:div {:class "number"} i]
+                       [:div {:class "symbol"} (:element/symbol element)]
+                       [:div {:class "details"} (:element/name element)]]
+                  css3d-object (div->css3d-object (c/html div))]]
+      (.. scene (add css3d-object)))
+    scene))
 
-    (create-table i)
-    (create-sphere i (count elements))
-    (create-helix i)
-    (create-grid i)
-    (rotate css3d-object :when-clicked)))
+(defn create-topologies [elements]
+  ;;(swap! css3d-objects conj css3d-object)
+  ;; (create-table i)
+  ;; (create-sphere i (count elements))
+  ;; (create-helix i)
+  ;; (create-grid i)
+  ;; (rotate css3d-object :when-clicked)
+  )
 
 (defn init [elements]
-  (create-topologies elements)
-  (on-click-change-to :table)
-  (on-click-change-to :sphere)
-  (on-click-change-to :helix)
-  (on-click-change-to :grid)
+  (let [scene (create-scene elements)
+        css3d-objects (seq (. scene -children))]
+
+    (create-topologies elements)
+
+    (on-click-change-to :table)
+    (on-click-change-to :sphere)
+    (on-click-change-to :helix)
+    (on-click-change-to :grid)
+    
+    (b/on (b/by-id "reset") "click" (fn [event]
+                                      (. controls reset)
+                                      ;; (set! (.. camera -position -x) 0)
+                                      ;; (set! (.. camera -position -y) 0)
+                                      ;; (set! (.. camera -position -z) 3000)
+                                      ))
+    
+    (setup-animation scene)
+    (morph-into @(:table topologies))
+    )
+
   
-  (b/on (b/by-id "reset") "click" (fn [event]
-                                    (. controls reset)
-                                    ;; (set! (.. camera -position -x) 0)
-                                    ;; (set! (.. camera -position -y) 0)
-                                    ;; (set! (.. camera -position -z) 3000)
-                                    ))
   
-  (setup-animation)
-  (morph-into @(:table topologies)))
+  )
 
 (defmethod process-msg :elements [[_ elements]]
   (init elements))
