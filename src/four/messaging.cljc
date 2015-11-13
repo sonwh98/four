@@ -30,16 +30,13 @@
     (go (while true
           (call-back-fn (<! topic-chan))))))
 
-(defn create-topic-fn-handler
+(defn create-topic-closure
   [topic]
-  (let [recieved? (atom false)
-        topic-channel (subscribe-to topic)]
-    (go-loop []
-      (reset! recieved? (second (<! topic-channel)))
-      (recur))
+  (let [topic-recieved? (atom false)]
+    (on topic #(reset! topic-recieved? true))
     (fn [call-back-fn]
-      (if @recieved?
+      (if @topic-recieved?
         (call-back-fn)
-        (let [sub (subscribe-to topic)]
-          (go-loop []
-            (if (second (<! sub)) (call-back-fn) (recur))))))))
+        (on topic #(do
+                     (reset! topic-recieved? true)
+                     (call-back-fn)))))))
