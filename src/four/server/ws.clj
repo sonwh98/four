@@ -33,6 +33,6 @@
       (clean-up! websocket-channel))))
 
 (defn websocket-handler [request]
-  (with-channel request websocket-channel
+  (with-channel request client-websocket-channel
     (swap! client-websocket-channels conj websocket-channel)
     (listen-for-messages-on websocket-channel)))
