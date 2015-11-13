@@ -30,9 +30,9 @@
    :y (.. object3d -position -y)
    :z (.. object3d -position -z)})
 
-(defn morph-into [topology]
+(defn morph [css3d-objects _ topology]
   (.. three/tween removeAll)
-  (doseq [[i obj] (map-indexed (fn [i e] [i e]) @css3d-objects)
+  (doseq [[i obj] (map-indexed (fn [i e] [i e]) css3d-objects)
           :let [object3d (nth topology i)
                 duration 2000]]
     (.. (three/Tween. (. obj -position))
@@ -85,26 +85,25 @@
     (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
     obj))
 
-(defn create-table [i]
-  (let [point (nth table/coordinates i)]
-    (swap! (:table topologies) conj (map->object3d {:x (-> (* (:x point) 140) (- 1330))
-                                                    :y (-> (* (:y point) -180) (+ 1330))
-                                                    :z 0}))))
+(defn create-table []
+  (map #(map->object3d {:x (-> (* (:x %) 140) (- 1330))
+                        :y (-> (* (:y %) -180) (+ 1330))
+                        :z 0})
+       table/coordinates))
 
-(defn create-sphere [i length]
+(defn create-sphere [size]
   (let [v (three/Vector3.)]
-    (swap! (:sphere topologies)
-           (fn [sphere]
-             (let [phi (. js/Math acos (+ (/ (* 2 i) length)
-                                          -1))
-                   theta (* phi
-                            (. js/Math sqrt (* length PI)))
-                   object3d (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
-                                            :y (* 800 (. js/Math sin theta) (. js/Math sin phi))
-                                            :z (* 800 (. js/Math cos phi))})]
-               (.. v (copy (. object3d -position)) (multiplyScalar 2))
-               (. object3d (lookAt v))
-               (conj sphere object3d))))))
+    (for [i (range size)
+          :let [phi (. js/Math acos (+ (/ (* 2 i) size)
+                                       -1))
+                theta (* phi
+                         (. js/Math sqrt (* size PI)))
+                object3d (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
+                                         :y (* 800 (. js/Math sin theta) (. js/Math sin phi))
+                                         :z (* 800 (. js/Math cos phi))})]]
+      (do (.. v (copy (. object3d -position)) (multiplyScalar 2))
+          (. object3d (lookAt v))
+          object3d))))
 
 (defn create-helix [i]
   (let [v (three/Vector3.)]
@@ -159,9 +158,9 @@
                           )))))
 
 
-(defn on-click-change-to [shape]
-  (b/on (b/by-id (name shape)) "click" (fn [event]
-                                         (morph-into @(shape topologies)))))
+;(defn on-click-change-to [shape]
+;  (b/on (b/by-id (name shape)) "click" (fn [event]
+;                                         (morph @(shape topologies)))))
 
 (defn create-scene [elements]
   (let [scene (three/Scene.)]
@@ -179,23 +178,31 @@
 
 (defn create-topologies [elements]
   ;;(swap! css3d-objects conj css3d-object)
-  ;; (create-table i)
+   (create-table)
   ;; (create-sphere i (count elements))
   ;; (create-helix i)
   ;; (create-grid i)
   ;; (rotate css3d-object :when-clicked)
   )
 
+(defn on-click [shape morphy]
+  (b/on (b/by-id (name shape)) "click" (fn [event]
+                                         (morphy)))
+  )
+
 (defn init [elements]
   (let [scene (create-scene elements)
-        css3d-objects (seq (. scene -children))]
+        css3d-objects (seq (. scene -children))
+        table (create-table)
+        sphere (create-sphere (count css3d-objects))]
 
-    (create-topologies elements)
+    (on-click :table #(morph css3d-objects :into table))
+    (on-click :sphere #(morph css3d-objects :into sphere))
 
-    (on-click-change-to :table)
-    (on-click-change-to :sphere)
-    (on-click-change-to :helix)
-    (on-click-change-to :grid)
+    ;(on-click-change-to table)
+    ;(on-click-change-to :sphere)
+    ;(on-click-change-to :helix)
+    ;(on-click-change-to :grid)
     
     (b/on (b/by-id "reset") "click" (fn [event]
                                       (. controls reset)
@@ -205,12 +212,7 @@
                                       ))
     
     (setup-animation scene)
-    (morph-into @(:table topologies))
-    )
-
-  
-  
-  )
+    (morph css3d-objects :into table)))
 
 (defmethod process-msg :elements [[_ elements]]
   (init elements))
