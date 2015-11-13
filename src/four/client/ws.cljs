@@ -7,7 +7,7 @@
 
 ;;server-websocket-channel contains a bidirectional core.async channel used to send and read messages from the server
 (def server-websocket-channel (atom nil))
-(def when-ws-open (m/create-topic-fn-handler :ws/open))
+(def when-websocket-open (m/create-topic-fn-handler :websocket/open))
 
 ;;multi method that dispatches based on the first attribute of the msg. a msg is a vector of the form [keyword val]
 (defmulti process-msg (fn [[kw val]]
@@ -18,19 +18,17 @@
             url (str "ws://" host ":9090")
             {:keys [ws-channel error]} (<! (ws-ch url))]
         (reset! server-websocket-channel ws-channel)
-        (m/broadcast [:ws/open true]))))
+        (m/broadcast [:websocket/open true]))))
 
 (defn send! [msg]
-  (when-ws-open #(go (>! @server-websocket-channel msg))))
+  (when-websocket-open #(go (>! @server-websocket-channel msg))))
 
-(defn listen-for-messages []
+(defn listen-for-messages-from-websocket-server []
   (go-loop []
     (if-let [{:keys  [message]} (<! @server-websocket-channel)]
       (let [msg (t/deserialize message)]
         (process-msg msg)
         (recur)))))
 
-
-
 (connect-to-websocket-server)
-(when-ws-open listen-for-messages)
+(when-websocket-open listen-for-messages-from-websocket-server)
