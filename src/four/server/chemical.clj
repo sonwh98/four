@@ -8,4 +8,4 @@
   (let [elements-edn-file (io/file (io/resource "public/elements.edn"))
         elements-edn [:elements (-> elements-edn-file slurp read-string)]
         transit-msg (t/serialize elements-edn)]
-    (ws/send! websocket-channel transit-msg)))
+    (ws/send websocket-channel transit-msg)))

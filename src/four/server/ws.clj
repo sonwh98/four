@@ -13,6 +13,9 @@
 (defmulti process-msg (fn [[websocket-channel [kw msg]]]
                         kw))
 
+(defn send [websocket-channel transit-msg]
+  (go (>! websocket-channel transit-msg)))
+
 (defn- remove-channel [websocket-channel]
   (reset! client-websocket-channels (filter #(not= % websocket-channel) @client-websocket-channels)))
 
@@ -20,9 +23,6 @@
   (println "clean-up " websocket-channel)
   (remove-channel websocket-channel)
   (close! websocket-channel))
-
-(defn send! [websocket-channel transit-msg]
-  (go (>! websocket-channel transit-msg)))
 
 (defn- listen-for-messages-on [websocket-channel]
   (go-loop []
