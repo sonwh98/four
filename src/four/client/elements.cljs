@@ -13,11 +13,6 @@
 
 (def PI (. js/Math -PI))
 
-(def css3d-objects (atom []))
-(def topologies {:table  (atom [])
-                 :sphere (atom [])
-                 :helix  (atom [])
-                 :grid   (atom [])})
 (defn map->object3d [{:keys [x y z] :as point}]
   (let [obj (three/Object3D.)]
     (set! (.. obj -position -x) x)
@@ -127,16 +122,15 @@
            (. object lookAt v)
            object))))
 
-(defn create-grid [i]
-  (swap! (:grid topologies) (fn [grid]
-                              (let [object3d (map->object3d {:x (- (* 400 (mod i 5))
-                                                                   800)
-                                                             :y (+ 800 (* -400 (mod (. js/Math floor (/ i 5))
-                                                                                    5)))
-                                                             :z (- (* 1000
-                                                                      (. js/Math floor (/ i 25)))
-                                                                   2000)})]
-                                (conj grid object3d)))))
+(defn create-grid [size]
+  (for [i (range size)]
+    (map->object3d {:x (- (* 400 (mod i 5))
+                          800)
+                    :y (+ 800 (* -400 (mod (. js/Math floor (/ i 5))
+                                           5)))
+                    :z (- (* 1000
+                             (. js/Math floor (/ i 25)))
+                          2000)})))
 
 (defn rotate [css3d-object _]
   (let [div (. css3d-object -element)]
@@ -188,13 +182,15 @@
         size (count css3d-objects)
         table (create-table)
         sphere (create-sphere size)
-        helix (create-helix size)]
+        helix (create-helix size)
+        grid (create-grid size)]
     (doseq [css3d-obj css3d-objects]
       (rotate css3d-obj :on-click))
     
     (on-click :table #(morph css3d-objects :into table))
     (on-click :sphere #(morph css3d-objects :into sphere))
     (on-click :helix #(morph css3d-objects :into helix))
+    (on-click :grid #(morph css3d-objects :into grid))
 
     (setup-animation scene)
     (morph css3d-objects :into table)))
