@@ -189,18 +189,13 @@
         table (create-table)
         sphere (create-sphere size)
         helix (create-helix size)]
-
+    (doseq [css3d-obj css3d-objects]
+      (rotate css3d-obj :on-click))
+    
     (on-click :table #(morph css3d-objects :into table))
     (on-click :sphere #(morph css3d-objects :into sphere))
     (on-click :helix #(morph css3d-objects :into helix))
 
-                                        ;(on-click-change-to table)
-                                        ;(on-click-change-to :sphere)
-                                        ;(on-click-change-to :helix)
-                                        ;(on-click-change-to :grid)
-    
-
-    
     (setup-animation scene)
     (morph css3d-objects :into table)))
 
