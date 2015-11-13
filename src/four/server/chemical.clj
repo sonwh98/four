@@ -12,4 +12,4 @@
 
 (defmethod process-msg :get-elements [[websocket-channel [kw msg]]]
   (let [transit-msg (get-elements)]
-    (ws/send websocket-channel transit-msg)))
+    (ws/send! websocket-channel transit-msg)))

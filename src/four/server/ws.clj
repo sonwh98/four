@@ -13,7 +13,7 @@
 (defmulti process-msg (fn [[websocket-channel [kw msg]]]
                         kw))
 
-(defn send [websocket-channel transit-msg]
+(defn send! [websocket-channel transit-msg]
   (go (>! websocket-channel transit-msg)))
 
 (defn- remove-channel [websocket-channel]
