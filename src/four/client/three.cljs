@@ -4,8 +4,6 @@
 
 (enable-console-print!)
 
-(def window js/window)
-(def document js/document)
 (def three js/THREE)
 (def Scene (.-Scene three))
 

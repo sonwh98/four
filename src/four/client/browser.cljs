@@ -2,11 +2,14 @@
   (:require [four.messaging :as m]
             [cljs.core.async :refer [put! chan]]))
 
-(.. js/document (addEventListener "DOMContentLoaded" (fn []
+(def window js/window)
+(def document js/document)
+
+(.. document (addEventListener "DOMContentLoaded" (fn []
                                                        (m/broadcast [:dom/content-loaded true]))))
 
 (defn by-id [id]
-  (.. js/document (getElementById id)))
+  (.. document (getElementById id)))
 
 
 (defn event->chan [element event-str]
@@ -19,6 +22,6 @@
   (.. element (addEventListener event-str call-back-fn)))
 
 (defn str->dom-element [html-str]
-  (let [div (.. js/document (createElement "div"))]
+  (let [div (.. document (createElement "div"))]
     (set! (.. div -innerHTML) html-str)
     (.. div -firstChild)))
