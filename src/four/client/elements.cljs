@@ -105,20 +105,19 @@
           (. object3d (lookAt v))
           object3d))))
 
-(defn create-helix [i]
+(defn create-helix [size]
   (let [v (three/Vector3.)]
-    (swap! (:helix topologies) (fn [helix]
-                                 (let [phi (* i 0.175 PI)
-                                       object (map->object3d {:x (* 900 (. js/Math sin phi))
-                                                              :y (+ (* i -8)
-                                                                    450)
-                                                              :z (* 900 (. js/Math cos phi))})]
-                                   (set! (. v -x) (* 2 (.. object -position -x)))
-                                   (set! (. v -y) (.. object -position -y))
-                                   (set! (. v -z) (* 2 (.. object -position -z)))
-                                   (. object lookAt v)
-                                   (conj helix object)))))
-  )
+    (for [i (range size)
+          :let [phi (* i 0.175 PI)
+                object (map->object3d {:x (* 900 (. js/Math sin phi))
+                                       :y (+ (* i -8)
+                                             450)
+                                       :z (* 900 (. js/Math cos phi))})]]
+      (do  (set! (. v -x) (* 2 (.. object -position -x)))
+           (set! (. v -y) (.. object -position -y))
+           (set! (. v -z) (* 2 (.. object -position -z)))
+           (. object lookAt v)
+           object))))
 
 (defn create-grid [i]
   (swap! (:grid topologies) (fn [grid]
@@ -193,11 +192,14 @@
 (defn init [elements]
   (let [scene (create-scene elements)
         css3d-objects (seq (. scene -children))
+        size (count css3d-objects)
         table (create-table)
-        sphere (create-sphere (count css3d-objects))]
+        sphere (create-sphere size)
+        helix (create-helix size)]
 
     (on-click :table #(morph css3d-objects :into table))
     (on-click :sphere #(morph css3d-objects :into sphere))
+    (on-click :helix #(morph css3d-objects :into helix))
 
     ;(on-click-change-to table)
     ;(on-click-change-to :sphere)
