@@ -34,7 +34,7 @@
   (.. three/tween removeAll)
   (doseq [[i obj] (map-indexed (fn [i e] [i e]) css3d-objects)
           :let [object3d (nth topology i)
-                duration 2000]]
+                duration 1000]]
     (.. (three/Tween. (. obj -position))
         (to (clj->js (object3d->map object3d))
             (+ (* (rand) duration)
@@ -175,19 +175,9 @@
       (.. scene (add css3d-object)))
     scene))
 
-(defn create-topologies [elements]
-  ;;(swap! css3d-objects conj css3d-object)
-   (create-table)
-  ;; (create-sphere i (count elements))
-  ;; (create-helix i)
-  ;; (create-grid i)
-  ;; (rotate css3d-object :when-clicked)
-  )
-
 (defn on-click [shape morphy]
   (b/on (b/by-id (name shape)) "click" (fn [event]
-                                         (morphy)))
-  )
+                                         (morphy))))
 
 (defn init [elements]
   (let [scene (create-scene elements)
