@@ -1,7 +1,7 @@
 (ns four.client.elements
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [four.client.three :as three]
-            [four.client.dom :as dom]
+            [four.client.browser :as browser]
             [four.client.table :as table]
             [four.client.ws :as ws :refer [process-msg]]
             [chord.client :refer [ws-ch]]
@@ -65,7 +65,7 @@
 (defn setup-animation []
   (let [renderer (three/CSS3DRenderer.)
         domElement (. renderer -domElement)
-        _ (. (dom/by-id "container") appendChild domElement)
+        _ (. (browser/by-id "container") appendChild domElement)
         render-scene (fn [] (. renderer (render scene camera)))
         controls (three/TrackballControls. camera domElement)]
     (set! (.. domElement -style -position) "absolute")
@@ -140,7 +140,7 @@
 
 (defn rotate [css3d-object _]
   (let [div (. css3d-object -element)]
-    (dom/on div "click" (fn [evt]
+    (browser/on div "click" (fn [evt]
                           (let [p (.. css3d-object -position clone)]
                             (.. (three/Tween. (clj->js {:theta 0}))
                                 (to (clj->js {:theta (* 2 PI)})
@@ -165,7 +165,7 @@
 
 
 (defn on-click-change-to [shape]
-  (dom/on (dom/by-id (name shape)) "click" (fn [event]
+  (browser/on (browser/by-id (name shape)) "click" (fn [event]
                                              (morph-into @(shape topologies)))))
 
 (defn create-topologies [elements]
@@ -194,7 +194,7 @@
   (on-click-change-to :helix)
   (on-click-change-to :grid)
   
-  (dom/on (dom/by-id "reset") "click" (fn [event]
+  (browser/on (browser/by-id "reset") "click" (fn [event]
                                         (. controls reset)
                                         ;; (set! (.. camera -position -x) 0)
                                         ;; (set! (.. camera -position -y) 0)
