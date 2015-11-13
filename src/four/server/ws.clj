@@ -10,27 +10,27 @@
 ;;you can iterate over client-websocket-channels and use core.async/put! to send messages to clients
 (def client-websocket-channels (atom []))
 
-(defmulti process-msg (fn [[websocket-channel [kw msg]]]
+(defmulti process-msg (fn [[client-websocket-channel [kw msg]]]
                         kw))
 
-(defn send! [websocket-channel transit-msg]
-  (go (>! websocket-channel transit-msg)))
+(defn send! [client-websocket-channel transit-msg]
+  (go (>! client-websocket-channel transit-msg)))
 
-(defn- remove-channel [websocket-channel]
-  (reset! client-websocket-channels (filter #(not= % websocket-channel) @client-websocket-channels)))
+(defn- remove-channel [client-websocket-channel]
+  (reset! client-websocket-channels (filter #(not= % client-websocket-channel) @client-websocket-channels)))
 
-(defn- clean-up! [websocket-channel]
-  (println "clean-up " websocket-channel)
-  (remove-channel websocket-channel)
-  (close! websocket-channel))
+(defn- clean-up! [client-websocket-channel]
+  (println "clean-up " client-websocket-channel)
+  (remove-channel client-websocket-channel)
+  (close! client-websocket-channel))
 
-(defn- listen-for-messages-on [websocket-channel]
+(defn- listen-for-messages-on [client-websocket-channel]
   (go-loop []
-    (if-let [{:keys  [message]} (<! websocket-channel)]
+    (if-let [{:keys  [message]} (<! client-websocket-channel)]
       (do
-        (process-msg [websocket-channel message])
+        (process-msg [client-websocket-channel message])
         (recur))
-      (clean-up! websocket-channel))))
+      (clean-up! client-websocket-channel))))
 
 (defn websocket-handler [request]
   (with-channel request websocket-channel
