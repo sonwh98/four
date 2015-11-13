@@ -24,7 +24,7 @@
 
 (defn -main [& args]
   (println "running")
-  (s/run-server ws/websocket-handler {:port 9090})
+  (s/run-server ws/listen-for-websocket-connections {:port 9090})
   (s/run-server (site #'all-routes) {:port 8080})
   (reloaded.repl/set-init! dev-system)
   (reloaded.repl/go))
