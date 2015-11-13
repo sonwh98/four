@@ -7,6 +7,7 @@
 
 (def to-server-queue (chan 10))
 
+;websocket-channel contains a bidirectional core.async channel used to send and read messages from the server
 (def websocket-channel (atom nil))
 
 (defmulti process-msg (fn [[kw msg]]
