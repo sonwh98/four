@@ -5,11 +5,12 @@
             [four.messaging :as m]
             [four.transit :as t]))
 
-;websocket-channel contains a bidirectional core.async channel used to send and read messages from the server
+;;websocket-channel contains a bidirectional core.async channel used to send and read messages from the server
 (def websocket-channel (atom nil))
 (def when-ws-open (m/create-topic-fn-handler :ws/open))
 
-(defmulti process-msg (fn [[kw msg]]
+;;multi method that dispatches based on the first attribute of the msg. a msg is a vector of the form [keyword val]
+(defmulti process-msg (fn [[kw val]]
                         kw))
 
 (defn init []
