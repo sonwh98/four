@@ -21,6 +21,9 @@
   (remove-channel websocket-channel)
   (close! websocket-channel))
 
+(defn send! [websocket-channel transit-msg]
+  (go (>! websocket-channel transit-msg)))
+
 (defn listen-for-messages-on [websocket-channel]
   (go-loop []
     (if-let [{:keys  [message]} (<! websocket-channel)]
