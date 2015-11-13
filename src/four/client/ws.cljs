@@ -5,10 +5,9 @@
             [four.messaging :as m]
             [four.transit :as t]))
 
-(def to-server-queue (chan 10))
-
 ;websocket-channel contains a bidirectional core.async channel used to send and read messages from the server
 (def websocket-channel (atom nil))
+(def when-ws-open (m/create-topic-fn-handler :ws/open))
 
 (defmulti process-msg (fn [[kw msg]]
                         kw))
@@ -21,13 +20,7 @@
         (m/broadcast [:ws/open true]))))
 
 (defn send! [msg]
-  (put! to-server-queue msg))
-
-(defn send-to-server []
-  (go-loop []
-    (let [msg (<! to-server-queue)]
-      (>! @websocket-channel msg))
-    (recur)))
+  (when-ws-open #(go (>! @websocket-channel msg))))
 
 (defn listen-for-messages []
   (go-loop []
@@ -36,8 +29,7 @@
         (process-msg msg)
         (recur)))))
 
-(def when-ws-open (m/create-topic-fn-handler :ws/open))
+
 
 (init)
-(when-ws-open send-to-server)
 (when-ws-open listen-for-messages)
