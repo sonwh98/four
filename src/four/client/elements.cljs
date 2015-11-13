@@ -18,14 +18,6 @@
                  :sphere (atom [])
                  :helix  (atom [])
                  :grid   (atom [])})
-
-(def camera (three/PerspectiveCamera. 50 (/ (.-innerWidth b/window)
-                                            (.-innerHeight b/window))
-                                      10000
-                                      1000))
-(set! (.. camera -position -z) 3000)
-
-
 (defn map->object3d [{:keys [x y z] :as point}]
   (let [obj (three/Object3D.)]
     (set! (.. obj -position -x) x)
@@ -61,10 +53,15 @@
 
 (defn setup-animation [scene]
   (let [renderer (three/CSS3DRenderer.)
+        camera (three/PerspectiveCamera. 50 (/ (.-innerWidth b/window)
+                                               (.-innerHeight b/window))
+                                         10000
+                                         1000)
         domElement (. renderer -domElement)
         _ (. (b/by-id "container") appendChild domElement)
         render-scene (fn [] (. renderer (render scene camera)))
         controls (three/TrackballControls. camera domElement)]
+    (set! (.. camera -position -z) 3000)
     (set! (.. domElement -style -position) "absolute")
     (. renderer (setSize (. b/window -innerWidth)
                          (. b/window -innerHeight)))
@@ -158,7 +155,8 @@
                           ;; (set! (.. camera -position -y) (.. p -y))
                           ;; (set! (.. camera -position -z) 500)
                           ;; (set! (.. controls -target) p)
-                          (.. camera (lookAt p)))))))
+                          ;; (.. camera (lookAt p))
+                          )))))
 
 
 (defn on-click-change-to [shape]
