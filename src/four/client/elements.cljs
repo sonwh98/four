@@ -198,4 +198,4 @@
 (defmethod process-msg :elements [[_ elements]]
   (init elements))
 
-(m/on :dom/content-loaded #(ws/send! [:get-elements true]))
+(m/on :dom/ready #(ws/send! [:get-elements true]))

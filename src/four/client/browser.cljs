@@ -6,7 +6,7 @@
 (def document js/document)
 
 (.. document (addEventListener "DOMContentLoaded" (fn []
-                                                       (m/broadcast [:dom/content-loaded true]))))
+                                                       (m/broadcast [:dom/ready true]))))
 
 (defn by-id [id]
   (.. document (getElementById id)))
