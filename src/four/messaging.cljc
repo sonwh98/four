@@ -30,8 +30,8 @@
     (go (while true
           (call-back-fn (<! topic-chan))))))
 
-(defn create-topic-closure
-  [topic]
+(defn if-ever
+  [topic _ ]
   (let [topic-recieved? (atom false)]
     (on topic #(reset! topic-recieved? true))
     (fn [call-back-fn]
