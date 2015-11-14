@@ -7,7 +7,7 @@
 
 ;;server-websocket-channel contains a bidirectional core.async channel used to send and read messages from the server
 (def server-websocket-channel (atom nil))
-(def when-websocket-open (m/if-ever :websocket/open :broadcasted))
+(def if-websocket-open (m/if-ever :websocket/open :broadcasted))
 
 ;;multi method that dispatches based on the first attribute of the msg. a msg is a vector of the form [keyword val]
 (defmulti process-msg (fn [[kw val]]
@@ -21,7 +21,7 @@
         (m/broadcast [:websocket/open true]))))
 
 (defn send! [msg]
-  (when-websocket-open #(go (>! @server-websocket-channel msg))))
+  (if-websocket-open #(go (>! @server-websocket-channel msg))))
 
 (defn listen-for-messages-from-websocket-server []
   (go-loop []
@@ -31,4 +31,4 @@
         (recur)))))
 
 (connect-to-websocket-server)
-(when-websocket-open listen-for-messages-from-websocket-server)
+(if-websocket-open listen-for-messages-from-websocket-server)
