@@ -5,6 +5,8 @@
 
 #?(:cljs (enable-console-print!))
 
+;;a message is of a vector of the form [topic value]
+;;the topic can be value but should be a keyword
 (defonce message-bus (chan 10))
 (defonce message-publication (pub message-bus (fn [msg]
                                                 (if (vector? msg)
@@ -31,6 +33,7 @@
           (call-back-fn (<! topic-chan))))))
 
 (defn if-ever
+  "returns a function that takes a call-back-fn which is executed if the topic message has ever been broadcasted"
   [topic _ ]
   (let [topic-recieved? (atom false)]
     (on topic #(reset! topic-recieved? true))
