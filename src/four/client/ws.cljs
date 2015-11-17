@@ -10,7 +10,7 @@
 
 ;;function that executes a call-back-fn if the :websocket/open topic has ever been broadcasted
 ;;example usage: (if-websocket-open #(println "websocket is open"))
-(def whenever-websocket-open (m/whenever :websocket/open :broadcasted))
+(def whenever-websocket-opened (m/whenever :websocket/open :broadcasted))
 
 ;;multi method that dispatches based on the first attribute of the msg. a msg is a vector of the form [keyword val]
 (defmulti process-msg (fn [[kw val]]
@@ -24,7 +24,7 @@
         (m/broadcast [:websocket/open true]))))
 
 (defn send! [msg]
-  (whenever-websocket-open #(go (>! @server-websocket-channel msg))))
+  (whenever-websocket-opened #(go (>! @server-websocket-channel msg))))
 
 (defn listen-for-messages-from-websocket-server []
   (go-loop []
@@ -34,4 +34,4 @@
         (recur)))))
 
 (connect-to-websocket-server)
-(whenever-websocket-open listen-for-messages-from-websocket-server)
+(whenever-websocket-opened listen-for-messages-from-websocket-server)
