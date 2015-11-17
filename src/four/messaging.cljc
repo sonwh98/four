@@ -35,11 +35,11 @@
 (defn when-ever
   "returns a function that takes a call-back-fn which is executed when ever the topic message been broadcasted"
   [topic _ ]
-  (let [topic-recieved? (atom false)]
-    (on topic #(reset! topic-recieved? true))
+  (let [topic-message-recieved? (atom false)]
+    (on topic #(reset! topic-message-recieved? true))
     (fn [call-back-fn]
-      (if @topic-recieved?
+      (if @topic-message-recieved?
         (call-back-fn)
         (on topic #(do
-                     (reset! topic-recieved? true)
+                     (reset! topic-message-recieved? true)
                      (call-back-fn)))))))
