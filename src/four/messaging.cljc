@@ -32,7 +32,7 @@
     (go (while true
           (call-back-fn (<! topic-chan))))))
 
-(defn when-ever
+(defn whenever
   "returns a function that takes a call-back-fn which is executed when ever the topic message been broadcasted"
   [topic _ ]
   (let [topic-message-recieved? (atom false)]
