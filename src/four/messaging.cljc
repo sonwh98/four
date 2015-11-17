@@ -32,8 +32,8 @@
     (go (while true
           (call-back-fn (<! topic-chan))))))
 
-(defn if-ever
-  "returns a function that takes a call-back-fn which is executed if the topic message has ever been broadcasted"
+(defn when-ever
+  "returns a function that takes a call-back-fn which is executed when ever the topic message been broadcasted"
   [topic _ ]
   (let [topic-recieved? (atom false)]
     (on topic #(reset! topic-recieved? true))
