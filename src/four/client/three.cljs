@@ -37,3 +37,7 @@
 
 (defn on-js-reload []
   )
+
+(defprotocol IShape
+  (add [this element])
+  (to-seq [this]))

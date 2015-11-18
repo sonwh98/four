@@ -1,6 +1,6 @@
 (ns four.client.elements
   (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [four.client.three :as three]
+  (:require [four.client.three :as three :refer [IShape]]
             [four.client.browser :as b]
             [four.client.table :as table]
             [four.client.ws :as ws :refer [process-msg]]
@@ -88,25 +88,43 @@
     (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
     obj))
 
-(defn create-table []
-  (map #(map->object3d {:x (-> (* (:x %) 140) (- 1330))
-                        :y (-> (* (:y %) -180) (+ 1330))
-                        :z 0})
-       table/coordinates))
 
-(defn create-sphere [size]
-  (let [v (three/Vector3.)]
-    (for [i (range size)
-          :let [phi (. js/Math acos (+ (/ (* 2 i) size)
-                                       -1))
-                theta (* phi
-                         (. js/Math sqrt (* size PI)))
-                object3d (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
-                                         :y (* 800 (. js/Math sin theta) (. js/Math sin phi))
-                                         :z (* 800 (. js/Math cos phi))})]]
-      (do (.. v (copy (. object3d -position)) (multiplyScalar 2))
-          (. object3d (lookAt v))
-          object3d))))
+
+(def Table (let [elements (atom [])
+                 css3d-objects (atom [])]
+             (reify IShape
+               (add [this element]
+                    (swap! elements conj element)
+                    (let [i (dec (count @elements))
+                          j (nth table/coordinates i)
+                          object3d (map->object3d {:x (-> (* (:x j) 140) (- 1330))
+                                                       :y (-> (* (:y j) -180) (+ 1330))
+                                                   :z 0})]
+                      (swap! css3d-objects conj object3d)))
+               (to-seq [this]
+                       @css3d-objects))))
+
+(def Sphere (let [elements (atom [])
+                  css3d-objects (atom [])]
+              (reify IShape
+                (add [this element]
+                     (let [size (-> @elements count inc)
+                           v (three/Vector3.)]
+                       (swap! elements conj element)
+                       (reset! css3d-objects
+                               (for [i (range size)
+                                     :let [phi (. js/Math acos (+ (/ (* 2 i) size)
+                                                                  -1))
+                                           theta (* phi
+                                                    (. js/Math sqrt (* size PI)))
+                                           object3d (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
+                                                                    :y (* 800 (. js/Math sin theta) (. js/Math sin phi))
+                                                                    :z (* 800 (. js/Math cos phi))})]]
+                                 (do (.. v (copy (. object3d -position)) (multiplyScalar 2))
+                                     (. object3d (lookAt v))
+                                     object3d)))))
+                (to-seq [this]
+                  @css3d-objects))))
 
 (defn create-helix [size]
   (let [v (three/Vector3.)]
@@ -180,20 +198,20 @@
   (let [scene (create-scene elements)
         css3d-objects (seq (. scene -children))
         size (count css3d-objects)
-        table (create-table)
-        sphere (create-sphere size)
         helix (create-helix size)
         grid (create-grid size)]
     (doseq [css3d-obj css3d-objects]
+      (three/add Sphere css3d-obj)
+      (three/add Table css3d-obj)
       (rotate css3d-obj :on-click))
     
-    (on-click :table #(morph css3d-objects :into table))
-    (on-click :sphere #(morph css3d-objects :into sphere))
+    (on-click :table #(morph css3d-objects :into (three/to-seq Table)))
+    (on-click :sphere #(morph css3d-objects :into (three/to-seq Sphere)))
     (on-click :helix #(morph css3d-objects :into helix))
     (on-click :grid #(morph css3d-objects :into grid))
 
     (setup-animation scene)
-    (morph css3d-objects :into table)))
+    (morph css3d-objects :into (three/to-seq Table))))
 
 (defmethod process-msg :elements [[_ elements]]
   (init elements))
