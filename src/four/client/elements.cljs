@@ -174,7 +174,7 @@
     scene))
 
 (defn on-click [shape morph-fn]
-  (b/on (b/by-id (name shape)) "click" #(morph-fn)))
+  (b/on (b/by-id (name shape)) "click" morph-fn))
 
 (defn init [elements]
   (let [scene (create-scene elements)
