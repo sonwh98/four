@@ -8,6 +8,7 @@
 (def Scene (.-Scene three))
 
 (def PerspectiveCamera (.-PerspectiveCamera three))
+(def OrthographicCamera (.-OrthographicCamera three))
 (def WebGLRenderer (.-WebGLRenderer three))
 (def BoxGeometry (.-BoxGeometry three))
 (def MeshBasicMaterial (.-MeshBasicMaterial three))
