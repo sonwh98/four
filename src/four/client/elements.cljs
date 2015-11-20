@@ -26,10 +26,10 @@
     (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
     obj))
 
-(defn morph [css3d-objects _ topology]
+(defn morph [css3d-objects _ shape]
   (.. three/tween removeAll)
   (doseq [[i obj] (map-indexed (fn [i e] [i e]) css3d-objects)
-          :let [object3d (nth topology i)
+          :let [object3d (nth shape i)
                 duration 1000]]
     (.. (three/Tween. (. obj -position))
         (to (clj->js (object3d->map object3d))
