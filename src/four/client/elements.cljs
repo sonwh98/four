@@ -1,8 +1,8 @@
 (ns four.client.elements
   (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [four.client.three :as three :refer [IShape]]
+  (:require [four.client.three :as three]
             [four.client.browser :as b]
-            [four.client.layout :as layout]
+            [four.client.layout :as layout :refer [IShape]]
             [four.client.table :as table]
             [four.client.ws :as ws :refer [process-msg]]
             [chord.client :refer [ws-ch]]
@@ -13,13 +13,6 @@
 (enable-console-print!)
 
 (def PI (. js/Math -PI))
-
-(defn map->object3d [{:keys [x y z] :as point}]
-  (let [obj (three/Object3D.)]
-    (set! (.. obj -position -x) x)
-    (set! (.. obj -position -y) y)
-    (set! (.. obj -position -z) z)
-    obj))
 
 (defn object3d->map [object3d]
   {:x (.. object3d -position -x)
@@ -130,19 +123,19 @@
   (let [scene (create-scene elements)
         css3d-objects (seq (. scene -children))]
     (doseq [css3d-obj css3d-objects]
-      (three/add layout/Sphere css3d-obj)
-      (three/add layout/Table css3d-obj)
-      (three/add layout/Helix css3d-obj)
-      (three/add layout/Grid css3d-obj)
+      (layout/add layout/Sphere css3d-obj)
+      (layout/add layout/Table css3d-obj)
+      (layout/add layout/Helix css3d-obj)
+      (layout/add layout/Grid css3d-obj)
       (rotate css3d-obj :on-click))
     
-    (on-click :table #(morph css3d-objects :into (three/to-seq layout/Table)))
-    (on-click :sphere #(morph css3d-objects :into (three/to-seq layout/Sphere)))
-    (on-click :helix #(morph css3d-objects :into (three/to-seq layout/Helix)))
-    (on-click :grid #(morph css3d-objects :into (three/to-seq layout/Grid)))
+    (on-click :table #(morph css3d-objects :into (layout/to-seq layout/Table)))
+    (on-click :sphere #(morph css3d-objects :into (layout/to-seq layout/Sphere)))
+    (on-click :helix #(morph css3d-objects :into (layout/to-seq layout/Helix)))
+    (on-click :grid #(morph css3d-objects :into (layout/to-seq layout/Grid)))
 
     (setup-animation scene)
-    (morph css3d-objects :into (three/to-seq layout/Table))))
+    (morph css3d-objects :into (layout/to-seq layout/Table))))
 
 (defmethod process-msg :elements [[_ elements]]
   (init elements))

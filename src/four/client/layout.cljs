@@ -1,9 +1,13 @@
 (ns four.client.layout
-  (:require [four.client.three :as three :refer [IShape]]
+  (:require [four.client.three :as three]
             [four.client.table :as table]
             ))
 
 (def PI (. js/Math -PI))
+
+(defprotocol IShape
+  (add [this element])
+  (to-seq [this]))
 
 (defn div->css3d-object [div]
   (let [obj (three/CSS3DObject. div)]
@@ -21,7 +25,7 @@
 
 (def Table (let [elements (atom [])
                  css3d-objects (atom [])]
-             (reify IShape
+             (reify IShape 
                (add [this element]
                     (swap! elements conj element)
                     (let [i (dec (count @elements))
@@ -31,7 +35,14 @@
                                                    :z 0})]
                       (swap! css3d-objects conj object3d)))
                (to-seq [this]
-                       @css3d-objects))))
+                       @css3d-objects)
+
+               cljs.core/ISeq
+               (-first [this]
+                      (first @css3d-objects))
+               (-rest [this]
+                     (next @css3d-objects)))
+             ))
 
 (def Sphere (let [elements (atom [])
                   css3d-objects (atom [])]
