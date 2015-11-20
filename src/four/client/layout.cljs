@@ -6,8 +6,7 @@
 (def PI (. js/Math -PI))
 
 (defprotocol IShape
-  (add [this element])
-  (to-seq [this]))
+  (add [this element]))
 
 (defn map->object3d [{:keys [x y z] :as point}]
   (let [obj (three/Object3D.)]
@@ -27,15 +26,10 @@
                                                    :y (-> (* (:y j) -180) (+ 1330))
                                                    :z 0})]
                       (swap! css3d-objects conj object3d)))
-               (to-seq [this]
-                       @css3d-objects)
+               cljs.core/ISeqable
+               (-seq [this]
+                     (seq @css3d-objects)))))
 
-               cljs.core/ISeq
-               (-first [this]
-                      (first @css3d-objects))
-               (-rest [this]
-                     (next @css3d-objects)))
-             ))
 
 (def Sphere (let [elements (atom [])
                   css3d-objects (atom [])]
@@ -56,8 +50,9 @@
                                  (do (.. v (copy (. object3d -position)) (multiplyScalar 2))
                                      (. object3d (lookAt v))
                                      object3d)))))
-                (to-seq [this]
-                        @css3d-objects))))
+                cljs.core/ISeqable
+                (-seq [this]
+                      (seq @css3d-objects)))))
 
 (def Helix (let [elements (atom [])
                  css3d-objects (atom [])]
@@ -78,8 +73,9 @@
                       (set! (. v -y) (.. object -position -y))
                       (set! (. v -z) (* 2 (.. object -position -z)))
                       (. object lookAt v)))
-               (to-seq [this]
-                       @css3d-objects))))
+               cljs.core/ISeqable
+                (-seq [this]
+                      (seq @css3d-objects)))))
 
 (def Grid (let [elements (atom [])
                 css3d-objects (atom [])]
@@ -96,5 +92,7 @@
                                                          (. js/Math floor (/ i 25)))
                                                       2000)})]
                      (swap! css3d-objects conj object)))
-              (to-seq [this]
-                      @css3d-objects))))
+
+              cljs.core/ISeqable
+                (-seq [this]
+                      (seq @css3d-objects)))))

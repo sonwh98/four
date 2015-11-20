@@ -136,13 +136,13 @@
       (layout/add layout/Grid css3d-obj)
       (rotate css3d-obj :on-click))
     
-    (on-click :table #(morph css3d-objects :into (layout/to-seq layout/Table)))
-    (on-click :sphere #(morph css3d-objects :into (layout/to-seq layout/Sphere)))
-    (on-click :helix #(morph css3d-objects :into (layout/to-seq layout/Helix)))
-    (on-click :grid #(morph css3d-objects :into (layout/to-seq layout/Grid)))
+    (on-click :table #(morph css3d-objects :into (seq layout/Table)))
+    (on-click :sphere #(morph css3d-objects :into (seq layout/Sphere)))
+    (on-click :helix #(morph css3d-objects :into (seq layout/Helix)))
+    (on-click :grid #(morph css3d-objects :into (seq layout/Grid)))
 
     (setup-animation scene)
-    (morph css3d-objects :into (layout/to-seq layout/Table))))
+    (morph css3d-objects :into (seq layout/Table))))
 
 (defmethod process-msg :elements [[_ elements]]
   (init elements))
