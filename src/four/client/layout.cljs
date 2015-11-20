@@ -9,13 +9,6 @@
   (add [this element])
   (to-seq [this]))
 
-(defn div->css3d-object [div]
-  (let [obj (three/CSS3DObject. div)]
-    (set! (.. obj -position -x) (-> (* (rand) 4000) (- 2000)))
-    (set! (.. obj -position -y) (-> (* (rand) 4000) (- 2000)))
-    (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
-    obj))
-
 (defn map->object3d [{:keys [x y z] :as point}]
   (let [obj (three/Object3D.)]
     (set! (.. obj -position -x) x)

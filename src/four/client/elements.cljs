@@ -19,6 +19,13 @@
    :y (.. object3d -position -y)
    :z (.. object3d -position -z)})
 
+(defn div->css3d-object [div]
+  (let [obj (three/CSS3DObject. div)]
+    (set! (.. obj -position -x) (-> (* (rand) 4000) (- 2000)))
+    (set! (.. obj -position -y) (-> (* (rand) 4000) (- 2000)))
+    (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
+    obj))
+
 (defn morph [css3d-objects _ topology]
   (.. three/tween removeAll)
   (doseq [[i obj] (map-indexed (fn [i e] [i e]) css3d-objects)
@@ -112,7 +119,7 @@
                        [:div {:class "number"} i]
                        [:div {:class "symbol"} (:element/symbol element)]
                        [:div {:class "details"} (:element/name element)]]
-                  css3d-object (layout/div->css3d-object (c/html div))]]
+                  css3d-object (div->css3d-object (c/html div))]]
       (.. scene (add css3d-object)))
     scene))
 
