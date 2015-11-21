@@ -1,4 +1,4 @@
-(ns four.client.browser
+(ns four.client.util
   (:require [four.messaging :as m]
             [cljs.core.async :refer [put! chan]]))
 

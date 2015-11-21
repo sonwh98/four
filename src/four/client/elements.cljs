@@ -1,9 +1,8 @@
 (ns four.client.elements
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [four.client.three :as three]
-            [four.client.browser :as b]
+            [four.client.util :as util]
             [four.client.layout :as layout :refer [IShape]]
-            [four.client.table :as table]
             [four.client.ws :as ws :refer [process-msg]]
             [chord.client :refer [ws-ch]]
             [four.messaging :as m]
@@ -49,25 +48,25 @@
 
 (defn setup-animation [scene]
   (let [renderer (three/CSS3DRenderer.)
-        camera (three/PerspectiveCamera. 50 (/ (.-innerWidth b/window)
-                                               (.-innerHeight b/window))
+        camera (three/PerspectiveCamera. 50 (/ (.-innerWidth util/window)
+                                               (.-innerHeight util/window))
                                          10000
                                          1000)
         domElement (. renderer -domElement)
-        _ (. (b/by-id "container") appendChild domElement)
+        _ (. (util/by-id "container") appendChild domElement)
         render-scene (fn [] (. renderer (render scene camera)))
         controls (three/TrackballControls. camera domElement)]
     (set! (.. camera -position -z) 3000)
     (set! (.. domElement -style -position) "absolute")
-    (. renderer (setSize (. b/window -innerWidth)
-                         (. b/window -innerHeight)))
+    (. renderer (setSize (. util/window -innerWidth)
+                         (. util/window -innerHeight)))
 
     (set! (.. controls -rotateSpeed) 0.5)
     (set! (.. controls -minDistance) 500)
     (set! (.. controls -maxDistance) 6000)
     (.. controls (addEventListener "change" render-scene))
 
-    (b/on (b/by-id "reset") "click" (fn [event]
+    (util/on (util/by-id "reset") "click" (fn [event]
                                       (. controls reset)
                                       (set! (.. controls -rotateSpeed) 0.5)
                                       (set! (.. controls -minDistance) 500)
@@ -84,7 +83,7 @@
 
 (defn rotate [css3d-object _]
   (let [div (. css3d-object -element)]
-    (b/on div "click" (fn [evt]
+    (util/on div "click" (fn [evt]
                         (let [p (.. css3d-object -position clone)]
                           (.. (three/Tween. (clj->js {:theta 0}))
                               (to (clj->js {:theta (* 2 PI)})
@@ -124,7 +123,7 @@
     scene))
 
 (defn on-click [shape morph-fn]
-  (b/on (b/by-id (name shape)) "click" morph-fn))
+  (util/on (util/by-id (name shape)) "click" morph-fn))
 
 (defn init [elements]
   (let [scene (create-scene elements)
