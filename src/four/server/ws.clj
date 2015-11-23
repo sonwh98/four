@@ -37,7 +37,7 @@
         (recur))
       (clean-up! client-websocket-channel))))
 
-(defn listen-for-websocket-connections [request]
+(defn listen-for-client-websocket-connections [request]
   (with-channel request websocket-channel
     (swap! client-websocket-channels conj websocket-channel)
     (listen-for-messages-on websocket-channel)))

@@ -1,5 +1,5 @@
 (ns four.server.main
-  (:require [org.httpkit.server :as s]
+  (:require [org.httpkit.server :as http-kit]
             [compojure.route :as route]
             [compojure.handler :refer [site]]
             [compojure.core :refer [defroutes]]
@@ -24,7 +24,7 @@
 
 (defn -main [& args]
   (println "running")
-  (s/run-server ws/listen-for-websocket-connections {:port 9090})
-  (s/run-server (site #'all-routes) {:port 8080})
+  (http-kit/run-server ws/listen-for-client-websocket-connections {:port 9090})
+  (http-kit/run-server (site #'all-routes) {:port 8080})
   (reloaded.repl/set-init! dev-system)
   (reloaded.repl/go))
