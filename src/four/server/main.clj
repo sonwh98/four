@@ -18,7 +18,7 @@
 
 (defn dev-system []
   (component/system-map
-    ;:datomic-db (new-datomic-db (env :db-url))
+    :datomic-db (new-datomic-db (or (env :db-url) "datomic:mem://four"))
     ;:web (new-web-server (or (env :http-port) 8080) handler)
     :repl-server (new-repl-server 2222)))
 
