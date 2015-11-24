@@ -5,7 +5,6 @@
             [compojure.core :refer [defroutes]]
             [four.server.ws :as ws]
             [four.server.chemical]
-            [four.server.db :as db]
             [com.stuartsierra.component :as component]
             [environ.core :refer [env]]
             (system.components
