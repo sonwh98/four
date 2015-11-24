@@ -5,6 +5,7 @@
             [compojure.core :refer [defroutes]]
             [four.server.ws :as ws]
             [four.server.chemical]
+            [four.server.db :as db]
             [com.stuartsierra.component :as component]
             [environ.core :refer [env]]
             (system.components
@@ -23,7 +24,6 @@
     :repl-server (new-repl-server 2222)))
 
 (defn -main [& args]
-  (println "running")
   (http-kit/run-server ws/listen-for-client-websocket-connections {:port 9090})
   (http-kit/run-server (site #'all-routes) {:port 8080})
   (reloaded.repl/set-init! dev-system)

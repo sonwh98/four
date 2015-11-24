@@ -23,6 +23,7 @@
                  
                  [org.codehaus.groovy/groovy-all "2.4.5"]
                  [com.datomic/datomic-free "0.9.5327" :exclusions [joda-time]]
+                 [datomic-schema "1.3.0"]
                  
                  [ring/ring-core "1.4.0"]
                  [ring/ring-defaults "0.1.5"]
@@ -35,7 +36,8 @@
 
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.4.1"]
-            [lein-environ "1.0.0"]]
+            [lein-environ "1.0.0"]
+            [lein-exec "0.3.5"]]
 
   :source-paths ["src"]
   :main four.server.main
