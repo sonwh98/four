@@ -11,5 +11,4 @@
   (d/db (get-conn)))
 
 (defn transact [datoms]
-  (println "conn="(get-conn))
   (d/transact (get-conn) datoms))

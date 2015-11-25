@@ -1,7 +1,7 @@
 (ns gen-schema
   (:require [four.server.db :as db]
             [datomic-schema.schema :as s]
-            [clojure.pprint :as pp :refer [pprint]]))
+            ))
 
 (def schema
   [(s/schema element
@@ -10,4 +10,4 @@
               [weight :string :indexed]
               [symbol :string :indexed]))])
 
-(pprint (s/generate-schema schema))
+(println (pr-str (s/generate-schema schema)))

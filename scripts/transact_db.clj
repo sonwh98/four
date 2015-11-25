@@ -15,7 +15,9 @@
 
 (def schema  (read-string lines))
 (d/create-database db-url)
-(db/transact schema)
+(def tx  (db/transact schema))
+(println "tx=" @tx)
+
 
 
 
