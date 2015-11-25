@@ -141,9 +141,10 @@
     (on-click :grid #(morph css3d-objects :into (seq layout/Grid)))
 
     (setup-animation scene)
-    (morph css3d-objects :into (seq layout/Table))))
+    (morph css3d-objects :into (seq layout/Table))
+    scene))
 
 (defmethod process-msg :elements [[_ elements]]
-  (init elements))
+  (def scene (init elements)))
 
 (m/on :dom/ready #(ws/send! [:get-elements true]))
