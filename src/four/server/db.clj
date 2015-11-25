@@ -1,7 +1,7 @@
 (ns four.server.db
   (:require [datomic.api :as d]
             [reloaded.repl :refer [system]]
-            [clojure.pprint :as pp :refer [pprint]]))
+            ))
 
 
 (defn get-conn []
@@ -9,3 +9,7 @@
 
 (defn get-db []
   (d/db (get-conn)))
+
+(defn transact [datoms]
+  (println "conn="(get-conn))
+  (d/transact (get-conn) datoms))

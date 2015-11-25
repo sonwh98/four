@@ -1,4 +1,4 @@
-(ns create-schema
+(ns gen-schema
   (:require [four.server.db :as db]
             [datomic-schema.schema :as s]
             [clojure.pprint :as pp :refer [pprint]]))

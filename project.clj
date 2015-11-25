@@ -3,9 +3,6 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :repositories  {"my.datomic.com" {:url      "https://my.datomic.com/repo"
-                                    :username "adam@tree.io"
-                                    :password "5e704e1c-b292-407f-b66c-2d7b677a45d2"}}
   
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
@@ -43,6 +40,8 @@
   :main four.server.main
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
+  :profiles {
+             :dev {:env {:db-url "datomic:free://localhost:4334/four"}}}
   
   :cljsbuild {
               :builds [{:id "dev"

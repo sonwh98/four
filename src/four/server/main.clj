@@ -26,4 +26,6 @@
   (http-kit/run-server ws/listen-for-client-websocket-connections {:port 9090})
   (http-kit/run-server (site #'all-routes) {:port 8080})
   (reloaded.repl/set-init! dev-system)
-  (reloaded.repl/go))
+  (reloaded.repl/go)
+  (println "started...")
+  )
