@@ -8,6 +8,6 @@
              (s/fields
               [name :string :indexed]
               [weight :string :indexed]
-              [symbol :string :indexed]))])
+              [symbol :string :indexed :unique-value]))])
 
 (println (pr-str (s/generate-schema schema)))
