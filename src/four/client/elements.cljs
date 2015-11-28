@@ -46,13 +46,14 @@
         (easing (.. three/tween -Easing -Exponential -InOut))
         (start))))
 
+(def renderer (three/CSS3DRenderer.))
+(def camera (three/PerspectiveCamera. 50 (/ (.-innerWidth util/window)
+                                             (.-innerHeight util/window))
+                                       10000
+                                       1000))
+
 (defn setup-animation [scene]
-  (let [renderer (three/CSS3DRenderer.)
-        camera (three/PerspectiveCamera. 50 (/ (.-innerWidth util/window)
-                                               (.-innerHeight util/window))
-                                         10000
-                                         1000)
-        domElement (. renderer -domElement)
+  (let [domElement (. renderer -domElement)
         _ (. (util/by-id "container") appendChild domElement)
         render-scene (fn [] (. renderer (render scene camera)))
         controls (three/TrackballControls. camera domElement)]
