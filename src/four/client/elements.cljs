@@ -81,7 +81,7 @@
                           )))))
 
 
-(defn populate-scene [scene _ elements]
+(defn populate [scene _ elements]
   (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
           :let [color (-> (* (rand) 0.5) (+ 0.25))
                 div [:div {:id    i
@@ -92,14 +92,15 @@
                      [:div {:class "details"} (:element/name element)]]
                 css3d-object (div->css3d-object (c/html div))]]
     (.. scene (add css3d-object)))
-  (seq (. scene -children)))
+  scene)
 
 (defn on-click [shape morph-fn]
   (util/on (util/by-id (name shape)) "click" morph-fn))
 
 
 (defn init [elements]
-  (let [css3d-objects (populate-scene scene :with elements)
+  (let [scene (populate scene :with elements)
+        css3d-objects (seq (. scene -children))
         table (layout/create-table elements)
         sphere (layout/create-sphere elements)
         helix (layout/create-helix elements)
