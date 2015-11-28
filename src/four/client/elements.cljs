@@ -47,15 +47,16 @@
         (start))))
 
 (def renderer (three/CSS3DRenderer.))
+(def domElement (. renderer -domElement))
+(. (util/by-id "container") appendChild domElement)
+
 (def camera (three/PerspectiveCamera. 50 (/ (.-innerWidth util/window)
                                              (.-innerHeight util/window))
                                        10000
                                        1000))
 
 (defn setup-animation [scene]
-  (let [domElement (. renderer -domElement)
-        _ (. (util/by-id "container") appendChild domElement)
-        render-scene (fn [] (. renderer (render scene camera)))
+  (let [render-scene (fn [] (. renderer (render scene camera)))
         controls (three/TrackballControls. camera domElement)]
     (set! (.. camera -position -z) 3000)
     (set! (.. domElement -style -position) "absolute")
