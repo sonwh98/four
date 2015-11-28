@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [four.client.three :as three]
             [four.client.util :as util]
-            [four.client.layout :as layout :refer [IShape]]
+            [four.client.layout :as layout]
             [four.client.ws :as ws :refer [process-msg]]
             [chord.client :refer [ws-ch]]
             [four.messaging :as m]
@@ -146,8 +146,7 @@
     (on-click :helix #(morph css3d-objects :into helix))
     (on-click :grid #(morph css3d-objects :into grid))
 
-    (morph css3d-objects :into table)
-    scene))
+    (morph css3d-objects :into table))) 
 
 (defmethod process-msg :elements [[_ elements]]
   (init elements))
