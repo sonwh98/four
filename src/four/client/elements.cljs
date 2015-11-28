@@ -11,8 +11,6 @@
 
 (enable-console-print!)
 
-(def PI (. js/Math -PI))
-
 (def renderer (three/CSS3DRenderer.))
 (. renderer (setSize (. util/window -innerWidth)
                      (. util/window -innerHeight)))
@@ -56,7 +54,8 @@
                  (render-scene)))
 
 (defn rotate [css3d-object _]
-  (let [div (. css3d-object -element)]
+  (let [div (. css3d-object -element)
+        PI (. js/Math -PI) ]
     (util/on div "click" (fn [evt]
                         (let [p (.. css3d-object -position clone)]
                           (.. (three/Tween. (clj->js {:theta 0}))
