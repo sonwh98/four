@@ -108,7 +108,7 @@
                           )))))
 
 
-(defn populate-scene [scene elements]
+(defn populate-scene [scene _ elements]
   (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
           :let [color (-> (* (rand) 0.5) (+ 0.25))
                 div [:div {:id    i
@@ -124,9 +124,9 @@
 (defn on-click [shape morph-fn]
   (util/on (util/by-id (name shape)) "click" morph-fn))
 
+(def scene (three/Scene.))
 (defn init [elements]
-  (let [scene (three/Scene.)
-        css3d-objects (populate-scene scene elements)]
+  (let [css3d-objects (populate-scene scene :with elements)]
     (doseq [css3d-obj css3d-objects]
       (layout/add layout/Sphere css3d-obj)
       (layout/add layout/Table css3d-obj)
@@ -144,6 +144,6 @@
     scene))
 
 (defmethod process-msg :elements [[_ elements]]
-  (def scene (init elements)))
+  (init elements))
 
 (m/on :dom/ready #(ws/send! [:get-elements true]))
