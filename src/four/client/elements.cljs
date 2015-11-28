@@ -47,28 +47,25 @@
         (start))))
 
 (def renderer (three/CSS3DRenderer.))
+(. renderer (setSize (. util/window -innerWidth)
+                     (. util/window -innerHeight)))
+
 (def domElement (. renderer -domElement))
+(set! (.. domElement -style -position) "absolute")
 (. (util/by-id "container") appendChild domElement)
 
 (def camera (three/PerspectiveCamera. 50 (/ (.-innerWidth util/window)
                                              (.-innerHeight util/window))
                                        10000
                                        1000))
+(set! (.. camera -position -z) 3000)
 
-(defn setup-animation [scene]
-  (let [render-scene (fn [] (. renderer (render scene camera)))
-        controls (three/TrackballControls. camera domElement)]
-    (set! (.. camera -position -z) 3000)
-    (set! (.. domElement -style -position) "absolute")
-    (. renderer (setSize (. util/window -innerWidth)
-                         (. util/window -innerHeight)))
+(def controls (three/TrackballControls. camera domElement))
+(set! (.. controls -rotateSpeed) 0.5)
+(set! (.. controls -minDistance) 500)
+(set! (.. controls -maxDistance) 6000)
 
-    (set! (.. controls -rotateSpeed) 0.5)
-    (set! (.. controls -minDistance) 500)
-    (set! (.. controls -maxDistance) 6000)
-    (.. controls (addEventListener "change" render-scene))
-
-    (util/on (util/by-id "reset") "click" (fn [event]
+(util/on (util/by-id "reset") "click" (fn [event]
                                       (. controls reset)
                                       (set! (.. controls -rotateSpeed) 0.5)
                                       (set! (.. controls -minDistance) 500)
@@ -77,6 +74,11 @@
                                       (set! (.. camera -position -x) 0)
                                       (set! (.. camera -position -y) 0)
                                       (set! (.. camera -position -z) 3000)))
+
+(defn setup-animation [scene]
+  (let [render-scene (fn [] (. renderer (render scene camera)))]
+    
+    (.. controls (addEventListener "change" render-scene))
     
     (three/animate (fn [time]
                      (.. three/tween update)
