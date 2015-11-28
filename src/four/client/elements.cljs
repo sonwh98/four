@@ -20,6 +20,7 @@
 (set! (.. domElement -style -position) "absolute")
 (. (util/by-id "container") appendChild domElement)
 
+(def scene (three/Scene.))
 (def camera (three/PerspectiveCamera. 50 (/ (.-innerWidth util/window)
                                              (.-innerHeight util/window))
                                        10000
@@ -41,12 +42,9 @@
                                       (set! (.. camera -position -y) 0)
                                       (set! (.. camera -position -z) 3000)))
 
-(def scene (three/Scene.))
 
 (defn render-scene []
   (. renderer (render scene camera)))
-
-(.. controls (addEventListener "change" render-scene))
 
 (three/animate (fn [time]
                  (.. three/tween update)
