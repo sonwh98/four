@@ -22,28 +22,20 @@
                     :y (-> (* (:y j) -180) (+ 1330))
                     :z 0})))
 
-(def Sphere (let [elements (atom [])
-                  css3d-objects (atom [])]
-              (reify IShape
-                (add [this element]
-                     (let [size (-> @elements count inc)
-                           v (three/Vector3.)]
-                       (swap! elements conj element)
-                       (reset! css3d-objects
-                               (for [i (range size)
-                                     :let [phi (. js/Math acos (+ (/ (* 2 i) size)
-                                                                  -1))
-                                           theta (* phi
-                                                    (. js/Math sqrt (* size PI)))
-                                           object3d (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
-                                                                    :y (* 800 (. js/Math sin theta) (. js/Math sin phi))
-                                                                    :z (* 800 (. js/Math cos phi))})]]
-                                 (do (.. v (copy (. object3d -position)) (multiplyScalar 2))
-                                     (. object3d (lookAt v))
-                                     object3d)))))
-                cljs.core/ISeqable
-                (-seq [this]
-                      (seq @css3d-objects)))))
+(defn create-sphere [elements]
+  (let [size (count elements)
+        v (three/Vector3.)]
+    (for [i (range size)
+          :let [phi (. js/Math acos (+ (/ (* 2 i) size)
+                                       -1))
+                theta (* phi
+                         (. js/Math sqrt (* size PI)))
+                object3d (map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
+                                         :y (* 800 (. js/Math sin theta) (. js/Math sin phi))
+                                         :z (* 800 (. js/Math cos phi))})]]
+      (do (.. v (copy (. object3d -position)) (multiplyScalar 2))
+          (. object3d (lookAt v))
+          object3d))))
 
 (def Helix (let [elements (atom [])
                  css3d-objects (atom [])]
