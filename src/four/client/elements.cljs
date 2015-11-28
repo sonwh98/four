@@ -135,16 +135,16 @@
 (defn init [elements]
   (let [css3d-objects (populate-scene scene :with elements)
         table (layout/create-table elements)
-        sphere (layout/create-sphere elements)]
+        sphere (layout/create-sphere elements)
+        helix (layout/create-helix elements)
+        grid (layout/create-grid elements)]
     (doseq [css3d-obj css3d-objects]
-      (layout/add layout/Helix css3d-obj)
-      (layout/add layout/Grid css3d-obj)
       (rotate css3d-obj :on-click))
     
     (on-click :table #(morph css3d-objects :into table))
     (on-click :sphere #(morph css3d-objects :into sphere))
-    (on-click :helix #(morph css3d-objects :into (seq layout/Helix)))
-    (on-click :grid #(morph css3d-objects :into (seq layout/Grid)))
+    (on-click :helix #(morph css3d-objects :into helix))
+    (on-click :grid #(morph css3d-objects :into grid))
 
     (morph css3d-objects :into table)
     scene))

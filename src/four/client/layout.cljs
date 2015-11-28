@@ -5,9 +5,6 @@
 
 (def PI (. js/Math -PI))
 
-(defprotocol IShape
-  (add [this element]))
-
 (defn map->object3d [{:keys [x y z] :as point}]
   (let [obj (three/Object3D.)]
     (set! (.. obj -position -x) x)
@@ -37,45 +34,29 @@
           (. object3d (lookAt v))
           object3d))))
 
-(def Helix (let [elements (atom [])
-                 css3d-objects (atom [])]
-             (reify IShape
-               (add [this element]
-                    (swap! elements conj element)
-                    
-                    (let [i (-> @elements count dec)
-                          v (three/Vector3.)
-                          phi (* i 0.175 PI)
-                          object (map->object3d {:x (* 900 (. js/Math sin phi))
-                                                 :y (+ (* i -8)
-                                                       450)
-                                                 :z (* 900 (. js/Math cos phi))})]
-                      (swap! css3d-objects conj object)
-                      
-                      (set! (. v -x) (* 2 (.. object -position -x)))
-                      (set! (. v -y) (.. object -position -y))
-                      (set! (. v -z) (* 2 (.. object -position -z)))
-                      (. object lookAt v)))
-               cljs.core/ISeqable
-                (-seq [this]
-                      (seq @css3d-objects)))))
+(defn create-helix [elements]
+  (let [v (three/Vector3.)
+        size (count elements)]
+    (for [i (range size)
+          :let [phi (* i 0.175 PI)
+                object (map->object3d {:x (* 900 (. js/Math sin phi))
+                                       :y (+ (* i -8)
+                                             450)
+                                       :z (* 900 (. js/Math cos phi))})]]
 
-(def Grid (let [elements (atom [])
-                css3d-objects (atom [])]
-            (reify IShape
-              (add [this element]
-                   (swap! elements conj element)
-                   
-                   (let [i (-> @elements count dec)
-                         object (map->object3d {:x (- (* 400 (mod i 5))
-                                                      800)
-                                                :y (+ 800 (* -400 (mod (. js/Math floor (/ i 5))
-                                                                       5)))
-                                                :z (- (* 1000
-                                                         (. js/Math floor (/ i 25)))
-                                                      2000)})]
-                     (swap! css3d-objects conj object)))
+      (do (set! (. v -x) (* 2 (.. object -position -x)))
+          (set! (. v -y) (.. object -position -y))
+          (set! (. v -z) (* 2 (.. object -position -z)))
+          (. object lookAt v)
+          object))))
 
-              cljs.core/ISeqable
-                (-seq [this]
-                      (seq @css3d-objects)))))
+(defn create-grid [elements]
+  (let [size (count elements)]
+    (for [i (range size)]
+      (map->object3d {:x (- (* 400 (mod i 5))
+                            800)
+                      :y (+ 800 (* -400 (mod (. js/Math floor (/ i 5))
+                                             5)))
+                      :z (- (* 1000
+                               (. js/Math floor (/ i 25)))
+                            2000)}))))
