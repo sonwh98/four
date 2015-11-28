@@ -50,6 +50,7 @@
 (. renderer (setSize (. util/window -innerWidth)
                      (. util/window -innerHeight)))
 
+
 (def domElement (. renderer -domElement))
 (set! (.. domElement -style -position) "absolute")
 (. (util/by-id "container") appendChild domElement)
@@ -58,7 +59,7 @@
                                              (.-innerHeight util/window))
                                        10000
                                        1000))
-(set! (.. camera -position -z) 3000)
+(set! (.. camera -position -z) 4000)
 
 (def controls (three/TrackballControls. camera domElement))
 (set! (.. controls -rotateSpeed) 0.5)
@@ -75,15 +76,17 @@
                                       (set! (.. camera -position -y) 0)
                                       (set! (.. camera -position -z) 3000)))
 
-(defn setup-animation [scene]
-  (let [render-scene (fn [] (. renderer (render scene camera)))]
-    
-    (.. controls (addEventListener "change" render-scene))
-    
-    (three/animate (fn [time]
-                     (.. three/tween update)
-                     (.. controls update)
-                     (render-scene)))))
+(def scene (three/Scene.))
+
+(defn render-scene []
+  (. renderer (render scene camera)))
+
+(.. controls (addEventListener "change" render-scene))
+
+(three/animate (fn [time]
+                 (.. three/tween update)
+                 (.. controls update)
+                 (render-scene)))
 
 (defn rotate [css3d-object _]
   (let [div (. css3d-object -element)]
@@ -128,23 +131,22 @@
 (defn on-click [shape morph-fn]
   (util/on (util/by-id (name shape)) "click" morph-fn))
 
-(def scene (three/Scene.))
+
 (defn init [elements]
-  (let [css3d-objects (populate-scene scene :with elements)]
+  (let [css3d-objects (populate-scene scene :with elements)
+        table (layout/create-table elements)]
     (doseq [css3d-obj css3d-objects]
       (layout/add layout/Sphere css3d-obj)
-      (layout/add layout/Table css3d-obj)
       (layout/add layout/Helix css3d-obj)
       (layout/add layout/Grid css3d-obj)
       (rotate css3d-obj :on-click))
     
-    (on-click :table #(morph css3d-objects :into (seq layout/Table)))
+    (on-click :table #(morph css3d-objects :into table))
     (on-click :sphere #(morph css3d-objects :into (seq layout/Sphere)))
     (on-click :helix #(morph css3d-objects :into (seq layout/Helix)))
     (on-click :grid #(morph css3d-objects :into (seq layout/Grid)))
 
-    (setup-animation scene)
-    (morph css3d-objects :into (seq layout/Table))
+    (morph css3d-objects :into table)
     scene))
 
 (defmethod process-msg :elements [[_ elements]]

@@ -15,21 +15,12 @@
     (set! (.. obj -position -z) z)
     obj))
 
-(def Table (let [elements (atom [])
-                 css3d-objects (atom [])]
-             (reify IShape 
-               (add [this element]
-                    (swap! elements conj element)
-                    (let [i (dec (count @elements))
-                          j (nth table/coordinates i)
-                          object3d (map->object3d {:x (-> (* (:x j) 140) (- 1330))
-                                                   :y (-> (* (:y j) -180) (+ 1330))
-                                                   :z 0})]
-                      (swap! css3d-objects conj object3d)))
-               cljs.core/ISeqable
-               (-seq [this]
-                     (seq @css3d-objects)))))
-
+(defn create-table [elements]
+  (for [i (range (count elements))
+        :let [j (nth table/coordinates i)]]
+    (map->object3d {:x (-> (* (:x j) 140) (- 1330))
+                    :y (-> (* (:y j) -180) (+ 1330))
+                    :z 0})))
 
 (def Sphere (let [elements (atom [])
                   css3d-objects (atom [])]
