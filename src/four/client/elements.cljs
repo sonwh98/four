@@ -108,26 +108,25 @@
                           )))))
 
 
-(defn create-scene [elements]
-  (let [scene (three/Scene.)]
-    (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
-            :let [color (-> (* (rand) 0.5) (+ 0.25))
-                  div [:div {:id    i
-                             :class "element"
-                             :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
-                       [:div {:class "number"} i]
-                       [:div {:class "symbol"} (:element/symbol element)]
-                       [:div {:class "details"} (:element/name element)]]
-                  css3d-object (div->css3d-object (c/html div))]]
-      (.. scene (add css3d-object)))
-    scene))
+(defn populate-scene [scene elements]
+  (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
+          :let [color (-> (* (rand) 0.5) (+ 0.25))
+                div [:div {:id    i
+                           :class "element"
+                           :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
+                     [:div {:class "number"} i]
+                     [:div {:class "symbol"} (:element/symbol element)]
+                     [:div {:class "details"} (:element/name element)]]
+                css3d-object (div->css3d-object (c/html div))]]
+    (.. scene (add css3d-object)))
+  (seq (. scene -children)))
 
 (defn on-click [shape morph-fn]
   (util/on (util/by-id (name shape)) "click" morph-fn))
 
 (defn init [elements]
-  (let [scene (create-scene elements)
-        css3d-objects (seq (. scene -children))]
+  (let [scene (three/Scene.)
+        css3d-objects (populate-scene scene elements)]
     (doseq [css3d-obj css3d-objects]
       (layout/add layout/Sphere css3d-obj)
       (layout/add layout/Table css3d-obj)
