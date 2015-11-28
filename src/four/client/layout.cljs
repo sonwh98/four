@@ -1,7 +1,6 @@
 (ns four.client.layout
   (:require [four.client.three :as three]
-            [four.client.table :as table]
-            ))
+            [four.client.table :as table]))
 
 (def PI (. js/Math -PI))
 
