@@ -1,5 +1,6 @@
 (ns four.client.core
-  (:require [four.client.three :as three]))
+  (:require [cljsjs.three]
+            [cljsjs.tween]))
 
 (defn map->object3d [{:keys [x y z] :as point}]
   (let [obj (js/THREE.Object3D.)]
@@ -21,24 +22,24 @@
     obj))
 
 (defn morph [css3d-objects _ shape]
-  (.. three/tween removeAll)
+  (.. js/TWEEN removeAll)
   (doseq [[i obj] (map-indexed (fn [i e] [i e]) css3d-objects)
           :let [object3d (nth shape i)
                 duration 1000]]
-    (.. (three/Tween. (. obj -position))
+    (.. (js/TWEEN.Tween. (. obj -position))
         (to (clj->js (object3d->map object3d))
             (+ (* (rand) duration)
                duration))
-        (easing (.. three/tween -Easing -Exponential -InOut))
+        (easing (.. js/TWEEN -Easing -Exponential -InOut))
         (start))
 
-    (.. (three/Tween. (. obj -rotation))
+    (.. (js/TWEEN.Tween. (. obj -rotation))
         (to (clj->js {:x (.. object3d -rotation -x)
                       :y (.. object3d -rotation -y)
                       :z (.. object3d -rotation -z)})
             (+ (* (rand) duration)
                duration))
-        (easing (.. three/tween -Easing -Exponential -InOut))
+        (easing (.. js/TWEEN -Easing -Exponential -InOut))
         (start))))
 
 (defn animate [animation-fn]

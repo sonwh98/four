@@ -1,7 +1,6 @@
 (ns four.client.elements
   (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [four.client.three :as three]
-            [four.client.core :as four :refer [morph div->css3d-object]]
+  (:require [four.client.core :as four :refer [morph div->css3d-object]]
             [four.client.util :as util]
             [four.client.layout :as layout]
             [four.client.ws :as ws :refer [process-msg]]
@@ -48,7 +47,7 @@
   (. renderer (render scene camera)))
 
 (four/animate (fn [time]
-                (.. three/tween update)
+                (.. js/TWEEN update)
                 (.. controls update)
                 (render-scene)))
 
@@ -57,10 +56,10 @@
         PI (. js/Math -PI) ]
     (util/on div "click" (fn [evt]
                            (let [p (.. css3d-object -position clone)]
-                             (.. (three/Tween. (clj->js {:theta 0}))
+                             (.. (js/TWEEN.Tween. (clj->js {:theta 0}))
                                  (to (clj->js {:theta (* 2 PI)})
                                      1000)
-                                 (easing (.. three/tween -Easing -Exponential -InOut))
+                                 (easing (.. js/TWEEN -Easing -Exponential -InOut))
                                  (onUpdate (fn [a]
                                              (this-as this
                                                       (let [angle (js->clj this)]
