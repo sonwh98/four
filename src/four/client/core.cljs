@@ -24,7 +24,7 @@
 (defn tween [property _ new-val]
   (let [duration 1000]
     (.. (js/TWEEN.Tween. property)
-        (new-val (clj->js new-val)
+        (to (clj->js new-val)
             (+ (* (rand) duration)
                duration))
         (easing (.. js/TWEEN -Easing -Exponential -InOut))
