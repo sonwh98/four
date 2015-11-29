@@ -14,12 +14,6 @@
    :y (aget property "y")
    :z (aget property "z")})
 
-(defn object3d->position-map [object3d]
-  (property->map (. object3d -position)))
-
-(defn object3d->rotation-map [object3d]
-  (property->map (. object3d -rotation)))
-
 (defn div->css3d-object [div]
   (let [css3d-obj (js/THREE.CSS3DObject. div)]
     (set! (.. css3d-obj -position -x) (-> (* (rand) 4000) (- 2000)))
@@ -42,8 +36,8 @@
           :let [object3d (nth shape i)
                 current-position (. css3d-obj -position)
                 current-rotation (. css3d-obj -rotation)
-                new-position (object3d->position-map object3d)
-                new-rotation (object3d->rotation-map object3d)
+                new-position (property->map (. object3d -position))
+                new-rotation (property->map (. object3d -rotation))
                 duration 1000]]
     (tween current-position :to new-position)
     (tween current-rotation :to new-rotation)))
