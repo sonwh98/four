@@ -2,7 +2,7 @@
   (:require [four.client.three :as three]))
 
 (defn map->object3d [{:keys [x y z] :as point}]
-  (let [obj (three/Object3D.)]
+  (let [obj (js/THREE.Object3D.)]
     (set! (.. obj -position -x) x)
     (set! (.. obj -position -y) y)
     (set! (.. obj -position -z) z)
@@ -14,7 +14,7 @@
    :z (.. object3d -position -z)})
 
 (defn div->css3d-object [div]
-  (let [obj (three/CSS3DObject. div)]
+  (let [obj (js/THREE.CSS3DObject. div)]
     (set! (.. obj -position -x) (-> (* (rand) 4000) (- 2000)))
     (set! (.. obj -position -y) (-> (* (rand) 4000) (- 2000)))
     (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
