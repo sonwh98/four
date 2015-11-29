@@ -6,7 +6,7 @@
 #?(:cljs (enable-console-print!))
 
 ;;a message is a vector of the form [topic value]
-;;the topic can be value but should be a keyword
+;;the topic can be any value but should be a keyword
 (defonce message-bus (chan 10))
 (defonce message-publication (pub message-bus (fn [msg]
                                                 (if (vector? msg)
