@@ -9,7 +9,7 @@
     (set! (.. object3d -position -z) z)
     object3d))
 
-(defn object3d->map [object3d]
+(defn object3d->position-map [object3d]
   {:x (.. object3d -position -x)
    :y (.. object3d -position -y)
    :z (.. object3d -position -z)})
@@ -36,7 +36,7 @@
           :let [object3d (nth shape i)
                 duration 1000]]
 
-    (tween (. css3d-obj -position) :to (object3d->map object3d))
+    (tween (. css3d-obj -position) :to (object3d->position-map object3d))
     (tween (. css3d-obj -rotation) :to {:x (.. object3d -rotation -x)
                                         :y (.. object3d -rotation -y)
                                         :z (.. object3d -rotation -z)})))
