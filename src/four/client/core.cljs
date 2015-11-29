@@ -3,11 +3,11 @@
             [cljsjs.tween]))
 
 (defn map->object3d [{:keys [x y z] :as point}]
-  (let [obj (js/THREE.Object3D.)]
-    (set! (.. obj -position -x) x)
-    (set! (.. obj -position -y) y)
-    (set! (.. obj -position -z) z)
-    obj))
+  (let [object3d (js/THREE.Object3D.)]
+    (set! (.. object3d -position -x) x)
+    (set! (.. object3d -position -y) y)
+    (set! (.. object3d -position -z) z)
+    object3d))
 
 (defn object3d->map [object3d]
   {:x (.. object3d -position -x)
@@ -15,25 +15,25 @@
    :z (.. object3d -position -z)})
 
 (defn div->css3d-object [div]
-  (let [obj (js/THREE.CSS3DObject. div)]
-    (set! (.. obj -position -x) (-> (* (rand) 4000) (- 2000)))
-    (set! (.. obj -position -y) (-> (* (rand) 4000) (- 2000)))
-    (set! (.. obj -position -z) (-> (* (rand) 4000) (- 2000)))
-    obj))
+  (let [css3d-obj (js/THREE.CSS3DObject. div)]
+    (set! (.. css3d-obj -position -x) (-> (* (rand) 4000) (- 2000)))
+    (set! (.. css3d-obj -position -y) (-> (* (rand) 4000) (- 2000)))
+    (set! (.. css3d-obj -position -z) (-> (* (rand) 4000) (- 2000)))
+    css3d-obj))
 
 (defn morph [css3d-objects _ shape]
   (.. js/TWEEN removeAll)
-  (doseq [[i obj] (map-indexed (fn [i e] [i e]) css3d-objects)
+  (doseq [[i css3d-obj] (map-indexed (fn [i e] [i e]) css3d-objects)
           :let [object3d (nth shape i)
                 duration 1000]]
-    (.. (js/TWEEN.Tween. (. obj -position))
+    (.. (js/TWEEN.Tween. (. css3d-obj -position))
         (to (clj->js (object3d->map object3d))
             (+ (* (rand) duration)
                duration))
         (easing (.. js/TWEEN -Easing -Exponential -InOut))
         (start))
 
-    (.. (js/TWEEN.Tween. (. obj -rotation))
+    (.. (js/TWEEN.Tween. (. css3d-obj -rotation))
         (to (clj->js {:x (.. object3d -rotation -x)
                       :y (.. object3d -rotation -y)
                       :z (.. object3d -rotation -z)})
