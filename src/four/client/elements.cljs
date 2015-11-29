@@ -3,7 +3,6 @@
             [four.client.dom :as dom]
             [four.client.layout :as layout]
             [four.client.ws :as ws :refer [process-msg]]
-            [chord.client :refer [ws-ch]]
             [four.messaging :as m]
             [crate.core :as c]))
 
@@ -20,9 +19,9 @@
 
 (def scene (js/THREE.Scene.))
 (def camera (js/THREE.PerspectiveCamera. 50 (/ (.-innerWidth dom/window)
-                                            (.-innerHeight dom/window))
-                                      10000
-                                      1000))
+                                               (.-innerHeight dom/window))
+                                         10000
+                                         1000))
 (set! (.. camera -position -z) 4000)
 
 (def controls (js/THREE.TrackballControls. camera domElement))
@@ -42,28 +41,28 @@
   (let [div (. css3d-object -element)
         PI (. js/Math -PI) ]
     (dom/on div "click" (fn [evt]
-                           (let [p (.. css3d-object -position clone)]
-                             (.. (js/TWEEN.Tween. (clj->js {:theta 0}))
-                                 (to (clj->js {:theta (* 2 PI)})
-                                     1000)
-                                 (easing (.. js/TWEEN -Easing -Exponential -InOut))
-                                 (onUpdate (fn [a]
-                                             (this-as this
-                                                      (let [angle (js->clj this)]
-                                                        (set! (.. css3d-object -rotation -y)
-                                                              (angle "theta"))))))
-                                 (onComplete (fn []
-                                               (set! (.. css3d-object -rotation -y)
-                                                     (* 2 PI))))
-                                 (start))
-                             ;;(set!  (.. div -style -width) "90%")
-                             ;;(set!  (.. div -style -height) "90%")
-                             ;; (set! (.. camera -position -x) (.. p -x))
-                             ;; (set! (.. camera -position -y) (.. p -y))
-                             ;; (set! (.. camera -position -z) 500)
-                             ;; (set! (.. controls -target) p)
-                             ;; (.. camera (lookAt p))
-                             )))))
+                          (let [p (.. css3d-object -position clone)]
+                            (.. (js/TWEEN.Tween. (clj->js {:theta 0}))
+                                (to (clj->js {:theta (* 2 PI)})
+                                    1000)
+                                (easing (.. js/TWEEN -Easing -Exponential -InOut))
+                                (onUpdate (fn [a]
+                                            (this-as this
+                                                     (let [angle (js->clj this)]
+                                                       (set! (.. css3d-object -rotation -y)
+                                                             (angle "theta"))))))
+                                (onComplete (fn []
+                                              (set! (.. css3d-object -rotation -y)
+                                                    (* 2 PI))))
+                                (start))
+                            ;;(set!  (.. div -style -width) "90%")
+                            ;;(set!  (.. div -style -height) "90%")
+                            ;; (set! (.. camera -position -x) (.. p -x))
+                            ;; (set! (.. camera -position -y) (.. p -y))
+                            ;; (set! (.. camera -position -z) 500)
+                            ;; (set! (.. controls -target) p)
+                            ;; (.. camera (lookAt p))
+                            )))))
 
 (defn populate [scene _ elements]
   (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
