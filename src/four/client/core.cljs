@@ -14,6 +14,11 @@
    :y (.. object3d -position -y)
    :z (.. object3d -position -z)})
 
+(defn object3d->rotation-map [object3d]
+  {:x (.. object3d -rotation -x)
+   :y (.. object3d -rotation -y)
+   :z (.. object3d -rotation -z)})
+
 (defn div->css3d-object [div]
   (let [css3d-obj (js/THREE.CSS3DObject. div)]
     (set! (.. css3d-obj -position -x) (-> (* (rand) 4000) (- 2000)))
@@ -37,9 +42,7 @@
                 duration 1000]]
 
     (tween (. css3d-obj -position) :to (object3d->position-map object3d))
-    (tween (. css3d-obj -rotation) :to {:x (.. object3d -rotation -x)
-                                        :y (.. object3d -rotation -y)
-                                        :z (.. object3d -rotation -z)})))
+    (tween (. css3d-obj -rotation) :to (object3d->rotation-map object3d))))
 
 (defn animate [animation-fn]
   ((fn animation-loop [time]
