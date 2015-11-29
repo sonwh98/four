@@ -5,8 +5,7 @@
             [four.client.ws :as ws :refer [process-msg]]
             [chord.client :refer [ws-ch]]
             [four.messaging :as m]
-            [crate.core :as c]
-            [cljs.core.async :refer [<! >! put! chan]]))
+            [crate.core :as c]))
 
 (enable-console-print!)
 
