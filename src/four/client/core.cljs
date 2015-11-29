@@ -40,10 +40,13 @@
   (.. js/TWEEN removeAll)
   (doseq [[i css3d-obj] (map-indexed (fn [i e] [i e]) css3d-objects)
           :let [object3d (nth shape i)
+                current-position (. css3d-obj -position)
+                current-rotation (. css3d-obj -rotation)
+                new-position (object3d->position-map object3d)
+                new-rotation (object3d->rotation-map object3d)
                 duration 1000]]
-
-    (tween (. css3d-obj -position) :to (object3d->position-map object3d))
-    (tween (. css3d-obj -rotation) :to (object3d->rotation-map object3d))))
+    (tween current-position :to new-position)
+    (tween current-rotation :to new-rotation)))
 
 (defn animate [animation-fn]
   ((fn animation-loop [time]
