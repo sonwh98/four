@@ -1,5 +1,4 @@
 (ns four.client.elements
-  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [four.client.core :as four :refer [morph div->css3d-object]]
             [four.client.dom :as dom]
             [four.client.layout :as layout]
