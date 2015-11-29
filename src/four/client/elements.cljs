@@ -32,17 +32,6 @@
 (set! (.. controls -minDistance) 500)
 (set! (.. controls -maxDistance) 6000)
 
-(dom/on (dom/by-id "reset") "click" (fn [event]
-                                        (. controls reset)
-                                        (set! (.. controls -rotateSpeed) 0.5)
-                                        (set! (.. controls -minDistance) 500)
-                                        (set! (.. controls -maxDistance) 6000)
-
-                                        (set! (.. camera -position -x) 0)
-                                        (set! (.. camera -position -y) 0)
-                                        (set! (.. camera -position -z) 3000)))
-
-
 (defn render-scene []
   (. renderer (render scene camera)))
 
@@ -78,7 +67,6 @@
                              ;; (.. camera (lookAt p))
                              )))))
 
-
 (defn populate [scene _ elements]
   (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
           :let [color (-> (* (rand) 0.5) (+ 0.25))
@@ -92,9 +80,18 @@
     (.. scene (add css3d-object)))
   scene)
 
-(defn on-click [shape morph-fn]
-  (dom/on (dom/by-id (name shape)) "click" morph-fn))
+(defn on-click [button-id callback-fn]
+  (dom/on (dom/by-id (name button-id)) "click" callback-fn))
 
+(defn reset-controls []
+  (. controls reset)
+  (set! (.. controls -rotateSpeed) 0.5)
+  (set! (.. controls -minDistance) 500)
+  (set! (.. controls -maxDistance) 6000)
+
+  (set! (.. camera -position -x) 0)
+  (set! (.. camera -position -y) 0)
+  (set! (.. camera -position -z) 3000))
 
 (defn init [elements]
   (let [scene (populate scene :with elements)
@@ -110,6 +107,7 @@
     (on-click :sphere #(morph css3d-objects :into sphere))
     (on-click :helix #(morph css3d-objects :into helix))
     (on-click :grid #(morph css3d-objects :into grid))
+    (on-click :reset reset-controls)
 
     (morph css3d-objects :into table))) 
 
