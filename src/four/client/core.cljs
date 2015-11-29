@@ -21,26 +21,25 @@
     (set! (.. css3d-obj -position -z) (-> (* (rand) 4000) (- 2000)))
     css3d-obj))
 
+(defn tween [property _ to]
+  (let [duration 1000]
+    (.. (js/TWEEN.Tween. property)
+        (to (clj->js to)
+            (+ (* (rand) duration)
+               duration))
+        (easing (.. js/TWEEN -Easing -Exponential -InOut))
+        (start))))
+
 (defn morph [css3d-objects _ shape]
   (.. js/TWEEN removeAll)
   (doseq [[i css3d-obj] (map-indexed (fn [i e] [i e]) css3d-objects)
           :let [object3d (nth shape i)
                 duration 1000]]
-    (.. (js/TWEEN.Tween. (. css3d-obj -position))
-        (to (clj->js (object3d->map object3d))
-            (+ (* (rand) duration)
-               duration))
-        (easing (.. js/TWEEN -Easing -Exponential -InOut))
-        (start))
 
-    (.. (js/TWEEN.Tween. (. css3d-obj -rotation))
-        (to (clj->js {:x (.. object3d -rotation -x)
-                      :y (.. object3d -rotation -y)
-                      :z (.. object3d -rotation -z)})
-            (+ (* (rand) duration)
-               duration))
-        (easing (.. js/TWEEN -Easing -Exponential -InOut))
-        (start))))
+    (tween (. css3d-obj -position) :to (object3d->map object3d))
+    (tween (. css3d-obj -rotation) :to {:x (.. object3d -rotation -x)
+                                        :y (.. object3d -rotation -y)
+                                        :z (.. object3d -rotation -z)})))
 
 (defn animate [animation-fn]
   ((fn animation-loop [time]
