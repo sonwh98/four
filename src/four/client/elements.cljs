@@ -1,7 +1,7 @@
 (ns four.client.elements
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [four.client.core :as four :refer [morph div->css3d-object]]
-            [four.client.util :as util]
+            [four.client.dom :as dom]
             [four.client.layout :as layout]
             [four.client.ws :as ws :refer [process-msg]]
             [chord.client :refer [ws-ch]]
@@ -12,17 +12,17 @@
 (enable-console-print!)
 
 (def renderer (js/THREE.CSS3DRenderer.))
-(. renderer (setSize (. util/window -innerWidth)
-                     (. util/window -innerHeight)))
+(. renderer (setSize (. dom/window -innerWidth)
+                     (. dom/window -innerHeight)))
 
 
 (def domElement (. renderer -domElement))
 (set! (.. domElement -style -position) "absolute")
-(. (util/by-id "container") appendChild domElement)
+(. (dom/by-id "container") appendChild domElement)
 
 (def scene (js/THREE.Scene.))
-(def camera (js/THREE.PerspectiveCamera. 50 (/ (.-innerWidth util/window)
-                                            (.-innerHeight util/window))
+(def camera (js/THREE.PerspectiveCamera. 50 (/ (.-innerWidth dom/window)
+                                            (.-innerHeight dom/window))
                                       10000
                                       1000))
 (set! (.. camera -position -z) 4000)
@@ -32,7 +32,7 @@
 (set! (.. controls -minDistance) 500)
 (set! (.. controls -maxDistance) 6000)
 
-(util/on (util/by-id "reset") "click" (fn [event]
+(dom/on (dom/by-id "reset") "click" (fn [event]
                                         (. controls reset)
                                         (set! (.. controls -rotateSpeed) 0.5)
                                         (set! (.. controls -minDistance) 500)
@@ -54,7 +54,7 @@
 (defn rotate [css3d-object _]
   (let [div (. css3d-object -element)
         PI (. js/Math -PI) ]
-    (util/on div "click" (fn [evt]
+    (dom/on div "click" (fn [evt]
                            (let [p (.. css3d-object -position clone)]
                              (.. (js/TWEEN.Tween. (clj->js {:theta 0}))
                                  (to (clj->js {:theta (* 2 PI)})
@@ -93,7 +93,7 @@
   scene)
 
 (defn on-click [shape morph-fn]
-  (util/on (util/by-id (name shape)) "click" morph-fn))
+  (dom/on (dom/by-id (name shape)) "click" morph-fn))
 
 
 (defn init [elements]
@@ -116,4 +116,9 @@
 (defmethod process-msg :elements [[_ elements]]
   (init elements))
 
-(m/on :dom/ready #(ws/send! [:get-elements true]))
+(defn get-elements []
+  (m/on :dom/ready #(ws/send! [:get-elements true])))
+
+(defn on-js-reload []
+  (println "on-js-reload")
+  (get-elements))
