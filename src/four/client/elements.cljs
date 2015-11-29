@@ -119,5 +119,6 @@
 (defn send-get-elements []
   (dom/whenever-dom-ready #(ws/send! [:get-elements true])))
 
+;;figwheel calls this function when new code is available
 (defn on-js-reload []
   (send-get-elements))
