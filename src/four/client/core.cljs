@@ -21,10 +21,10 @@
     (set! (.. css3d-obj -position -z) (-> (* (rand) 4000) (- 2000)))
     css3d-obj))
 
-(defn tween [property _ to]
+(defn tween [property _ new-val]
   (let [duration 1000]
     (.. (js/TWEEN.Tween. property)
-        (to (clj->js to)
+        (new-val (clj->js new-val)
             (+ (* (rand) duration)
                duration))
         (easing (.. js/TWEEN -Easing -Exponential -InOut))
