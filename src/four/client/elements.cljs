@@ -116,9 +116,8 @@
 (defmethod process-msg :elements [[_ elements]]
   (init elements))
 
-(defn get-elements []
-  (m/on :dom/ready #(ws/send! [:get-elements true])))
+(defn send-get-elements []
+  (dom/whenever-dom-ready #(ws/send! [:get-elements true])))
 
 (defn on-js-reload []
-  (println "on-js-reload")
-  (get-elements))
+  (send-get-elements))

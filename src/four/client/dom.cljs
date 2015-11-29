@@ -25,3 +25,5 @@
   (let [div (.. document (createElement "div"))]
     (set! (.. div -innerHTML) html-str)
     (.. div -firstChild)))
+
+(def whenever-dom-ready (m/whenever :dom/ready :broadcasted))
