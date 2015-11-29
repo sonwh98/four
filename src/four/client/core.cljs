@@ -9,15 +9,17 @@
     (set! (.. object3d -position -z) z)
     object3d))
 
+(defn to-map [object3d property-name]
+  (let [property (aget object3d property-name)]
+    {:x (aget property "x")
+     :y (aget property "y")
+     :z (aget property "z")}))
+
 (defn object3d->position-map [object3d]
-  {:x (.. object3d -position -x)
-   :y (.. object3d -position -y)
-   :z (.. object3d -position -z)})
+  (to-map object3d "position"))
 
 (defn object3d->rotation-map [object3d]
-  {:x (.. object3d -rotation -x)
-   :y (.. object3d -rotation -y)
-   :z (.. object3d -rotation -z)})
+  (to-map object3d "rotation"))
 
 (defn div->css3d-object [div]
   (let [css3d-obj (js/THREE.CSS3DObject. div)]
