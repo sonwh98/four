@@ -1,6 +1,5 @@
 (ns four.client.layout
-  (:require [four.client.three :as three]
-            [four.client.core :as four]
+  (:require [four.client.core :as four]
             [four.client.table :as table]))
 
 (def PI (. js/Math -PI))
@@ -14,7 +13,7 @@
 
 (defn create-sphere [elements]
   (let [size (count elements)
-        v (three/Vector3.)]
+        v (js/THREE.Vector3.)]
     (for [i (range size)
           :let [phi (. js/Math acos (+ (/ (* 2 i) size)
                                        -1))
@@ -28,7 +27,7 @@
           object3d))))
 
 (defn create-helix [elements]
-  (let [v (three/Vector3.)
+  (let [v (js/THREE.Vector3.)
         size (count elements)]
     (for [i (range size)
           :let [phi (* i 0.175 PI)

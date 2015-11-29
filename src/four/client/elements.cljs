@@ -12,7 +12,7 @@
 
 (enable-console-print!)
 
-(def renderer (three/CSS3DRenderer.))
+(def renderer (js/THREE.CSS3DRenderer.))
 (. renderer (setSize (. util/window -innerWidth)
                      (. util/window -innerHeight)))
 
@@ -21,14 +21,14 @@
 (set! (.. domElement -style -position) "absolute")
 (. (util/by-id "container") appendChild domElement)
 
-(def scene (three/Scene.))
-(def camera (three/PerspectiveCamera. 50 (/ (.-innerWidth util/window)
+(def scene (js/THREE.Scene.))
+(def camera (js/THREE.PerspectiveCamera. 50 (/ (.-innerWidth util/window)
                                             (.-innerHeight util/window))
                                       10000
                                       1000))
 (set! (.. camera -position -z) 4000)
 
-(def controls (three/TrackballControls. camera domElement))
+(def controls (js/THREE.TrackballControls. camera domElement))
 (set! (.. controls -rotateSpeed) 0.5)
 (set! (.. controls -minDistance) 500)
 (set! (.. controls -maxDistance) 6000)

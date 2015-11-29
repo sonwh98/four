@@ -5,20 +5,7 @@
 (enable-console-print!)
 
 (def three js/THREE)
-(def Scene (.-Scene three))
 
-(def PerspectiveCamera (.-PerspectiveCamera three))
-(def OrthographicCamera (.-OrthographicCamera three))
-(def WebGLRenderer (.-WebGLRenderer three))
-(def BoxGeometry (.-BoxGeometry three))
-(def MeshBasicMaterial (.-MeshBasicMaterial three))
-(def Mesh (.-Mesh three))
-
-(def CSS3DObject (.-CSS3DObject three))
-(def Object3D (.-Object3D three))
-(def CSS3DRenderer (.-CSS3DRenderer three))
-(def TrackballControls (..  three -TrackballControls))
-(def Vector3 (.. three -Vector3))
 
 (def tween js/TWEEN)
 (def Tween (.. tween -Tween))
