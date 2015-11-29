@@ -7,9 +7,9 @@
 (defn create-table [elements]
   (for [i (range (count elements))
         :let [j (nth table/coordinates i)]]
-    (four/map->object3d {:x (-> (* (:x j) 140) (- 1330))
-                         :y (-> (* (:y j) -180) (+ 1330))
-                         :z 0})))
+    (four/position-map->object3d {:x (-> (* (:x j) 140) (- 1330))
+                                  :y (-> (* (:y j) -180) (+ 1330))
+                                  :z 0})))
 
 (defn create-sphere [elements]
   (let [size (count elements)
@@ -19,9 +19,9 @@
                                        -1))
                 theta (* phi
                          (. js/Math sqrt (* size PI)))
-                object3d (four/map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
-                                              :y (* 800 (. js/Math sin theta) (. js/Math sin phi))
-                                              :z (* 800 (. js/Math cos phi))})]]
+                object3d (four/position-map->object3d {:x (* 800 (. js/Math cos theta) (. js/Math sin phi))
+                                                       :y (* 800 (. js/Math sin theta) (. js/Math sin phi))
+                                                       :z (* 800 (. js/Math cos phi))})]]
       (do (.. v (copy (. object3d -position)) (multiplyScalar 2))
           (. object3d (lookAt v))
           object3d))))
@@ -31,10 +31,10 @@
         size (count elements)]
     (for [i (range size)
           :let [phi (* i 0.175 PI)
-                object (four/map->object3d {:x (* 900 (. js/Math sin phi))
-                                            :y (+ (* i -8)
-                                                  450)
-                                            :z (* 900 (. js/Math cos phi))})]]
+                object (four/position-map->object3d {:x (* 900 (. js/Math sin phi))
+                                                     :y (+ (* i -8)
+                                                           450)
+                                                     :z (* 900 (. js/Math cos phi))})]]
 
       (do (set! (. v -x) (* 2 (.. object -position -x)))
           (set! (. v -y) (.. object -position -y))
@@ -45,10 +45,10 @@
 (defn create-grid [elements]
   (let [size (count elements)]
     (for [i (range size)]
-      (four/map->object3d {:x (- (* 400 (mod i 5))
-                                 800)
-                           :y (+ 800 (* -400 (mod (. js/Math floor (/ i 5))
-                                                  5)))
-                           :z (- (* 1000
-                                    (. js/Math floor (/ i 25)))
-                                 2000)}))))
+      (four/position-map->object3d {:x (- (* 400 (mod i 5))
+                                          800)
+                                    :y (+ 800 (* -400 (mod (. js/Math floor (/ i 5))
+                                                           5)))
+                                    :z (- (* 1000
+                                             (. js/Math floor (/ i 25)))
+                                          2000)}))))

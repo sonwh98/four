@@ -2,7 +2,7 @@
   (:require [cljsjs.three]
             [cljsjs.tween]))
 
-(defn map->object3d [{:keys [x y z] :as point}]
+(defn position-map->object3d [{:keys [x y z] :as position}]
   (let [object3d (js/THREE.Object3D.)]
     (set! (.. object3d -position -x) x)
     (set! (.. object3d -position -y) y)
