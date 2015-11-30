@@ -70,20 +70,28 @@
                             )))))
 
 (defn populate [scene _ elements]
-  (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
-          :let [color (-> (* (rand) 0.5) (+ 0.25))
-                div [:div {:id    i
-                           :class "element"
-                           :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
-                     [:div {:class "number"} i]
-                     [:div {:class "symbol"} (:element/symbol element)]
-                     [:div {:class "details"} (:element/name element)]]
-                css3d-object (div->css3d-object (c/html div))]]
-    (.. scene (add css3d-object)))
+  (let [geometry (js/THREE.BoxGeometry. 100 100 100)
+        material (js/THREE.MeshBasicMaterial. (clj->js {:color 0x00ff00}))
+        cube (js/THREE.Mesh. geometry material)]
+    (. scene add cube)
+    )
+  ;; (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
+  ;;         :let [color (-> (* (rand) 0.5) (+ 0.25))
+  ;;               div [:div {:id    i
+  ;;                          :class "element"
+  ;;                          :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
+  ;;                    [:div {:class "number"} i]
+  ;;                    [:div {:class "symbol"} (:element/symbol element)]
+  ;;                    [:div {:class "details"} (:element/name element)]]
+  ;;               css3d-object (div->css3d-object (c/html div))]]
+  ;;   (.. scene (add css3d-object)))
   scene)
 
 (defn on-click [button-id callback-fn]
-  (dom/on (dom/by-id (name button-id)) "click" callback-fn))
+
+  (dom/on (dom/by-id (name button-id)) "click" (fn []
+                                                 (println "click " button-id)
+                                                 (callback-fn))))
 
 (defn reset-controls []
   (. controls reset)
@@ -102,8 +110,8 @@
         sphere (layout/create-sphere elements)
         helix (layout/create-helix elements)
         grid (layout/create-grid elements)]
-    (doseq [css3d-obj css3d-objects]
-      (rotate css3d-obj :on-click))
+    ;; (doseq [css3d-obj css3d-objects]
+    ;;   (rotate css3d-obj :on-click))
     
     (on-click :table #(morph css3d-objects :into table))
     (on-click :sphere #(morph css3d-objects :into sphere))
