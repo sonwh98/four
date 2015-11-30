@@ -70,11 +70,15 @@
                             )))))
 
 (defn populate [scene _ elements]
-  (let [geometry (js/THREE.BoxGeometry. 100 100 100)
-        material (js/THREE.MeshBasicMaterial. (clj->js {:color 0x00ff00}))
-        cube (js/THREE.Mesh. geometry material)]
-    (. scene add cube)
-    )
+  (let [geometry (js/THREE.PlaneGeometry. 120 160)]
+    (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
+            :let [color (-> (* (rand) 0.5) (+ 0.25))
+                  rgb (.. (js/THREE.Color.) (setRGB color 127 127))
+                  material (js/THREE.MeshBasicMaterial. (clj->js {:color rgb
+                                                        :wireframe false}))
+                  plane (js/THREE.Mesh. geometry material)]]
+      (. scene add plane))
+      
   ;; (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
   ;;         :let [color (-> (* (rand) 0.5) (+ 0.25))
   ;;               div [:div {:id    i
@@ -85,7 +89,7 @@
   ;;                    [:div {:class "details"} (:element/name element)]]
   ;;               css3d-object (div->css3d-object (c/html div))]]
   ;;   (.. scene (add css3d-object)))
-  scene)
+  scene))
 
 (defn on-click [button-id callback-fn]
 
