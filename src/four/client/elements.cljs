@@ -21,7 +21,7 @@
                                            1000))
   (set! (.. camera -position -z) 4000)
   
-  (def renderer (js/THREE.CSS3DRenderer.))
+  (def renderer (js/THREE.WebGLRenderer.))
   (. renderer (setSize (. dom/window -innerWidth)
                        (. dom/window -innerHeight)))
   (def domElement (. renderer -domElement))
