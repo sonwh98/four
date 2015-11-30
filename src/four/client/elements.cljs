@@ -8,34 +8,39 @@
 
 (enable-console-print!)
 
-(def renderer (js/THREE.CSS3DRenderer.))
-(. renderer (setSize (. dom/window -innerWidth)
-                     (. dom/window -innerHeight)))
+(declare scene)
+(declare renderer)
+(declare camera)
+(declare controls)
 
+(defn init []
+  (def scene (js/THREE.Scene.))
+  (def camera (js/THREE.PerspectiveCamera. 50 (/ (.-innerWidth dom/window)
+                                                 (.-innerHeight dom/window))
+                                           10000
+                                           1000))
+  (set! (.. camera -position -z) 4000)
+  
+  (def renderer (js/THREE.CSS3DRenderer.))
+  (. renderer (setSize (. dom/window -innerWidth)
+                       (. dom/window -innerHeight)))
+  (def domElement (. renderer -domElement))
+  (set! (.. domElement -style -position) "absolute")
+  (. (dom/by-id "container") appendChild domElement)
 
-(def domElement (. renderer -domElement))
-(set! (.. domElement -style -position) "absolute")
-(. (dom/by-id "container") appendChild domElement)
+  (def controls (js/THREE.TrackballControls. camera domElement))
+  (set! (.. controls -rotateSpeed) 0.5)
+  (set! (.. controls -minDistance) 500)
+  (set! (.. controls -maxDistance) 6000)
 
-(def scene (js/THREE.Scene.))
-(def camera (js/THREE.PerspectiveCamera. 50 (/ (.-innerWidth dom/window)
-                                               (.-innerHeight dom/window))
-                                         10000
-                                         1000))
-(set! (.. camera -position -z) 4000)
+  (letfn [(render-scene []
+                        (. renderer (render scene camera)))]
+    (four/animate (fn [time]
+                    (.. js/TWEEN update)
+                    (.. controls update)
+                    (render-scene)))))
 
-(def controls (js/THREE.TrackballControls. camera domElement))
-(set! (.. controls -rotateSpeed) 0.5)
-(set! (.. controls -minDistance) 500)
-(set! (.. controls -maxDistance) 6000)
-
-(defn render-scene []
-  (. renderer (render scene camera)))
-
-(four/animate (fn [time]
-                (.. js/TWEEN update)
-                (.. controls update)
-                (render-scene)))
+(init)
 
 (defn rotate [css3d-object _]
   (let [div (. css3d-object -element)
@@ -90,9 +95,9 @@
   (set! (.. camera -position -y) 0)
   (set! (.. camera -position -z) 3000))
 
-(defn init [elements]
-  (let [scene (populate scene :with elements)
-        css3d-objects (seq (. scene -children))
+(defn build-scene [elements]
+  (populate scene :with elements)
+  (let [css3d-objects (seq (. scene -children))
         table (layout/create-table elements)
         sphere (layout/create-sphere elements)
         helix (layout/create-helix elements)
@@ -109,10 +114,11 @@
     (morph css3d-objects :into table))) 
 
 (defmethod process-msg :elements [[_ elements]]
-  (init elements))
+  (build-scene elements))
 
 (defn send-get-elements []
   (dom/whenever-dom-ready #(ws/send! [:get-elements true])))
+
 
 (send-get-elements)
 
