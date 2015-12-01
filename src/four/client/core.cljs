@@ -31,6 +31,9 @@
         (start))))
 
 (defn morph [css3d-objects _ shape]
+  (assert (= (count css3d-objects)
+             (count shape))
+          "css3d-objects and shape must have same cardinality")
   (.. js/TWEEN removeAll)
   (doseq [[i css3d-obj] (map-indexed (fn [i e] [i e]) css3d-objects)
           :let [object3d (nth shape i)
