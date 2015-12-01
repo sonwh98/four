@@ -30,8 +30,8 @@
 
   (def controls (js/THREE.TrackballControls. camera domElement))
   (set! (.. controls -rotateSpeed) 0.5)
-  (set! (.. controls -minDistance) 500)
-  (set! (.. controls -maxDistance) 6000)
+  (set! (.. controls -minDistance) 0)
+  (set! (.. controls -maxDistance) 10000)
 
   (letfn [(render-scene []
                         (. renderer (render scene camera)))]
@@ -85,15 +85,12 @@
 (defn on-click [button-id callback-fn]
   (dom/on (dom/by-id (name button-id)) "click" callback-fn))
 
-(defn reset-controls []
+(defn reset-camera []
   (. controls reset)
-  (set! (.. controls -rotateSpeed) 0.5)
-  (set! (.. controls -minDistance) 500)
-  (set! (.. controls -maxDistance) 6000)
 
   (set! (.. camera -position -x) 0)
   (set! (.. camera -position -y) 0)
-  (set! (.. camera -position -z) 3000))
+  (set! (.. camera -position -z) 4000))
 
 (defn build-scene [elements]
   (populate scene :with elements)
@@ -109,7 +106,7 @@
     (on-click :sphere #(morph css3d-objects :into sphere))
     (on-click :helix #(morph css3d-objects :into helix))
     (on-click :grid #(morph css3d-objects :into grid))
-    (on-click :reset reset-controls)
+    (on-click :reset reset-camera)
 
     (morph css3d-objects :into table))) 
 
