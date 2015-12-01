@@ -70,19 +70,17 @@
                             )))))
 
 (defn populate [scene _ elements]
-  (let [template (dom/by-id "template")
-        _ (. template remove)]
-    (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
-            :let [color (-> (* (rand) 0.5) (+ 0.25))
-                  div (. template cloneNode true)
-                  _ (.. div (setAttribute "id" i))
-                  _ (.. div (setAttribute "style" (str "background-color: rgba(0,127,127," color ")")))
-                  num (set! (.. div -children (item 0) -textContent) (str i))
-                  sym (set! (.. div -children (item 1) -textContent) (:element/symbol element))
-                  details (set! (.. div -children (item 2) -textContent) (:element/name element))
-                  css3d-object (div->css3d-object div)]]
-      (.. scene (add css3d-object)))
-    scene))
+  (doseq [[i element] (map-indexed (fn [i element] [i element]) elements)
+          :let [color (-> (* (rand) 0.5) (+ 0.25))
+                div [:div {:id    i
+                           :class "element"
+                           :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
+                     [:div {:class "number"} i]
+                     [:div {:class "symbol"} (:element/symbol element)]
+                     [:div {:class "details"} (:element/name element)]]
+                css3d-object (div->css3d-object (c/html div))]]
+    (.. scene (add css3d-object)))
+  scene)
 
 (defn on-click [button-id callback-fn]
   (dom/on (dom/by-id (name button-id)) "click" callback-fn))
