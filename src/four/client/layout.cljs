@@ -49,3 +49,31 @@
                                   :z (- (* 1000
                                            (. js/Math floor (/ i 25)))
                                         2000)})))
+
+(defn border-layout [widgets]
+  (let [group (partition-all (-> widgets count (/ 4)) widgets)
+        g0 (nth group 0)
+        g1 (nth group 1)
+        g2 (nth group 2)
+        g3 (nth group 3)
+
+        left (for [i (range (count g0))]
+               (four/position-map->object3d {:x -1400
+                                             :y (- (* i 160) 1000)
+                                             :z 0}))
+        right (for [i (range (count g1))]
+                (four/position-map->object3d {:x 1400
+                                              :y (- (* i 160) 1000)
+                                              :z 0}))
+        top (for [i (range (count g2))]
+              (four/position-map->object3d {:x (- (* i 120) 1000)
+                                            :y 1000
+                                            :z 0}))
+        bottom (for [i (range (count g3))]
+                 (four/position-map->object3d {:x (- (* i 120) 1000)
+                                               :y -1000
+                                               :z 0}))]
+    (four/morph g0 :into left)
+    (four/morph g1 :into right)
+    (four/morph g2 :into top)
+    (four/morph g3 :into bottom)))
