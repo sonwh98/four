@@ -4,8 +4,8 @@
 
 (def PI (. js/Math -PI))
 
-(defn create-table [elements]
-  (for [i (range (count elements))
+(defn create-table []
+  (for [i (range)
         :let [j (nth table/coordinates i)]]
     (four/position-map->object3d {:x (-> (* (:x j) 140) (- 1330))
                                   :y (-> (* (:y j) -180) (+ 1330))
