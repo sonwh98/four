@@ -31,17 +31,12 @@
         (start))))
 
 (defn morph [css3d-objects _ shape]
-  (assert (= (count css3d-objects)
-             (count shape))
-          "css3d-objects and shape must have same cardinality")
   (.. js/TWEEN removeAll)
-  (doseq [[i css3d-obj] (map-indexed (fn [i e] [i e]) css3d-objects)
-          :let [object3d (nth shape i)
-                current-position (. css3d-obj -position)
-                current-rotation (. css3d-obj -rotation)
-                new-position (property->map (. object3d -position))
-                new-rotation (property->map (. object3d -rotation))
-                duration 1000]]
+  (doseq [ [css3d-obj object3d] (partition 2 (interleave css3d-objects shape))
+           :let [current-position (. css3d-obj -position)
+                 current-rotation (. css3d-obj -rotation)
+                 new-position (property->map (. object3d -position))
+                 new-rotation (property->map (. object3d -rotation))]]
     (tween current-position :to new-position)
     (tween current-rotation :to new-rotation)))
 
