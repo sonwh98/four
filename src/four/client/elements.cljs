@@ -74,7 +74,7 @@
           :let [color (-> (* (rand) 0.5) (+ 0.25))
                 div [:div {:id    i
                            :class "element"
-                           :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
+                           :style {:backgroundColor (str "rgb(0,127,127)")}}
                      [:div {:class "number"} i]
                      [:div {:class "symbol"} (:element/symbol element)]
                      [:div {:class "details"} (:element/name element)]]
@@ -122,4 +122,4 @@
 
 ;;figwheel calls this function when new code is available
 (defn on-js-reload []
-  (send-get-elements)) 
+  ) 

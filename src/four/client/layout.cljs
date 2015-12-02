@@ -77,3 +77,48 @@
     (four/morph g1 :into right)
     (four/morph g2 :into top)
     (four/morph g3 :into bottom)))
+
+(defn tab-layout [widgets]
+  (let [group (partition-all (-> widgets count (/ 4)) widgets)
+        g0 (nth group 0)
+        g1 (nth group 1)
+        g2 (nth group 2)
+        g3 (nth group 3)
+
+        tab1 (for [i (range (count g0))]
+               (four/position-map->object3d {:x  (- (* 140 (mod i 10))
+                                                    1000)
+                                             :y (+ 500 (*  (- i (mod i 10))
+                                                            30))
+                                             :z 0}))
+        tab2 (for [i (range (count g1))]
+               (four/position-map->object3d {:x  (- (* 140 (mod i 10))
+                                                    1000)
+                                             :y (+ 500 (*  (- i (mod i 10))
+                                                            30))
+                                             :z 500}
+                                            ))
+        tab3 (for [i (range (count g2))]
+               (four/position-map->object3d {:x (- (* i 120) 1000)
+                                             :y 1000
+                                             :z 0}))
+        tab4 (for [i (range (count g3))]
+               (four/position-map->object3d {:x (- (* i 120) 1000)
+                                             :y -1000
+                                             :z 0}))]
+    (four/morph g0 :into tab1)
+    (four/morph g1 :into tab2)
+;    (four/morph g2 :into tab3)
+;   (four/morph g3 :into tab4)
+    ))
+
+(defn hide [widgets]
+  (let [group (partition-all (-> widgets count (/ 4)) widgets)
+        g0 (nth group 0)
+        g1 (nth group 1)
+        g2 (nth group 2)
+        g3 (nth group 3)]
+    (doseq [css3d-object g0
+            :let [div (. css3d-object -element)]]
+      (set! (.. div -style -display) "none"))))
+  
