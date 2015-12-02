@@ -31,7 +31,6 @@
         (start))))
 
 (defn morph [css3d-objects _ shape]
-  (.. js/TWEEN removeAll)
   (doseq [ [css3d-obj object3d] (partition 2 (interleave css3d-objects shape))
            :let [current-position (. css3d-obj -position)
                  current-rotation (. css3d-obj -rotation)
