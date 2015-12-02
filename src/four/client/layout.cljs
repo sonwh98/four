@@ -11,9 +11,8 @@
                                   :y (-> (* (:y j) -180) (+ 1330))
                                   :z 0})))
 
-(defn create-sphere [elements]
-  (let [size (count elements)
-        v (js/THREE.Vector3.)]
+(defn create-sphere [size]
+  (let [v (js/THREE.Vector3.)]
     (for [i (range size)
           :let [phi (. js/Math acos (+ (/ (* 2 i) size)
                                        -1))
@@ -26,9 +25,8 @@
           (. object3d (lookAt v))
           object3d))))
 
-(defn create-helix [elements]
-  (let [v (js/THREE.Vector3.)
-        size (count elements)]
+(defn create-helix [size]
+  (let [v (js/THREE.Vector3.)]
     (for [i (range size)
           :let [phi (* i 0.175 PI)
                 object (four/position-map->object3d {:x (* 900 (. js/Math sin phi))
@@ -42,13 +40,12 @@
           (. object lookAt v)
           object))))
 
-(defn create-grid [elements]
-  (let [size (count elements)]
-    (for [i (range size)]
-      (four/position-map->object3d {:x (- (* 400 (mod i 5))
-                                          800)
-                                    :y (+ 800 (* -400 (mod (. js/Math floor (/ i 5))
-                                                           5)))
-                                    :z (- (* 1000
-                                             (. js/Math floor (/ i 25)))
-                                          2000)}))))
+(defn create-grid [size]
+  (for [i (range size)]
+    (four/position-map->object3d {:x (- (* 400 (mod i 5))
+                                        800)
+                                  :y (+ 800 (* -400 (mod (. js/Math floor (/ i 5))
+                                                         5)))
+                                  :z (- (* 1000
+                                           (. js/Math floor (/ i 25)))
+                                        2000)})))

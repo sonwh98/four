@@ -95,10 +95,11 @@
 (defn build-scene [elements]
   (populate scene :with elements)
   (let [css3d-objects (seq (. scene -children))
-        table (layout/create-table )
-        sphere (layout/create-sphere elements)
-        helix (layout/create-helix elements)
-        grid (layout/create-grid elements)]
+        size (count css3d-objects)
+        table (layout/create-table)
+        sphere (layout/create-sphere size)
+        helix (layout/create-helix size)
+        grid (layout/create-grid size)]
     (doseq [css3d-obj css3d-objects]
       (rotate css3d-obj :on-click))
     
