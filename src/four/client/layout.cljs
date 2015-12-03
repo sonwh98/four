@@ -107,7 +107,7 @@
                                              :y -1000
                                              :z 0}))]
     (four/morph g0 :into tab1)
-    (four/morph g1 :into tab2)
+;    (four/morph g1 :into tab2)
 ;    (four/morph g2 :into tab3)
 ;   (four/morph g3 :into tab4)
     ))
