@@ -78,6 +78,30 @@
     (four/morph g2 :into top)
     (four/morph g3 :into bottom)))
 
+(defn create-panel [widgets]
+  (let [widgets (atom widgets)
+        position (atom {:x 0 :y 0 :z 0})
+        set-position (fn [p]
+                       (reset! position p))
+        add (fn [widget]
+              (swap! widgets conj widget))
+        plot-widget-positions (fn [] (for [i (range (count @widgets))]
+                                       (four/position-map->object3d {:x  (+ (:x @position)
+                                                                            (- (* 140 (mod i 10))
+                                                                               1000))
+                                                                     :y (+ (:y @position)
+                                                                           (+ 500 (*  (- i (mod i 10))
+                                                                                      30)))
+                                                                     :z (+ (:z @position)
+                                                                           0)})))
+        do-layout (fn []
+                    (four/morph @widgets :into (plot-widget-positions)))]
+    
+    (add-watch position :position (fn [k r o n]
+                                    (println "position changed. do-layout")
+                                    (do-layout)))
+    {:add add :do-layout do-layout :set-position set-position}))
+
 (defn tab-layout [widgets]
   (let [group (partition-all (-> widgets count (/ 4)) widgets)
         g0 (nth group 0)
@@ -89,13 +113,13 @@
                (four/position-map->object3d {:x  (- (* 140 (mod i 10))
                                                     1000)
                                              :y (+ 500 (*  (- i (mod i 10))
-                                                            30))
+                                                           30))
                                              :z 0}))
         tab2 (for [i (range (count g1))]
                (four/position-map->object3d {:x  (- (* 140 (mod i 10))
                                                     1000)
                                              :y (+ 500 (*  (- i (mod i 10))
-                                                            30))
+                                                           30))
                                              :z 500}
                                             ))
         tab3 (for [i (range (count g2))]
@@ -107,9 +131,9 @@
                                              :y -1000
                                              :z 0}))]
     (four/morph g0 :into tab1)
-;    (four/morph g1 :into tab2)
-;    (four/morph g2 :into tab3)
-;   (four/morph g3 :into tab4)
+                                        ;    (four/morph g1 :into tab2)
+                                        ;    (four/morph g2 :into tab3)
+                                        ;   (four/morph g3 :into tab4)
     ))
 
 (defn hide [widgets]
@@ -121,4 +145,4 @@
     (doseq [css3d-object g0
             :let [div (. css3d-object -element)]]
       (set! (.. div -style -display) "none"))))
-  
+
