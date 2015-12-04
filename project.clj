@@ -11,8 +11,7 @@
                  [org.danielsz/system "0.1.9"]
                  [environ "1.0.0"]
                  
-                 [org.clojure/clojurescript "1.7.145"]
-                 ;;[org.clojure/clojurescript "1.7.170"]
+                 [org.clojure/clojurescript "1.7.170"]
                  [org.clojure/core.logic "0.8.10"]
                  
                  [reagent "0.5.1"]
@@ -33,8 +32,8 @@
                  [com.cognitect/transit-clj "0.8.285"]
                  [com.cognitect/transit-cljs "0.8.225"]]
 
-  :plugins [[lein-cljsbuild "1.1.0"]
-            [lein-figwheel "0.4.1"]
+  :plugins [[lein-cljsbuild "1.1.1"]
+            [lein-figwheel "0.5.0-2"]
             [lein-environ "1.0.0"]
             [lein-exec "0.3.5"]]
 
