@@ -12,7 +12,9 @@
                  [environ "1.0.0"]
                  
                  [org.clojure/clojurescript "1.7.145"]
-                 ;[org.clojure/clojurescript "1.7.170"]
+                 ;;[org.clojure/clojurescript "1.7.170"]
+                 [org.clojure/core.logic "0.8.10"]
+                 
                  [reagent "0.5.1"]
                  [cljsjs/three "0.0.72-css3d"]
                  [cljsjs/tween "16.3.1"]
