@@ -1,10 +1,11 @@
 # four.cljs
 
-Three.js ClojureScript examples
+Constraint base layout in ClojureScript. 
 
 ## Overview
 
-Learning WebGL with Three.js using ClojureScript
+Layout using CSS can be confusing.  It is simiplier to specify constraints, and let the engine figure out how to do the layout using logic programming
+using core.logic
 
 ## Setup
 
