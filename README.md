@@ -4,8 +4,7 @@ Constraint base layout in ClojureScript.
 
 ## Overview
 
-Layout using CSS can be confusing.  It is simiplier to specify constraints, and let the engine figure out how to do the layout using logic programming
-using core.logic
+Layout using CSS can be confusing.  It is simiplier to specify constraints and let the engine figure out how to do the layout using logic programming (core.logic)
 
 ## Setup
 
