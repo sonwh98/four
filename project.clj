@@ -48,9 +48,9 @@
               :builds [{:id "dev"
                         :source-paths ["src"]
 
-                        :figwheel { :on-jsload "four.client.elements/on-js-reload" }
+                        :figwheel { :on-jsload "four.client.menu/on-js-reload" }
 
-                        :compiler {:main four.client.elements
+                        :compiler {:main four.client.menu
                                    :asset-path "js/compiled/out"
                                    :output-to "resources/public/js/compiled/four.js"
                                    :output-dir "resources/public/js/compiled/out"
@@ -58,7 +58,7 @@
                        {:id "min"
                         :source-paths ["src"]
                         :compiler {:output-to "resources/public/js/compiled/four.min.js"
-                                   :main four.client.elements
+                                   :main four.client.menu
                                    :optimizations :advanced
                                    :pretty-print false}}]}
 

@@ -33,6 +33,7 @@
   (go-loop []
     (if-let [{:keys  [message]} (<! client-websocket-channel)]
       (do
+        (println "got " message)
         (process-msg [client-websocket-channel message])
         (recur))
       (clean-up! client-websocket-channel))))
