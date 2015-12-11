@@ -45,7 +45,9 @@
                                    :border-color "white"
                                    :width "300px"}}
                      (for [p products]
-                       [:button {:class "product"} (:product/name p)])]
+                       [:button {:class "product"}
+                        [:img {:src (:url p)}]
+                        (:product/name p)])]
                 css3d-object (div->css3d-object (c/html div))]]
     (println products)
     (.. scene (add css3d-object)))
