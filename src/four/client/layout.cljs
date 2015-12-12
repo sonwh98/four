@@ -147,8 +147,8 @@
       (set! (.. div -style -display) "none"))))
 
 (defn create-menu []
-  (for [i (range 3)]
-    (four/position-map->object3d {:x (->  (* i 440) (- 350))
+  (for [i (range 4)]
+    (four/position-map->object3d {:x (->  (* i 320) (- 450))
                                   :y 0
                                   :z 0})
     )

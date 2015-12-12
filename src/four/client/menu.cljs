@@ -46,8 +46,9 @@
                                    :width "300px"}}
                      (for [p products]
                        [:button {:class "product"}
-                        [:img {:src (:url p)}]
-                        (:product/name p)])]
+                        [:img {:src (or (:url p) "http://www.creattor.com/files/10/652/drinks-icons-screenshots-1.png")
+                               :class "product-img"}]
+                        [:div  (:product/name p)]])]
                 css3d-object (div->css3d-object (c/html div))]]
     (println products)
     (.. scene (add css3d-object)))
@@ -68,16 +69,15 @@
         sphere (layout/create-sphere size)
         helix (layout/create-helix size)
         grid (layout/create-grid size)
-        m (layout/create-menu)
-        ]
+        pos (layout/create-menu)]
         
-    (on-click :table #(morph css3d-objects :into table))
+    (on-click :pos #(morph css3d-objects :into pos))
     (on-click :sphere #(morph css3d-objects :into sphere))
     (on-click :helix #(morph css3d-objects :into helix))
     (on-click :grid #(morph css3d-objects :into grid))
     (on-click :reset reset-camera)
 
-    (morph css3d-objects :into m))
+    (morph css3d-objects :into pos))
   )
 
 (defmethod process-msg :catalog [[_ catalog]]
