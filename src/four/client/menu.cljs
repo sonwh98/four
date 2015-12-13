@@ -45,11 +45,11 @@
                        (for [category catalog
                              :let [cat-name (:category/name category)]]
                          [:button {:id cat-name} cat-name])]
-        category-css3d-obj (div->css3d-object (c/html category-menu))]
-    (def category-menu-css3d-object category-css3d-obj)
+        category-menu-css3d-object (div->css3d-object (c/html category-menu))]
     (.. scene (add category-menu-css3d-object))
+    (morph [category-menu-css3d-object] :into (layout/left-panel))
 
-    (doseq [category-button (array-seq (.. category-css3d-obj -element (querySelectorAll "button")))]
+    (doseq [category-button (array-seq (.. category-menu-css3d-object -element (querySelectorAll "button")))]
       (dom/on category-button "click" (fn []
                                         (let [category-name (. category-button -id)
                                               category-container-id (str "category-" category-name)
@@ -105,7 +105,7 @@
     (on-click "grid" #(morph css3d-objects :into grid))
     (on-click "reset" reset-camera)
     
-    (morph [category-menu-css3d-object] :into (layout/left-panel))
+
     (morph categories :into pos)
 
     
