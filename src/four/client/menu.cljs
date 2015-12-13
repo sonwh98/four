@@ -34,13 +34,21 @@
 
 (init)
 
+(defn on-click [button-id callback-fn]
+  (println button-id " " (dom/by-id button-id))
+  (dom/whenever-dom-ready #(dom/on (dom/by-id button-id) "click" callback-fn)))
+
 (defn populate [scene _ catalog]
   (let [category-menu [:div {:id "category-menu"}
-                       (for [category catalog]
-                         [:button (:category/name category)])]
+                       (for [category catalog
+                             :let [cat-name (:category/name category)]]
+                         [:button {:id cat-name} cat-name])]
         category-css3d-obj (div->css3d-object (c/html category-menu))]
     (def category-menu-css3d-object category-css3d-obj)
-    (.. scene (add category-menu-css3d-object)))
+    (.. scene (add category-menu-css3d-object))
+
+    (doseq [category-button (array-seq (.. category-css3d-obj -element (querySelectorAll "button")))]
+      (dom/on category-button "click" #(println (. category-button -id)))))
   
   
   (let [categories  (doall  (for [[i category] (map-indexed (fn [i category] [i category]) catalog)
@@ -69,8 +77,7 @@
   ;(. controls reset)
    )
   
-(defn on-click [button-id callback-fn]
-  (dom/on (dom/by-id (name button-id)) "click" callback-fn))
+
 
 (defn build-scene [catalog]
   (populate scene :with catalog)
@@ -82,14 +89,17 @@
         grid (layout/create-grid size)
         pos (layout/center-panel)]
         
-    (on-click :pos #(morph css3d-objects :into pos))
-    (on-click :sphere #(morph css3d-objects :into sphere))
-    (on-click :helix #(morph css3d-objects :into helix))
-    (on-click :grid #(morph css3d-objects :into grid))
-    (on-click :reset reset-camera)
+    (on-click "pos" #(morph css3d-objects :into pos))
+    (on-click "sphere" #(morph css3d-objects :into sphere))
+    (on-click "helix" #(morph css3d-objects :into helix))
+    (on-click "grid" #(morph css3d-objects :into grid))
+    (on-click "reset" reset-camera)
     
     (morph [category-menu-css3d-object] :into (layout/left-panel))
     (morph categories :into pos)
+
+    
+    
     )
   )
 
