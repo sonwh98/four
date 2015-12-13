@@ -39,7 +39,8 @@
   (dom/whenever-dom-ready #(dom/on (dom/by-id button-id) "click" callback-fn)))
 
 (defn populate [scene _ catalog]
-  (let [id->css3dobj (atom {})]
+  (let [id->css3dobj (atom {})
+        active-category-container (atom nil)]
     (let [category-button-container-div [:div {:id "category-menu"}
                                          (for [category catalog
                                                :let [cat-name (:category/name category)]]
@@ -48,14 +49,15 @@
           category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))
           left-panel [(four/position-map->object3d {:x -615
                                                     :y 0
-                                                    :z 0})] ]
+                                                    :z 0})]
+          get-category-container (fn [category-name]
+                                   (@id->css3dobj (str "category-" category-name)))]
       (.. scene (add category-button-container-css3d-object))
       (morph [category-button-container-css3d-object] :into left-panel)
 
       (doseq [category-button category-buttons]
         (dom/on category-button "click" #(let [category-name (. category-button -id)
-                                               category-container-id (str "category-" category-name)
-                                               category-container-css3dobj (@id->css3dobj category-container-id)
+                                               category-container-css3dobj (get-category-container category-name)
                                                center [(four/position-map->object3d {:x -400
                                                                                      :y 0
                                                                                      :z 0})]]
