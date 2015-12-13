@@ -41,70 +41,69 @@
 (defn build-scene [catalog]
   (let [id->css3dobj (atom {})
         active-category-button (atom nil)
-        active-category-container (atom nil)]
-    (let [category-button-container-div [:div {:id "category-menu"}
-                                         (for [category catalog
-                                               :let [cat-name (:category/name category)]]
-                                           [:button {:id cat-name} cat-name])]
-          category-button-container-css3d-object (div->css3d-object (c/html category-button-container-div))
-          category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))
-          off-screen [(four/position-map->object3d {:x -1000
-                                                    :y 0
-                                                    :z 0})]
-          left-panel [(four/position-map->object3d {:x -615
-                                                    :y 0
-                                                    :z 0})]
-          center [(four/position-map->object3d {:x -400
-                                                :y 0
-                                                :z 0})]
-          categories  (doall  (for [category catalog
-                                    :let [color (-> (* (rand) 0.5) (+ 0.25))
-                                          products (:products category)
-                                          id (str "category-" (:category/name category))
-                                          div [:div {:id    id
-                                                     :class "category"
-                                                     :style {:backgroundColor (str "rgb(0,127,127)")
-                                                             :border-style "solid"
-                                                             :border-color "white"
-                                                             :width "300px"}}
-                                               (for [p products]
-                                                 [:button {:class "product"}
-                                                  [:img {:src (or (:url p) "http://www.creattor.com/files/10/652/drinks-icons-screenshots-1.png")
-                                                         :class "product-img"}]
-                                                  [:div  (:product/name p)]])]
-                                          css3d-object (div->css3d-object (c/html div))]]
-                                (do
-                                  (swap! id->css3dobj assoc id css3d-object)
-                                  (.. scene (add css3d-object))
-                                  css3d-object)))
-          get-category-container (fn [category-button]
-                                   (let [category-name (. category-button -id)]
-                                     (@id->css3dobj (str "category-" category-name))))
+        active-category-container (atom nil)
+        category-button-container-div [:div {:id "category-menu"}
+                                       (for [category catalog
+                                             :let [cat-name (:category/name category)]]
+                                         [:button {:id cat-name} cat-name])]
+        category-button-container-css3d-object (div->css3d-object (c/html category-button-container-div))
+        category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))
+        off-screen [(four/position-map->object3d {:x -1000
+                                                  :y 0
+                                                  :z 0})]
+        left-panel [(four/position-map->object3d {:x -615
+                                                  :y 0
+                                                  :z 0})]
+        center [(four/position-map->object3d {:x -400
+                                              :y 0
+                                              :z 0})]
+        categories  (doall  (for [category catalog
+                                  :let [color (-> (* (rand) 0.5) (+ 0.25))
+                                        products (:products category)
+                                        id (str "category-" (:category/name category))
+                                        div [:div {:id    id
+                                                   :class "category"
+                                                   :style {:backgroundColor (str "rgb(0,127,127)")
+                                                           :border-style "solid"
+                                                           :border-color "white"
+                                                           :width "300px"}}
+                                             (for [p products]
+                                               [:button {:class "product"}
+                                                [:img {:src (or (:url p) "http://www.creattor.com/files/10/652/drinks-icons-screenshots-1.png")
+                                                       :class "product-img"}]
+                                                [:div  (:product/name p)]])]
+                                        css3d-object (div->css3d-object (c/html div))]]
+                              (do
+                                (swap! id->css3dobj assoc id css3d-object)
+                                (.. scene (add css3d-object))
+                                css3d-object)))
+        get-category-container (fn [category-button]
+                                 (let [category-name (. category-button -id)]
+                                   (@id->css3dobj (str "category-" category-name))))
 
-          set-active-container (fn [category-button]
-                                 (let [category-container-css3dobj (get-category-container category-button)]
-                                   (set! (.. @active-category-button -style -backgroundColor) nil)
-                                   (morph [@active-category-container] :into off-screen)
+        set-active-container (fn [category-button]
+                               (let [category-container-css3dobj (get-category-container category-button)]
+                                 (set! (.. @active-category-button -style -backgroundColor) nil)
+                                 (morph [@active-category-container] :into off-screen)
 
-                                   (reset! active-category-button category-button)
-                                   (reset! active-category-container category-container-css3dobj)
-                                   (set! (.. @active-category-button -style -backgroundColor) "rgb(100,100,100)")
-                                   (morph [category-container-css3dobj] :into center)))
-          ]
-      (.. scene (add category-button-container-css3d-object))
-      (morph [category-button-container-css3d-object] :into left-panel)
-      (def categories categories)
-
-      (reset! active-category-button (first category-buttons))
-      (reset! active-category-container (get-category-container @active-category-button))
-      (doseq [category-button category-buttons]
-        (dom/on category-button "click" #(set-active-container category-button))))))
+                                 (reset! active-category-button category-button)
+                                 (reset! active-category-container category-container-css3dobj)
+                                 (set! (.. @active-category-button -style -backgroundColor) "rgb(100,100,100)")
+                                 (morph [category-container-css3dobj] :into center)))]
+        
+    (.. scene (add category-button-container-css3d-object))
+    (morph [category-button-container-css3d-object] :into left-panel)
+    (def categories categories)
+    
+    (reset! active-category-button (first category-buttons))
+    (reset! active-category-container (get-category-container @active-category-button))
+    (doseq [category-button category-buttons]
+      (dom/on category-button "click" #(set-active-container category-button)))))
 
 (defmethod process-msg :catalog [[_ catalog]]
   (build-scene catalog))
 
 (defn send-get-catalog []
-  (println "send-get-catalog")
   (dom/whenever-dom-ready #(ws/send! [:get-catalog true])))
 
 (defn on-js-reload [])
