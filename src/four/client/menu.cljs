@@ -48,13 +48,21 @@
                                          [:button {:id cat-name} cat-name])]
         category-button-container-css3d-object (div->css3d-object (c/html category-button-container-div))
         category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))
-        off-screen [(four/position-map->object3d {:x -1000
+        vFOV (->  (. camera -fov) (* js/Math.PI) (/ 180))
+        height (-> 2 (* (js/Math.tan (/ vFOV 2))
+                        1000))
+        aspect (/ (.-innerWidth dom/window)
+                  (.-innerHeight dom/window))
+        width (* height aspect)
+        off-screen [(four/position-map->object3d {:x (* -2 width)
                                                   :y 0
                                                   :z 0})]
-        left-panel [(four/position-map->object3d {:x -615
+        left-x (+  (/ width -2) 50)
+        left-panel [(four/position-map->object3d {:x left-x
                                                   :y 0
                                                   :z 0})]
-        center [(four/position-map->object3d {:x -400
+        
+        center [(four/position-map->object3d {:x (+ left-x 210)
                                               :y 0
                                               :z 0})]
         categories  (doall  (for [category catalog
@@ -94,7 +102,9 @@
                                           (reset! active-category-button category-button)
                                           (reset! active-category-container category-container-css3dobj)
                                           (set! (.. @active-category-button -style -backgroundColor) "rgb(100,100,100)")
-                                          (morph [category-container-css3dobj] :into center)))]
+                                          (morph [category-container-css3dobj] :into center)
+                                          (println left-x)
+                                          ))]
     
     (.. scene (add category-button-container-css3d-object))
     (morph [category-button-container-css3d-object] :into left-panel)
