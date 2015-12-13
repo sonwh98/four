@@ -81,28 +81,27 @@
                                  (let [category-name (. category-button -id)]
                                    (@id->css3dobj (str "category-" category-name))))
 
-        set-active-container (fn [category-button]
-                               (let [category-container-css3dobj (get-category-container category-button)]
-                                 (if (nil? @active-category-button)
-                                   (do
-                                     (reset! active-category-button category-button)
-                                     (reset! active-category-container category-container-css3dobj)))
-                                 
-                                 (set! (.. @active-category-button -style -backgroundColor) nil)
-                                 (morph [@active-category-container] :into off-screen)
+        set-active-category-container (fn [category-button]
+                                        (let [category-container-css3dobj (get-category-container category-button)]
+                                          (if (nil? @active-category-button)
+                                            (do
+                                              (reset! active-category-button category-button)
+                                              (reset! active-category-container category-container-css3dobj)))
+                                          
+                                          (set! (.. @active-category-button -style -backgroundColor) nil)
+                                          (morph [@active-category-container] :into off-screen)
 
-                                 (reset! active-category-button category-button)
-                                 (reset! active-category-container category-container-css3dobj)
-                                 (set! (.. @active-category-button -style -backgroundColor) "rgb(100,100,100)")
-                                 (morph [category-container-css3dobj] :into center)))]
+                                          (reset! active-category-button category-button)
+                                          (reset! active-category-container category-container-css3dobj)
+                                          (set! (.. @active-category-button -style -backgroundColor) "rgb(100,100,100)")
+                                          (morph [category-container-css3dobj] :into center)))]
     
     (.. scene (add category-button-container-css3d-object))
     (morph [category-button-container-css3d-object] :into left-panel)
-    (def categories categories)
     
-    (set-active-container (first category-buttons))
+    (set-active-category-container (first category-buttons))
     (doseq [category-button category-buttons]
-      (dom/on category-button "click" #(set-active-container category-button)))))
+      (dom/on category-button "click" #(set-active-category-container category-button)))))
 
 (defmethod process-msg :catalog [[_ catalog]]
   (build-scene catalog))
