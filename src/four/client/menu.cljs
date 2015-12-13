@@ -50,17 +50,22 @@
           left-panel [(four/position-map->object3d {:x -615
                                                     :y 0
                                                     :z 0})]
+          center [(four/position-map->object3d {:x -400
+                                                :y 0
+                                                :z 0})]
           get-category-container (fn [category-name]
                                    (@id->css3dobj (str "category-" category-name)))]
       (.. scene (add category-button-container-css3d-object))
       (morph [category-button-container-css3d-object] :into left-panel)
 
+      (reset! active-category-container (let [category-button (first category-buttons)
+                                              category-name (. category-button -id)]
+                                          (get-category-container category-name)))
+      
       (doseq [category-button category-buttons]
         (dom/on category-button "click" #(let [category-name (. category-button -id)
                                                category-container-css3dobj (get-category-container category-name)
-                                               center [(four/position-map->object3d {:x -400
-                                                                                     :y 0
-                                                                                     :z 0})]]
+                                               ]
                                            (morph [category-container-css3dobj] :into center)))))
 
 
