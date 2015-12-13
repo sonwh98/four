@@ -145,14 +145,3 @@
     (doseq [css3d-object g0
             :let [div (. css3d-object -element)]]
       (set! (.. div -style -display) "none"))))
-
-(defn center-panel []
-  [(four/position-map->object3d {:x -400
-                                  :y 0
-                                  :z 0})])
-
-(defn left-panel []
-  [(four/position-map->object3d {:x -615
-                                  :y 0
-                                  :z 0})]
-  )

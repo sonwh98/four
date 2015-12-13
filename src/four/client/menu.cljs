@@ -45,18 +45,21 @@
                                                :let [cat-name (:category/name category)]]
                                            [:button {:id cat-name} cat-name])]
           category-button-container-css3d-object (div->css3d-object (c/html category-button-container-div))
-          category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))]
+          category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))
+          left-panel [(four/position-map->object3d {:x -615
+                                                    :y 0
+                                                    :z 0})] ]
       (.. scene (add category-button-container-css3d-object))
-      (morph [category-button-container-css3d-object] :into (layout/left-panel))
+      (morph [category-button-container-css3d-object] :into left-panel)
 
       (doseq [category-button category-buttons]
-        (dom/on category-button "click" (fn []
-                                          (let [category-name (. category-button -id)
-                                                category-container-id (str "category-" category-name)
-                                                category-container-css3dobj (@id->css3dobj category-container-id)
-                                                center (layout/center-panel)]
-                                            (morph [category-container-css3dobj] :into center)
-                                            ))))) 
+        (dom/on category-button "click" #(let [category-name (. category-button -id)
+                                               category-container-id (str "category-" category-name)
+                                               category-container-css3dobj (@id->css3dobj category-container-id)
+                                               center [(four/position-map->object3d {:x -400
+                                                                                     :y 0
+                                                                                     :z 0})]]
+                                           (morph [category-container-css3dobj] :into center)))))
 
 
     (let [categories  (doall  (for [category catalog
@@ -96,19 +99,14 @@
         sphere (layout/create-sphere size)
         helix (layout/create-helix size)
         grid (layout/create-grid size)
-        pos (layout/center-panel)]
+        ]
     
-    (on-click "pos" #(morph css3d-objects :into pos))
     (on-click "sphere" #(morph css3d-objects :into sphere))
     (on-click "helix" #(morph css3d-objects :into helix))
     (on-click "grid" #(morph css3d-objects :into grid))
     (on-click "reset" reset-camera)
     
 
-    (morph categories :into pos)
-
-    
-    
     )
   )
 
