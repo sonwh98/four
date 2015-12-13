@@ -38,8 +38,9 @@
   (println button-id " " (dom/by-id button-id))
   (dom/whenever-dom-ready #(dom/on (dom/by-id button-id) "click" callback-fn)))
 
-(defn populate [scene _ catalog]
+(defn build-scene [catalog]
   (let [id->css3dobj (atom {})
+        active-category-button (atom nil)
         active-category-container (atom nil)]
     (let [category-button-container-div [:div {:id "category-menu"}
                                          (for [category catalog
@@ -76,47 +77,28 @@
                                   (swap! id->css3dobj assoc id css3d-object)
                                   (.. scene (add css3d-object))
                                   css3d-object)))
-          
           get-category-container (fn [category-button]
                                    (let [category-name (. category-button -id)]
-                                     (@id->css3dobj (str "category-" category-name))))]
+                                     (@id->css3dobj (str "category-" category-name))))
+
+          set-active-container (fn [category-button]
+                                 (let [category-container-css3dobj (get-category-container category-button)]
+                                   (set! (.. @active-category-button -style -backgroundColor) nil)
+                                   (morph [@active-category-container] :into off-screen)
+
+                                   (reset! active-category-button category-button)
+                                   (reset! active-category-container category-container-css3dobj)
+                                   (set! (.. @active-category-button -style -backgroundColor) "rgb(100,100,100)")
+                                   (morph [category-container-css3dobj] :into center)))
+          ]
       (.. scene (add category-button-container-css3d-object))
       (morph [category-button-container-css3d-object] :into left-panel)
       (def categories categories)
-      
-      (reset! active-category-container (get-category-container (first category-buttons)))
+
+      (reset! active-category-button (first category-buttons))
+      (reset! active-category-container (get-category-container @active-category-button))
       (doseq [category-button category-buttons]
-        (dom/on category-button "click" #(let [category-container-css3dobj (get-category-container category-button)]
-                                           (println @active-category-container)
-                                           (morph [@active-category-container] :into off-screen)
-                                           (morph [category-container-css3dobj] :into center)
-                                           (reset! active-category-container category-container-css3dobj))))))
-  scene)
-
-(defn reset-camera []
-                                        ;(. controls reset)
-  )
-
-
-
-(defn build-scene [catalog]
-  (populate scene :with catalog)
-  (let [css3d-objects (seq (. scene -children))
-        size (count css3d-objects)
-        table (layout/create-table)
-        sphere (layout/create-sphere size)
-        helix (layout/create-helix size)
-        grid (layout/create-grid size)
-        ]
-    
-    (on-click "sphere" #(morph css3d-objects :into sphere))
-    (on-click "helix" #(morph css3d-objects :into helix))
-    (on-click "grid" #(morph css3d-objects :into grid))
-    (on-click "reset" reset-camera)
-    
-
-    )
-  )
+        (dom/on category-button "click" #(set-active-container category-button))))))
 
 (defmethod process-msg :catalog [[_ catalog]]
   (build-scene catalog))
