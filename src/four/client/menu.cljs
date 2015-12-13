@@ -35,23 +35,34 @@
 (init)
 
 (defn populate [scene _ catalog]
-  (doseq [[i category] (map-indexed (fn [i category] [i category]) catalog)
-          :let [color (-> (* (rand) 0.5) (+ 0.25))
-                products (:products category)
-                div [:div {:id    i
-                           :class "category"
-                           :style {:backgroundColor (str "rgb(0,127,127)")
-                                   :border-style "solid"
-                                   :border-color "white"
-                                   :width "300px"}}
-                     (for [p products]
-                       [:button {:class "product"}
-                        [:img {:src (or (:url p) "http://www.creattor.com/files/10/652/drinks-icons-screenshots-1.png")
-                               :class "product-img"}]
-                        [:div  (:product/name p)]])]
-                css3d-object (div->css3d-object (c/html div))]]
-    (println products)
-    (.. scene (add css3d-object)))
+  (let [category-menu [:div {:id "category-menu"}
+                       (for [category catalog]
+                         [:button (:category/name category)])]
+        category-css3d-obj (div->css3d-object (c/html category-menu))]
+    (def category-menu-css3d-object category-css3d-obj)
+    (.. scene (add category-menu-css3d-object)))
+  
+  
+  (let [categories  (doall  (for [[i category] (map-indexed (fn [i category] [i category]) catalog)
+                                  :let [color (-> (* (rand) 0.5) (+ 0.25))
+                                        products (:products category)
+                                        div [:div {:id    i
+                                                   :class "category"
+                                                   :style {:backgroundColor (str "rgb(0,127,127)")
+                                                           :border-style "solid"
+                                                           :border-color "white"
+                                                           :width "300px"}}
+                                             (for [p products]
+                                               [:button {:class "product"}
+                                                [:img {:src (or (:url p) "http://www.creattor.com/files/10/652/drinks-icons-screenshots-1.png")
+                                                       :class "product-img"}]
+                                                [:div  (:product/name p)]])]
+                                        css3d-object (div->css3d-object (c/html div))]]
+                              (do
+                                (.. scene (add css3d-object))
+                                css3d-object)))]
+    (def categories categories)
+    )
   scene)
 
 (defn reset-camera []
@@ -69,15 +80,17 @@
         sphere (layout/create-sphere size)
         helix (layout/create-helix size)
         grid (layout/create-grid size)
-        pos (layout/create-menu)]
+        pos (layout/center-panel)]
         
     (on-click :pos #(morph css3d-objects :into pos))
     (on-click :sphere #(morph css3d-objects :into sphere))
     (on-click :helix #(morph css3d-objects :into helix))
     (on-click :grid #(morph css3d-objects :into grid))
     (on-click :reset reset-camera)
-
-    (morph css3d-objects :into pos))
+    
+    (morph [category-menu-css3d-object] :into (layout/left-panel))
+    (morph categories :into pos)
+    )
   )
 
 (defmethod process-msg :catalog [[_ catalog]]

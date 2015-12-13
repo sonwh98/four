@@ -146,10 +146,16 @@
             :let [div (. css3d-object -element)]]
       (set! (.. div -style -display) "none"))))
 
-(defn create-menu []
+(defn center-panel []
   (for [i (range 4)]
-    (four/position-map->object3d {:x (->  (* i 320) (- 450))
+    (four/position-map->object3d {:x (->  (* i 320) (- 400))
                                   :y 0
                                   :z 0})
     )
+  )
+
+(defn left-panel []
+  [(four/position-map->object3d {:x -615
+                                  :y 0
+                                  :z 0})]
   )
