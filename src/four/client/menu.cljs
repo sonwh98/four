@@ -40,15 +40,16 @@
 
 (defn populate [scene _ catalog]
   (let [id->css3dobj (atom {})]
-    (let [category-menu [:div {:id "category-menu"}
-                         (for [category catalog
-                               :let [cat-name (:category/name category)]]
-                           [:button {:id cat-name} cat-name])]
-          category-menu-css3d-object (div->css3d-object (c/html category-menu))]
-      (.. scene (add category-menu-css3d-object))
-      (morph [category-menu-css3d-object] :into (layout/left-panel))
+    (let [category-button-container-div [:div {:id "category-menu"}
+                                         (for [category catalog
+                                               :let [cat-name (:category/name category)]]
+                                           [:button {:id cat-name} cat-name])]
+          category-button-container-css3d-object (div->css3d-object (c/html category-button-container-div))
+          category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))]
+      (.. scene (add category-button-container-css3d-object))
+      (morph [category-button-container-css3d-object] :into (layout/left-panel))
 
-      (doseq [category-button (array-seq (.. category-menu-css3d-object -element (querySelectorAll "button")))]
+      (doseq [category-button category-buttons]
         (dom/on category-button "click" (fn []
                                           (let [category-name (. category-button -id)
                                                 category-container-id (str "category-" category-name)
@@ -58,7 +59,7 @@
                                             ))))) 
 
 
-    (let [categories  (doall  (for [[i category] (map-indexed (fn [i category] [i category]) catalog)
+    (let [categories  (doall  (for [category catalog
                                     :let [color (-> (* (rand) 0.5) (+ 0.25))
                                           products (:products category)
                                           id (str "category-" (:category/name category))
@@ -82,9 +83,9 @@
   scene)
 
 (defn reset-camera []
-  ;(. controls reset)
-   )
-  
+                                        ;(. controls reset)
+  )
+
 
 
 (defn build-scene [catalog]
@@ -96,7 +97,7 @@
         helix (layout/create-helix size)
         grid (layout/create-grid size)
         pos (layout/center-panel)]
-        
+    
     (on-click "pos" #(morph css3d-objects :into pos))
     (on-click "sphere" #(morph css3d-objects :into sphere))
     (on-click "helix" #(morph css3d-objects :into helix))
