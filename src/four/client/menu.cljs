@@ -47,29 +47,16 @@
                                            [:button {:id cat-name} cat-name])]
           category-button-container-css3d-object (div->css3d-object (c/html category-button-container-div))
           category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))
+          off-screen [(four/position-map->object3d {:x -1000
+                                                    :y 0
+                                                    :z 0})]
           left-panel [(four/position-map->object3d {:x -615
                                                     :y 0
                                                     :z 0})]
           center [(four/position-map->object3d {:x -400
                                                 :y 0
                                                 :z 0})]
-          get-category-container (fn [category-name]
-                                   (@id->css3dobj (str "category-" category-name)))]
-      (.. scene (add category-button-container-css3d-object))
-      (morph [category-button-container-css3d-object] :into left-panel)
-
-      (reset! active-category-container (let [category-button (first category-buttons)
-                                              category-name (. category-button -id)]
-                                          (get-category-container category-name)))
-      
-      (doseq [category-button category-buttons]
-        (dom/on category-button "click" #(let [category-name (. category-button -id)
-                                               category-container-css3dobj (get-category-container category-name)
-                                               ]
-                                           (morph [category-container-css3dobj] :into center)))))
-
-
-    (let [categories  (doall  (for [category catalog
+          categories  (doall  (for [category catalog
                                     :let [color (-> (* (rand) 0.5) (+ 0.25))
                                           products (:products category)
                                           id (str "category-" (:category/name category))
@@ -88,8 +75,22 @@
                                 (do
                                   (swap! id->css3dobj assoc id css3d-object)
                                   (.. scene (add css3d-object))
-                                  css3d-object)))]
-      (def categories categories)))
+                                  css3d-object)))
+          
+          get-category-container (fn [category-button]
+                                   (let [category-name (. category-button -id)]
+                                     (@id->css3dobj (str "category-" category-name))))]
+      (.. scene (add category-button-container-css3d-object))
+      (morph [category-button-container-css3d-object] :into left-panel)
+      (def categories categories)
+      
+      (reset! active-category-container (get-category-container (first category-buttons)))
+      (doseq [category-button category-buttons]
+        (dom/on category-button "click" #(let [category-container-css3dobj (get-category-container category-button)]
+                                           (println @active-category-container)
+                                           (morph [@active-category-container] :into off-screen)
+                                           (morph [category-container-css3dobj] :into center)
+                                           (reset! active-category-container category-container-css3dobj))))))
   scene)
 
 (defn reset-camera []
