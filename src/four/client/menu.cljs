@@ -39,48 +39,46 @@
   (dom/whenever-dom-ready #(dom/on (dom/by-id button-id) "click" callback-fn)))
 
 (defn populate [scene _ catalog]
-  (def id->css3dobj (atom {}))
-  
-  (let [category-menu [:div {:id "category-menu"}
-                       (for [category catalog
-                             :let [cat-name (:category/name category)]]
-                         [:button {:id cat-name} cat-name])]
-        category-menu-css3d-object (div->css3d-object (c/html category-menu))]
-    (.. scene (add category-menu-css3d-object))
-    (morph [category-menu-css3d-object] :into (layout/left-panel))
+  (let [id->css3dobj] (atom {})
+       (let [category-menu [:div {:id "category-menu"}
+                            (for [category catalog
+                                  :let [cat-name (:category/name category)]]
+                              [:button {:id cat-name} cat-name])]
+             category-menu-css3d-object (div->css3d-object (c/html category-menu))]
+         (.. scene (add category-menu-css3d-object))
+         (morph [category-menu-css3d-object] :into (layout/left-panel))
 
-    (doseq [category-button (array-seq (.. category-menu-css3d-object -element (querySelectorAll "button")))]
-      (dom/on category-button "click" (fn []
-                                        (let [category-name (. category-button -id)
-                                              category-container-id (str "category-" category-name)
-                                              category-container-css3dobj (@id->css3dobj category-container-id)
-                                              center (layout/center-panel)]
-                                          (morph [category-container-css3dobj] :into center)
-                                          )))))
-  
-  
-  (let [categories  (doall  (for [[i category] (map-indexed (fn [i category] [i category]) catalog)
-                                  :let [color (-> (* (rand) 0.5) (+ 0.25))
-                                        products (:products category)
-                                        id (str "category-" (:category/name category))
-                                        div [:div {:id    id
-                                                   :class "category"
-                                                   :style {:backgroundColor (str "rgb(0,127,127)")
-                                                           :border-style "solid"
-                                                           :border-color "white"
-                                                           :width "300px"}}
-                                             (for [p products]
-                                               [:button {:class "product"}
-                                                [:img {:src (or (:url p) "http://www.creattor.com/files/10/652/drinks-icons-screenshots-1.png")
-                                                       :class "product-img"}]
-                                                [:div  (:product/name p)]])]
-                                        css3d-object (div->css3d-object (c/html div))]]
-                              (do
-                                (swap! id->css3dobj assoc id css3d-object)
-                                (.. scene (add css3d-object))
-                                css3d-object)))]
-    (def categories categories)
-    )
+         (doseq [category-button (array-seq (.. category-menu-css3d-object -element (querySelectorAll "button")))]
+           (dom/on category-button "click" (fn []
+                                             (let [category-name (. category-button -id)
+                                                   category-container-id (str "category-" category-name)
+                                                   category-container-css3dobj (@id->css3dobj category-container-id)
+                                                   center (layout/center-panel)]
+                                               (morph [category-container-css3dobj] :into center)
+                                               )))))
+       
+       
+       (let [categories  (doall  (for [[i category] (map-indexed (fn [i category] [i category]) catalog)
+                                       :let [color (-> (* (rand) 0.5) (+ 0.25))
+                                             products (:products category)
+                                             id (str "category-" (:category/name category))
+                                             div [:div {:id    id
+                                                        :class "category"
+                                                        :style {:backgroundColor (str "rgb(0,127,127)")
+                                                                :border-style "solid"
+                                                                :border-color "white"
+                                                                :width "300px"}}
+                                                  (for [p products]
+                                                    [:button {:class "product"}
+                                                     [:img {:src (or (:url p) "http://www.creattor.com/files/10/652/drinks-icons-screenshots-1.png")
+                                                            :class "product-img"}]
+                                                     [:div  (:product/name p)]])]
+                                             css3d-object (div->css3d-object (c/html div))]]
+                                   (do
+                                     (swap! id->css3dobj assoc id css3d-object)
+                                     (.. scene (add css3d-object))
+                                     css3d-object)))]
+         (def categories categories)))
   scene)
 
 (defn reset-camera []
