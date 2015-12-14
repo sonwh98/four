@@ -87,14 +87,14 @@
         aspect (/ (.-innerWidth dom/window)
                   (.-innerHeight dom/window))
         width (* height aspect)
-        off-screen-left [(four/position-map->object3d {:x (* -2 width)
-                                                       :y 0
-                                                       :z 0})]
+        off-screen-left [{:x (* -2 width)
+                          :y 0
+                          :z 0}]
         left-x (/ width -2)
         top-y (/ height 2)
-        top-left-panel [(four/position-map->object3d {:x (+ left-x 175)
-                                                      :y (- top-y 20)
-                                                      :z 0})]
+        top-left-panel [{:x (+ left-x 175)
+                         :y (- top-y 20)
+                         :z 0}]
         
 
         categories  (doall  (for [category catalog
@@ -129,9 +129,9 @@
                                               category-container-height (. category-container-div -clientHeight)
                                               fraction  0.771 ;;(/ height category-container-height)
                                               _ (println "fraction " fraction)
-                                              left-align-x [(four/position-map->object3d {:x (+ left-x (/ category-container-width 2))
+                                              left-align-x [{:x (+ left-x (/ category-container-width 2))
                                                                                           :y (/ (* fraction  category-container-height) 2)
-                                                                                          :z 0})]]
+                                                                                          :z 0}]]
                                           (if (nil? @active-category-button)
                                             (do
                                               (reset! active-category-button category-button)
