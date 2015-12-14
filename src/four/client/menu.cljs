@@ -63,7 +63,7 @@
                                                       :y (- top-y 20)
                                                       :z 0})]
         
-        center [(four/position-map->object3d {:x (+ left-x 160)
+        center [(four/position-map->object3d {:x (+ left-x 360)
                                               :y 0
                                               :z 0})]
         categories  (doall  (for [category catalog
@@ -75,7 +75,7 @@
                                                    :style {:backgroundColor (str "rgb(0,127,127)")
                                                            :border-style "solid"
                                                            :border-color "white"
-                                                           :width "300px"}}
+                                                           :width "40%"}}
                                              (for [p products]
                                                [:button {:class "product"}
                                                 [:img {:src (or (:url p) "http://www.creattor.com/files/10/652/drinks-icons-screenshots-1.png")
