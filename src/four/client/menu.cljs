@@ -50,8 +50,7 @@
   (let [fov (radian->degree (calculate-fov (.-innerHeight dom/window)
                                            1000))]
     (def camera (js/THREE.PerspectiveCamera. fov
-                                             (/ (.-innerWidth dom/window)
-                                                (.-innerHeight dom/window))
+                                             (get-aspect-ratio)
                                              1000
                                              1)))
   (set! (.. camera -position -z) 1000)
@@ -168,3 +167,7 @@
 (defn on-js-reload [])
 
 (send-get-catalog)
+
+(m/on :window/resize (fn []
+                       (set!  (. camera -aspect) (get-aspect-ratio))
+                       (. renderer setSize js/window.innerWidth js/window.innerHeight)))
