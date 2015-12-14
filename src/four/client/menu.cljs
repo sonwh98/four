@@ -86,7 +86,7 @@
         category-button-container-css3d-object (div->css3d-object (c/html category-button-container-div))
         category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))
         off-screen-left [{:x (- js/window.innerWidth) :y 0 :z 0}]
-        left-align-x [{:x (/ js/window.innerWidth -2) :y 0 :z 0}]
+        x-far-left (/ js/window.innerWidth -2)
         categories  (doall  (for [category catalog
                                   :let [color (-> (* (rand) 0.5) (+ 0.25))
                                         products (:products category)
@@ -131,7 +131,11 @@
                                           (reset! active-category-button category-button)
                                           (reset! active-category-container category-container-css3dobj)
                                           (set! (.. @active-category-button -style -backgroundColor) "rgb(100,100,100)")
-                                          (morph [category-container-css3dobj] :into left-align-x)
+                                          (morph [category-container-css3dobj] :into [{:x (+ x-far-left
+                                                                                             (/ (. category-container-div -clientWidth)
+                                                                                                2))
+                                                                                       :y 0
+                                                                                       :z 0}])
                                           ))]
     
     (.. scene (add category-button-container-css3d-object))
