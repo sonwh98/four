@@ -34,6 +34,39 @@
 
 (init)
 
+(defn get-aspect-ratio []
+  (/ js/window.width js/window.height))
+
+(defn degree->radian [degree]
+  (* degree (/ js/Math.PI 180)))
+
+(defn radian->degree [radian]
+  (* radian (/ 180 js/Math.PI)))
+
+(defn get-vertical-fov
+  "vertical field of view in radians"
+  [camera]
+  (degree->radian (. camera -fov)))
+
+(defn get-hortizontal-fov [camera]
+  (let [aspect-ratio (get-aspect-ratio)
+        vfov (get-vertical-fov camera)]
+    (-> (/ vfov 2) js/Math.tan (* aspect-ratio) js/Math.atan (* 2))))
+
+(defn get-visible-height [camera]
+  (let [fov (get-vertical-fov camera)
+        distance (.. camera -position -z)]
+    (* 2 (js/Math.tan (/ fov 2)) distance)))
+
+(defn get-visible-width [camera]
+  (let [aspect-ratio (get-aspect-ratio)
+        hfov (get-hortizontal-fov camera)
+        distance (.. camera -position -z)]
+    (* (/ hfov 2) js/Math.tan (* 2 distance))))
+
+(defn calculate-fov [height distance]
+  (->  height (/ distance) (/ 2) js/Math.atan (* 2)))
+
 (defn on-click [button-id callback-fn]
   (println button-id " " (dom/by-id button-id))
   (dom/whenever-dom-ready #(dom/on (dom/by-id button-id) "click" callback-fn)))
@@ -63,9 +96,7 @@
                                                       :y (- top-y 20)
                                                       :z 0})]
         
-        center [(four/position-map->object3d {:x (+ left-x 360)
-                                              :y 0
-                                              :z 0})]
+
         categories  (doall  (for [category catalog
                                   :let [color (-> (* (rand) 0.5) (+ 0.25))
                                         products (:products category)
@@ -77,7 +108,8 @@
                                                            :border-color "white"
                                                            :width "40%"}}
                                              (for [p products]
-                                               [:button {:class "product"}
+                                               [:button {:id (:product/sku p)
+                                                         :class "product"}
                                                 [:img {:src (or (:url p) "http://www.creattor.com/files/10/652/drinks-icons-screenshots-1.png")
                                                        :class "product-img"}]
                                                 [:div  (:product/name p)]])]
@@ -91,7 +123,15 @@
                                    (@id->css3dobj (str "category-" category-name))))
 
         set-active-category-container (fn [category-button]
-                                        (let [category-container-css3dobj (get-category-container category-button)]
+                                        (let [category-container-css3dobj (get-category-container category-button)
+                                              category-container-div (. category-container-css3dobj -element)
+                                              category-container-width (. category-container-div -clientWidth)
+                                              category-container-height (. category-container-div -clientHeight)
+                                              fraction  0.771 ;;(/ height category-container-height)
+                                              _ (println "fraction " fraction)
+                                              left-align-x [(four/position-map->object3d {:x (+ left-x (/ category-container-width 2))
+                                                                                          :y (/ (* fraction  category-container-height) 2)
+                                                                                          :z 0})]]
                                           (if (nil? @active-category-button)
                                             (do
                                               (reset! active-category-button category-button)
@@ -103,13 +143,12 @@
                                           (reset! active-category-button category-button)
                                           (reset! active-category-container category-container-css3dobj)
                                           (set! (.. @active-category-button -style -backgroundColor) "rgb(100,100,100)")
-                                          (morph [category-container-css3dobj] :into center)
-                                          (println left-x)
+                                          (morph [category-container-css3dobj] :into left-align-x)
                                           ))]
     
     (.. scene (add category-button-container-css3d-object))
     (morph [category-button-container-css3d-object] :into top-left-panel)
-    
+    (def id->css3dobj id->css3dobj)
     (set-active-category-container (first category-buttons))
     (doseq [category-button category-buttons]
       (dom/on category-button "click" #(set-active-category-container category-button)))))
