@@ -54,15 +54,16 @@
         aspect (/ (.-innerWidth dom/window)
                   (.-innerHeight dom/window))
         width (* height aspect)
-        off-screen [(four/position-map->object3d {:x (* -2 width)
-                                                  :y 0
-                                                  :z 0})]
-        left-x (+  (/ width -2) 50)
-        left-panel [(four/position-map->object3d {:x left-x
-                                                  :y 0
-                                                  :z 0})]
+        off-screen-left [(four/position-map->object3d {:x (* -2 width)
+                                                       :y 0
+                                                       :z 0})]
+        left-x (/ width -2)
+        top-y (/ height 2)
+        top-left-panel [(four/position-map->object3d {:x (+ left-x 175)
+                                                      :y (- top-y 20)
+                                                      :z 0})]
         
-        center [(four/position-map->object3d {:x (+ left-x 210)
+        center [(four/position-map->object3d {:x (+ left-x 160)
                                               :y 0
                                               :z 0})]
         categories  (doall  (for [category catalog
@@ -97,7 +98,7 @@
                                               (reset! active-category-container category-container-css3dobj)))
                                           
                                           (set! (.. @active-category-button -style -backgroundColor) nil)
-                                          (morph [@active-category-container] :into off-screen)
+                                          (morph [@active-category-container] :into off-screen-left)
 
                                           (reset! active-category-button category-button)
                                           (reset! active-category-container category-container-css3dobj)
@@ -107,7 +108,7 @@
                                           ))]
     
     (.. scene (add category-button-container-css3d-object))
-    (morph [category-button-container-css3d-object] :into left-panel)
+    (morph [category-button-container-css3d-object] :into top-left-panel)
     
     (set-active-category-container (first category-buttons))
     (doseq [category-button category-buttons]
