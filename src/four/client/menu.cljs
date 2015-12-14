@@ -11,31 +11,9 @@
 (declare renderer)
 (declare camera)
 
-(defn init []
-  (def scene (js/THREE.Scene.))
-  (def camera (js/THREE.PerspectiveCamera. 60 (/ (.-innerWidth dom/window)
-                                                 (.-innerHeight dom/window))
-                                           1000
-                                           1))
-  (set! (.. camera -position -z) 1000)
-  
-  (def renderer (js/THREE.CSS3DRenderer.))
-  (. renderer (setSize (. dom/window -innerWidth)
-                       (. dom/window -innerHeight)))
-  (def domElement (. renderer -domElement))
-  (set! (.. domElement -style -position) "absolute")
-  (. (dom/by-id "container") appendChild domElement)
-
-  (letfn [(render-scene []
-                        (. renderer (render scene camera)))]
-    (four/animate (fn [time]
-                    (.. js/TWEEN update)
-                    (render-scene)))))
-
-(init)
-
 (defn get-aspect-ratio []
-  (/ js/window.width js/window.height))
+  (/ js/window.innerWidth
+     js/window.innerHeight))
 
 (defn degree->radian [degree]
   (* degree (/ js/Math.PI 180)))
@@ -67,6 +45,32 @@
 (defn calculate-fov [height distance]
   (->  height (/ distance) (/ 2) js/Math.atan (* 2)))
 
+(defn init []
+  (def scene (js/THREE.Scene.))
+  (let [fov (radian->degree (calculate-fov (.-innerHeight dom/window)
+                                           1000))]
+    (def camera (js/THREE.PerspectiveCamera. fov
+                                             (/ (.-innerWidth dom/window)
+                                                (.-innerHeight dom/window))
+                                             1000
+                                             1)))
+  (set! (.. camera -position -z) 1000)
+  
+  (def renderer (js/THREE.CSS3DRenderer.))
+  (. renderer (setSize (. dom/window -innerWidth)
+                       (. dom/window -innerHeight)))
+  (def domElement (. renderer -domElement))
+  (set! (.. domElement -style -position) "absolute")
+  (. (dom/by-id "container") appendChild domElement)
+
+  (letfn [(render-scene []
+                        (. renderer (render scene camera)))]
+    (four/animate (fn [time]
+                    (.. js/TWEEN update)
+                    (render-scene)))))
+
+(init)
+
 (defn on-click [button-id callback-fn]
   (println button-id " " (dom/by-id button-id))
   (dom/whenever-dom-ready #(dom/on (dom/by-id button-id) "click" callback-fn)))
@@ -81,26 +85,13 @@
                                          [:button {:id cat-name} cat-name])]
         category-button-container-css3d-object (div->css3d-object (c/html category-button-container-div))
         category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))
-        vFOV (->  (. camera -fov) (* js/Math.PI) (/ 180))
-        height (-> 2 (* (js/Math.tan (/ vFOV 2))
-                        1000))
-        aspect (/ (.-innerWidth dom/window)
-                  (.-innerHeight dom/window))
-        width (* height aspect)
-        off-screen-left [{:x (* -2 width)
-                          :y 0
-                          :z 0}]
-        left-x (/ width -2)
-        top-y (/ height 2)
-        top-left-panel [{:x (+ left-x 175)
-                         :y (- top-y 20)
-                         :z 0}]
-        
-
+        off-screen-left [{:x (- js/window.innerWidth) :y 0 :z 0}]
+        left-align-x [{:x (/ js/window.innerWidth -2) :y 0 :z 0}]
         categories  (doall  (for [category catalog
                                   :let [color (-> (* (rand) 0.5) (+ 0.25))
                                         products (:products category)
                                         id (str "category-" (:category/name category))
+
                                         div [:div {:id    id
                                                    :class "category"
                                                    :style {:backgroundColor (str "rgb(0,127,127)")
@@ -127,11 +118,8 @@
                                               category-container-div (. category-container-css3dobj -element)
                                               category-container-width (. category-container-div -clientWidth)
                                               category-container-height (. category-container-div -clientHeight)
-                                              fraction  0.771 ;;(/ height category-container-height)
-                                              _ (println "fraction " fraction)
-                                              left-align-x [{:x (+ left-x (/ category-container-width 2))
-                                                                                          :y (/ (* fraction  category-container-height) 2)
-                                                                                          :z 0}]]
+                                              
+                                              ]
                                           (if (nil? @active-category-button)
                                             (do
                                               (reset! active-category-button category-button)
@@ -147,7 +135,9 @@
                                           ))]
     
     (.. scene (add category-button-container-css3d-object))
-    (morph [category-button-container-css3d-object] :into top-left-panel)
+    (morph [category-button-container-css3d-object] :into [{:x 0
+                                                            :y 0
+                                                            :z 0}])
     (def id->css3dobj id->css3dobj)
     (set-active-category-container (first category-buttons))
     (doseq [category-button category-buttons]
