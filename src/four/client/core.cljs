@@ -22,7 +22,7 @@
     css3d-obj))
 
 (defn tween [property _ new-val]
-  (let [duration 1000]
+  (let [duration 500]
     (.. (js/TWEEN.Tween. property)
         (to (clj->js new-val)
             (+ (* (rand) duration)
