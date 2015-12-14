@@ -79,14 +79,18 @@
   (let [id->css3dobj (atom {})
         active-category-button (atom nil)
         active-category-container (atom nil)
-        category-button-container-div [:div {:id "category-menu"}
-                                       (for [category catalog
-                                             :let [cat-name (:category/name category)]]
-                                         [:button {:id cat-name} cat-name])]
-        category-button-container-css3d-object (div->css3d-object (c/html category-button-container-div))
+        category-button-container-template [:div {:id "category-menu"}
+                                            (for [category catalog
+                                                  :let [cat-name (:category/name category)]]
+                                              [:button {:id cat-name} cat-name])]
+        category-button-container-div (c/html category-button-container-template)
+        category-button-container-css3d-object (div->css3d-object category-button-container-div)
         category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))
         off-screen-left [{:x (- js/window.innerWidth) :y 0 :z 0}]
         x-far-left (/ js/window.innerWidth -2)
+        top-left {:x x-far-left
+                  :y (/ js/window.innerHeight 2)
+                  :z 0}
         categories  (doall  (for [category catalog
                                   :let [color (-> (* (rand) 0.5) (+ 0.25))
                                         products (:products category)
@@ -114,6 +118,15 @@
                                    (@id->css3dobj (str "category-" category-name))))
 
         set-active-category-container (fn [category-button]
+                                        (let [boo (update-in top-left [:x] #(+ %
+                                                                               (/ (. category-button-container-div -clientWidth)
+                                                                                  2)))
+                                              boo (update-in boo [:y] #(+ %
+                                                                          (/ (. category-button-container-div -clientHeight)
+                                                                             -2)))]
+                                          (morph [category-button-container-css3d-object]
+                                                 :into
+                                                 [boo]))
                                         (let [category-container-css3dobj (get-category-container category-button)
                                               category-container-div (. category-container-css3dobj -element)
                                               category-container-width (. category-container-div -clientWidth)
@@ -139,9 +152,8 @@
                                           ))]
     
     (.. scene (add category-button-container-css3d-object))
-    (morph [category-button-container-css3d-object] :into [{:x 0
-                                                            :y 0
-                                                            :z 0}])
+
+    
     (def id->css3dobj id->css3dobj)
     (set-active-category-container (first category-buttons))
     (doseq [category-button category-buttons]
