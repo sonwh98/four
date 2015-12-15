@@ -60,7 +60,7 @@
                        (. dom/window -innerHeight)))
   (def domElement (. renderer -domElement))
   (set! (.. domElement -style -position) "absolute")
-  (. (dom/by-id "container") appendChild domElement)
+  
 
   (letfn [(render-scene []
                         (. renderer (render scene camera)))]
@@ -117,15 +117,7 @@
                                    (@id->css3dobj (str "category-" category-name))))
 
         set-active-category-container (fn [category-button]
-                                        (let [boo (update-in top-left [:x] #(+ %
-                                                                               (/ (. category-button-container-div -clientWidth)
-                                                                                  2)))
-                                              boo (update-in boo [:y] #(+ %
-                                                                          (/ (. category-button-container-div -clientHeight)
-                                                                             -2)))]
-                                          (morph [category-button-container-css3d-object]
-                                                 :into
-                                                 [boo]))
+                                        
                                         (let [category-container-css3dobj (get-category-container category-button)
                                               category-container-div (. category-container-css3dobj -element)
                                               category-container-width (. category-container-div -clientWidth)
@@ -151,15 +143,34 @@
                                           ))]
     
     (.. scene (add category-button-container-css3d-object))
-
     
     (def id->css3dobj id->css3dobj)
     (set-active-category-container (first category-buttons))
     (doseq [category-button category-buttons]
-      (dom/on category-button "click" #(set-active-category-container category-button)))))
+      (dom/on category-button "click" #(set-active-category-container category-button)))
+
+    (. (dom/by-id "container") appendChild domElement)
+
+    (m/delay (fn []
+               (let [top-left (update-in top-left [:x] #(+ %
+                                                      (/ (. category-button-container-div -clientWidth)
+                                                         2)))
+                     top-left (update-in top-left [:y] #(+ %
+                                                 (/ (. category-button-container-div -clientHeight)
+                                                    -2)))]
+                 (println "boo " top-left)
+                 (println "w=" (. category-button-container-div -clientWidth))
+                 (morph [category-button-container-css3d-object]
+                        :into
+                        [top-left])))
+             1000)
+    
+    ))
 
 (defmethod process-msg :catalog [[_ catalog]]
-  (build-scene catalog))
+  (build-scene catalog)
+  
+  )
 
 (defn send-get-catalog []
   (dom/whenever-dom-ready #(ws/send! [:get-catalog true])))

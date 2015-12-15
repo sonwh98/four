@@ -1,7 +1,7 @@
 (ns four.messaging
   #?(:cljs (:require-macros [cljs.core.async.macros :refer [go go-loop]]))
-  #?(:cljs (:require [cljs.core.async :refer [put! <! >! chan pub sub unsub]]))
-  #?(:clj  (:require [clojure.core.async :refer [put! <! >! chan pub sub unsub go go-loop]])))
+  #?(:cljs (:require [cljs.core.async :as async :refer [put! <! >! chan pub sub unsub]]))
+  #?(:clj  (:require [clojure.core.async :as async :refer [put! <! >! chan pub sub unsub go go-loop]])))
 
 #?(:cljs (enable-console-print!))
 
@@ -43,3 +43,7 @@
         (on topic #(do
                      (reset! topic-message-recieved? true)
                      (call-back-fn)))))))
+
+(defn delay [execute-fn ms]
+  (go (<! (async/timeout ms))
+      (execute-fn)))
