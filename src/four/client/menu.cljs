@@ -117,7 +117,6 @@
                                    (@id->css3dobj (str "category-" category-name))))
 
         set-active-category-container (fn [category-button]
-                                        
                                         (let [category-container-css3dobj (get-category-container category-button)
                                               category-container-div (. category-container-css3dobj -element)
                                               category-container-width (. category-container-div -clientWidth)
@@ -145,10 +144,14 @@
     (.. scene (add category-button-container-css3d-object))
     
     (def id->css3dobj id->css3dobj)
-    (set-active-category-container (first category-buttons))
+
+    (doseq [category categories]
+      (morph [category] :into off-screen-left))
+    
     (doseq [category-button category-buttons]
       (dom/on category-button "click" #(set-active-category-container category-button)))
 
+    (set-active-category-container (first category-buttons))
     (. (dom/by-id "container") appendChild domElement)
 
     (m/delay (fn []
