@@ -137,7 +137,7 @@
                                           (morph [category-container-css3dobj] :into [{:x (+ x-far-left
                                                                                              (/ (. category-container-div -clientWidth)
                                                                                                 2))
-                                                                                       :y 0
+                                                                                       :y -40
                                                                                        :z 0}])
                                           ))]
     
@@ -151,21 +151,25 @@
     (doseq [category-button category-buttons]
       (dom/on category-button "click" #(set-active-category-container category-button)))
 
-    (set-active-category-container (first category-buttons))
+    
     (. (dom/by-id "container") appendChild domElement)
 
     (m/postpone (fn []
-               (let [top-left (update-in top-left [:x] #(+ %
-                                                      (/ (. category-button-container-div -clientWidth)
-                                                         2)))
-                     top-left (update-in top-left [:y] #(+ %
-                                                 (/ (. category-button-container-div -clientHeight)
-                                                    -2)))]
-                 (println "boo " top-left)
-                 (println "w=" (. category-button-container-div -clientWidth))
-                 (morph [category-button-container-css3d-object]
-                        :into
-                        [top-left])))
+                  (set-active-category-container (first category-buttons))
+                  (let [top-left (update-in top-left [:x] #(+ %
+                                                              (/ (. category-button-container-div -clientWidth)
+                                                                 2)
+                                                              10))
+                        top-left (update-in top-left [:y] #(+ %
+                                                              (/ (. category-button-container-div -clientHeight)
+                                                                 -2)
+                                                              -10
+                                                              ))]
+                    (println "boo " top-left)
+                    (println "w=" (. category-button-container-div -clientWidth))
+                    (morph [category-button-container-css3d-object]
+                           :into
+                           [top-left])))
                 1000)
     
     ))

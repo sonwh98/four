@@ -16,22 +16,6 @@
             overflow: hidden;
         }
 
-        #menu {
-            position: absolute;
-            bottom: 20px;
-            width: 100%;
-            text-align: center;
-        }
-
-        button {
-            color: rgba(127, 255, 255, 0.75);
-            background: transparent;
-            outline: 1px solid rgba(127, 255, 255, 0.75);
-            border: 0px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-
         button:hover {
             background-color: rgba(0, 255, 255, 0.5);
         }
@@ -48,11 +32,17 @@
             flex-wrap: wrap;
             align-content: stretch;
             box-sizing: border-box;
-            height: 95%;
+            height: 90%;
+            width: 33%;
         }
 
         .product {
-            width: 50%;
+            color: rgba(127, 255, 255, 0.75);
+            background: transparent;
+            outline: 1px solid rgba(127, 255, 255, 0.75);
+            border: 0px;
+            cursor: pointer;
+            width: 25%;
         }
 
         .product-img {
@@ -68,6 +58,12 @@
             flex-wrap: wrap;
             align-content: stretch;
             box-sizing: border-box;
+            width: 33%;
+        }
+
+        #category-menu button {
+            width: 25%;
+            height: 50px;
         }
 
     </style>
