@@ -44,6 +44,6 @@
                      (reset! topic-message-recieved? true)
                      (call-back-fn)))))))
 
-(defn delay [execute-fn ms]
+(defn postpone [execute-fn ms]
   (go (<! (async/timeout ms))
       (execute-fn)))

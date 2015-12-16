@@ -154,7 +154,7 @@
     (set-active-category-container (first category-buttons))
     (. (dom/by-id "container") appendChild domElement)
 
-    (m/delay (fn []
+    (m/postpone (fn []
                (let [top-left (update-in top-left [:x] #(+ %
                                                       (/ (. category-button-container-div -clientWidth)
                                                          2)))
@@ -166,7 +166,7 @@
                  (morph [category-button-container-css3d-object]
                         :into
                         [top-left])))
-             1000)
+                1000)
     
     ))
 
