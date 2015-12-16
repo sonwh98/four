@@ -1,0 +1,206 @@
+[
+ {:db/id #db/id[:db.part/user] :store/name "QT Sandwich"
+  :web-site "http://www.qtsandwich.com"
+  :url "http://www.qtsandwich.com/1"
+  :phone "267-639-4520"
+  :address  {:db/id #db/id[:db.part/user] :address/line1 "48 N. 10th Street"
+             :address/city "Philadelphia"
+             :address/state "PA"
+             :address/zip "19107"}
+  :groups [{:db/id #db/id[:db.part/user] :group/name "admin"
+            :group/members [{:db/id #db/id[:db.part/user -100] :user/first-name "Sonny"
+                             :user/last-name "To"
+                             :email "son@kaicode.com"
+                             :password "3858f62230ac3c915f300c664312c63f" ;foobar
+                             }
+                            {:db/id #db/id[:db.part/user -101] :user/first-name "Annie"
+                             :user/last-name "Tran"
+                             :email "annieha4@yahoo.com"
+                             :password "6c81243028f8e455fa617dd5f0232ce1" ;foobar1
+                             }
+                            ]}
+           {:db/id #db/id[:db.part/user] :group/name "manager"
+            :group/members [#db/id[:db.part/user -101]] }
+           {:db/id #db/id[:db.part/user] :group/name "cashier"
+            :group/members [#db/id[:db.part/user -100]
+                            #db/id[:db.part/user -101]]}]
+  :products [{:db/id #db/id[:db.part/user -1] :product/sku "1"
+              :product/name "House Special"
+              :product/price 4.95
+              :url "http://2.bp.blogspot.com/-Xszs7BPLK7U/UEpl_CqF7UI/AAAAAAAAAck/yEsJkcUh25k/s1600/Food++Yakibuta+Ramen+by+Cooking+with+Dog.png"
+              :product/components [#db/id[:db.part/user -200]
+                                   #db/id[:db.part/user -201]
+                                   #db/id[:db.part/user -202]
+                                   #db/id[:db.part/user -203]
+                                   #db/id[:db.part/user -204]]}
+             {:db/id #db/id[:db.part/user -2] :product/sku "2"
+              :product/name "BBQ Pork"
+              :product/price 4.95
+              :url "http://thumb1.shutterstock.com/thumb_small/105328/133076714/stock-photo-bbq-pulled-pork-sandwich-close-up-with-cole-slaw-133076714.jpg"
+              :product/components [#db/id[:db.part/user -202]
+                                   #db/id[:db.part/user -205]]}
+             {:db/id #db/id[:db.part/user -3 ] :product/sku "3"
+              :product/name "Vietnamese Ham"
+              :product/price 4.95 :url "http://www.fordesigner.com/imguploads/Image/cjbc/zcool/png20080526/1211809336.png"}
+             {:db/id #db/id[:db.part/user -4] :product/sku "4"
+              :product/name "Vietnamese Meat"
+              :product/price 4.95 :url "http://www.wpclipart.com/food/food_icon.png"}
+             {:db/id #db/id[:db.part/user -5]
+              :product/sku "5"
+              :product/name "Lemongrass Chicken"
+              :product/price 4.95 :url "http://www.fordesigner.com/imguploads/Image/cjbc/zcool/png20080526/1211809339.png"}
+             {:db/id #db/id[:db.part/user -6] :product/sku "6"
+              :product/name "Lemongrass Beef"
+              :product/price 4.95 :url "http://icons.iconarchive.com/icons/sukritact/japanese-food/256/Salmon-Teriyaki-icon.png"}
+             {:db/id #db/id[:db.part/user -7] :product/sku "7"
+              :product/name "Vietnamese Grilled Pork"
+              :product/price 4.95 :url "http://icons.iconarchive.com/icons/iconshock/food/256/pizza-slice-icon.png"}
+             {:db/id #db/id[:db.part/user -8] :product/sku "8"
+              :product/name "Tofu"
+              :product/description "Tofu sauteed with onions and mushrooms"
+              :product/price 4.95 :url "http://findicons.com/files/icons/2502/food_icons/256/8.png"}
+             {:db/id #db/id[:db.part/user -9] :product/sku "9"
+              :product/name "Lemongrass Tofu"
+              :product/price 4.95 :url "http://graphichive.net/uploaded/fordesigner/1313272921.jpg"}
+
+             {:db/id #db/id[:db.part/user -10] :product/sku "10"
+              :product/name "Lemongrass Chicken"
+              :product/price 6.25 :url "https://cdn0.iconfinder.com/data/icons/cartoon-food/512/Food_512-18.png"}
+             {:db/id #db/id[:db.part/user -11] :product/sku "11"
+              :product/name "Lemongrass Beef"
+              :product/price 6.25 :url "https://cdn4.iconfinder.com/data/icons/BRILLIANT/food/png/400/french_fries.png"}
+             {:db/id #db/id[:db.part/user -12] :product/sku "12"
+              :product/name "Lemongrass Pork Chop"
+              :product/price 6.25 :url "http://png-2.findicons.com/files/icons/2726/recipes/512/recipe_chinesefood.png"}
+             {:db/id #db/id[:db.part/user -13] :product/sku "13"
+              :product/name "BBQ Pork"
+              :product/price 5.25}
+             {:db/id #db/id[:db.part/user -14] :product/sku "14"
+              :product/name "Vietnamese Grilled Pork"
+              :product/price 6.25 :url "http://files.softicons.com/download/food-drinks-icons/thai-icon-style-by-puwanart-triamkarn/png/128/tago.png"}
+             {:db/id #db/id[:db.part/user -15] :product/sku "15"
+              :product/name "Vietnamese Ham"
+              :product/price 6.25 :url "http://files.softicons.com/download/food-drinks-icons/thai-icon-style-by-puwanart-triamkarn/png/128/sanaychan.png"}
+             {:db/id #db/id[:db.part/user -16] :product/sku "16"
+              :product/name "Vietnamese Meat"
+              :product/price 6.25 :url "http://files.softicons.com/download/food-drinks-icons/thai-icon-style-by-puwanart-triamkarn/png/512/hormok.png"}
+             {:db/id #db/id[:db.part/user -17] :product/sku "17"
+              :product/name "Lemongrass Tofu"
+              :product/price 6.25 :url "http://files.softicons.com/download/food-drinks-icons/thai-icon-style-by-puwanart-triamkarn/png/128/coconut-itim.png"}
+             {:db/id #db/id[:db.part/user -18] :product/sku "18"
+              :product/name "Tofu"
+              :product/description "Tofu sauteed with onions and mushrooms"
+              :product/price 6.25 :url "http://a2.mzstatic.com/us/r30/Purple2/v4/15/ba/f1/15baf1af-bfa4-c03d-bba3-019a31c10f98/icon175x175.png"
+              }
+
+             {:db/id #db/id[:db.part/user -19] :product/sku "19"
+              :product/name "Vietnamese Coffee"
+              :product/price 1.50}
+             {:db/id #db/id[:db.part/user -20] :product/sku "20"
+              :product/name "Milk Tea"
+              :product/price 1.00}
+             {:db/id #db/id[:db.part/user -21] :product/sku "21"
+              :product/name "Ying Yang"
+              :product/description "Tea with Coffee"
+              :product/price 1.10}
+             {:db/id #db/id[:db.part/user -22] :product/sku "22"
+              :product/name "Green Tea"
+              :product/price 1.25}
+             {:db/id #db/id[:db.part/user -23] :product/sku "23"
+              :product/name "Lemon Tea"
+              :product/price 1.10}
+             {:db/id #db/id[:db.part/user -24] :product/sku "24"
+              :product/name "Honey Lemon Tea"
+              :product/price 1.50}
+
+             {:db/id #db/id[:db.part/user -25] :product/sku "25"
+              :product/name "Vietnamese Iced Coffee"
+              :product/price 2.50}
+             {:db/id #db/id[:db.part/user -26] :product/sku "26"
+              :product/name "Iced Milk Tea"
+              :product/price 1.75}
+             {:db/id #db/id[:db.part/user -27] :product/sku "27"
+              :product/name "Iced Ying Yang"
+              :product/price 2.00}
+             {:db/id #db/id[:db.part/user -28] :product/sku "28"
+              :product/name "Iced Lemon Tea"
+              :product/price 2.00}
+             {:db/id #db/id[:db.part/user -29] :product/sku "29"
+              :product/name "Iced Honey Lemon Tea"
+              :product/price 2.50}
+             {:db/id #db/id[:db.part/user -30] :product/sku "30"
+              :product/name "Soda"
+              :product/price 0.75}
+             {:db/id #db/id[:db.part/user -31] :product/sku "31"
+              :product/name "Snapple Ice Tea"
+              :product/price 1.00}
+             {:db/id #db/id[:db.part/user -32] :product/sku "32"
+              :product/name "Bottled Soda"
+              :product/price 1.50}
+             {:db/id #db/id[:db.part/user -33] :product/sku "33"
+              :product/name "Bottled Water"
+              :product/price 1.00}
+
+             ;ingredients 
+             {:db/id #db/id[:db.part/user -200] :product/sku "34"
+              :product/name "jalapeno"
+              :product/price 0.0}
+             {:db/id #db/id[:db.part/user -201] :product/sku "35"
+              :product/name "cilantro"
+              :product/price 0.0}
+             {:db/id #db/id[:db.part/user -202] :product/sku "36"
+              :product/name "pickled vegetables" 
+              :product/price 0.0}
+             {:db/id #db/id[:db.part/user -203] :product/sku "37"
+              :product/name "black pepper"
+              :product/price 0.0}
+             {:db/id #db/id[:db.part/user -204] :product/sku "38"
+              :product/name "salt"
+              :product/price 0.0}
+             {:db/id #db/id[:db.part/user -205] :product/sku "39"
+              :product/name "patte"
+              :product/price 0.50}
+             ]
+             
+  :catalog [{:db/id #db/id[:db.part/user] :category/name "Sandwiches"
+             :products [#db/id[:db.part/user -1]
+                        #db/id[:db.part/user -2]
+                        #db/id[:db.part/user -3]
+                        #db/id[:db.part/user -4]
+                        #db/id[:db.part/user -5]
+                        #db/id[:db.part/user -6]
+                        #db/id[:db.part/user -7]
+                        #db/id[:db.part/user -8]
+                        #db/id[:db.part/user -9]]}
+            
+            
+            {:db/id #db/id[:db.part/user] :category/name "Platters"
+             :products [#db/id[:db.part/user -10]
+                        #db/id[:db.part/user -11]
+                        #db/id[:db.part/user -12]
+                        #db/id[:db.part/user -13]
+                        #db/id[:db.part/user -14]
+                        #db/id[:db.part/user -15]
+                        #db/id[:db.part/user -16]
+                        #db/id[:db.part/user -17]
+                        #db/id[:db.part/user -18]]}
+
+            {:db/id #db/id[:db.part/user] :category/name "Hot Drinks"
+             :products [#db/id[:db.part/user -19]
+                        #db/id[:db.part/user -20]
+                        #db/id[:db.part/user -21]
+                        #db/id[:db.part/user -22]
+                        #db/id[:db.part/user -23]
+                        #db/id[:db.part/user -24]]}
+            
+            {:db/id #db/id[:db.part/user] :category/name "Cold Drinks"
+             :products [#db/id[:db.part/user -25]
+                        #db/id[:db.part/user -26]
+                        #db/id[:db.part/user -27]
+                        #db/id[:db.part/user -28]
+                        #db/id[:db.part/user -29]
+                        #db/id[:db.part/user -30]
+                        #db/id[:db.part/user -31]
+                        #db/id[:db.part/user -32]
+                        #db/id[:db.part/user -32]]}]
+}]

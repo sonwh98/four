@@ -1,0 +1,227 @@
+[
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :store/uuid
+   :db/valueType          :db.type/uuid
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :store/name
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :store/orders
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/many
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :url
+   :db/unique             :db.unique/identity
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :web-site
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :phone
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :address
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :catalog
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/many
+   :db.install/_attribute :db.part/db}
+
+  ;;group/users
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :groups
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/many
+   :db.install/_attribute :db.part/db
+   }
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :group/name
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db
+   }
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :group/permissions
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/many
+   :db.install/_attribute :db.part/db
+   }
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :permission/name
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db
+   }
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :permission/description
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db
+   }
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :group/members
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/many
+   :db.install/_attribute :db.part/db
+   }
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :email
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db
+   }
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :password
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db
+   }
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :user/first-name
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :user/last-name
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+
+  ;;product
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :product/uuid
+   :db/valueType          :db.type/uuid
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :product/name
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db/fulltext           true
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :product/sku
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :product/price
+   :db/valueType          :db.type/double
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :product/description
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]               ;components are other products. an example of components are ingredients for a sandwich
+   :db/ident              :product/components
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/many
+   :db.install/_attribute :db.part/db}
+
+  ;;address
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :address/line1
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :address/line2
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :address/city
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :address/state
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :address/zip
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :category/name
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :products
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/many
+   :db.install/_attribute :db.part/db}
+
+  ;;date
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :date
+   :db/valueType          :db.type/instant
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+
+  ;;order
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :order/store
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :order/cashier
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :order/customer
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :order/line-items
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/many
+   :db/isComponent        true
+   :db.install/_attribute :db.part/db}
+
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :quantity
+   :db/valueType          :db.type/long
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :product
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  {:db/id                 #db/id[:db.part/db]
+   :db/ident              :line-item/customizations
+   :db/valueType          :db.type/ref
+   :db/cardinality        :db.cardinality/many
+   :db.install/_attribute :db.part/db}
+
+  ;;api
+  {db/id                  #db/id[:db.part/db]
+   :db/ident              :api-key
+   :db/valueType          :db.type/string
+   :db/cardinality        :db.cardinality/one
+   :db.install/_attribute :db.part/db}
+  ]
