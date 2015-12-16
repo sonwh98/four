@@ -57,10 +57,17 @@
                                    :source-map-timestamp true}}
                        {:id "min"
                         :source-paths ["src"]
-                        :compiler {:output-to "resources/public/js/compiled/four.min.js"
-                                   :main four.client.menu
-                                   :optimizations :advanced
-                                   :pretty-print false}}]}
+                        :compiler {:optimizations :simple ;;:advanced ;:simple
+                                   :pretty-print false
+                                   :output-dir "out"
+                                   :modules {:common {:output-to "resources/public/js/compiled/common.min.js"
+                                                      :entries #{four.client.core four.client.ws four.client.dom
+                                                                 four.messaging four.transit cljsjs.three
+                                                                 cljsjs.tween }}
+                                             :menu {:output-to "resources/public/js/compiled/menu.min.js"
+                                                    :entries #{four.client.menu}
+                                                    :depends-on #{:common}}}
+                                   }}]}
 
   :figwheel {
              ;; :http-server-root "public" ;; default and assumes "resources" 

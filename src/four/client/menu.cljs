@@ -1,7 +1,6 @@
 (ns four.client.menu
   (:require [four.client.core :as four :refer [morph div->css3d-object]]
             [four.client.dom :as dom]
-            [four.client.layout :as layout]
             [four.client.ws :as ws :refer [process-msg]]
             [four.messaging :as m]
             [crate.core :as c]))
@@ -47,7 +46,7 @@
 
 (defn init []
   (def scene (js/THREE.Scene.))
-  (let [fov (radian->degree (calculate-fov (.-innerHeight dom/window)
+  (let [fov (radian->degree (calculate-fov js/window.innerHeight
                                            1000))]
     (def camera (js/THREE.PerspectiveCamera. fov
                                              (get-aspect-ratio)
@@ -56,8 +55,8 @@
   (set! (.. camera -position -z) 1000)
   
   (def renderer (js/THREE.CSS3DRenderer.))
-  (. renderer (setSize (. dom/window -innerWidth)
-                       (. dom/window -innerHeight)))
+  (. renderer (setSize js/window.innerWidth
+                       js/window.innerHeight))
   (def domElement (. renderer -domElement))
   (set! (.. domElement -style -position) "absolute")
   
@@ -69,10 +68,6 @@
                     (render-scene)))))
 
 (init)
-
-(defn on-click [button-id callback-fn]
-  (println button-id " " (dom/by-id button-id))
-  (dom/whenever-dom-ready #(dom/on (dom/by-id button-id) "click" callback-fn)))
 
 (defn build-scene [catalog]
   (let [id->css3dobj (atom {})
@@ -161,8 +156,7 @@
                      top-left (update-in top-left [:y] #(+ %
                                                  (/ (. category-button-container-div -clientHeight)
                                                     -2)))]
-                 (println "boo " top-left)
-                 (println "w=" (. category-button-container-div -clientWidth))
+
                  (morph [category-button-container-css3d-object]
                         :into
                         [top-left])))

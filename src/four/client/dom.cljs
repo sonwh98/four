@@ -7,7 +7,7 @@
 
 (.. document (addEventListener "DOMContentLoaded" #(m/broadcast [:dom/ready true])))
 
-(.. window (addEventListener "resize" #(m/broadcast [:window/resize true]) false))
+(.. js/window (addEventListener "resize" #(m/broadcast [:window/resize true]) false))
 
 (defn by-id [id]
   (.. document (getElementById id)))
