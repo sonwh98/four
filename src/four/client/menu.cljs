@@ -15,7 +15,6 @@
                                           [:button {:id cat-name} cat-name])]
         category-button-container-css3d-object (four/hiccup->css3d-object category-button-container-div)
         category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))
-        off-screen-left [{:x (- js/window.innerWidth) :y 0 :z 0}]
         categories  (for [category catalog
                           :let [color (-> (* (rand) 0.5) (+ 0.25))
                                 products (:products category)
@@ -52,22 +51,22 @@
                                               (reset! active-category-container category-container-css3dobj)))
                                           
                                           (set! (.. @active-category-button -style -backgroundColor) nil)
-                                          (four/morph [@active-category-container] :into off-screen-left)
+                                          (four/move-off-screen [@active-category-container])
 
                                           (reset! active-category-button category-button)
                                           (reset! active-category-container category-container-css3dobj)
                                           (set! (.. @active-category-button -style -backgroundColor) "rgb(100,100,100)")
                                           (four/morph [category-container-css3dobj] :into [{:x (+ x-far-left
-                                                                                             (/ (. category-container-div -clientWidth)
-                                                                                                2))
-                                                                                       :y -40
-                                                                                       :z 0}])
+                                                                                                  (/ (. category-container-div -clientWidth)
+                                                                                                     2))
+                                                                                            :y -40
+                                                                                            :z 0}])
                                           ))]
     
     (four/add category-button-container-css3d-object)
     
     (doseq [category categories]
-      (four/morph [category] :into off-screen-left))
+      (four/move-off-screen [category]))
     
     (doseq [category-button category-buttons]
       (dom/on category-button "click" #(set-active-category-container category-button)))
@@ -76,17 +75,17 @@
                   (set-active-category-container (first category-buttons))
                   (let [category-button-container-div (dom/by-id "category-selection-container")
                         top-left (update-in (four/get-top-left) [:x] #(+ %
-                                                              (/ (. category-button-container-div -clientWidth)
-                                                                 2)
-                                                              10))
+                                                                         (/ (. category-button-container-div -clientWidth)
+                                                                            2)
+                                                                         10))
                         top-left (update-in top-left [:y] #(+ %
                                                               (/ (. category-button-container-div -clientHeight)
                                                                  -2)
                                                               -10
                                                               ))]
                     (four/morph [category-button-container-css3d-object]
-                           :into
-                           [top-left])))
+                                :into
+                                [top-left])))
                 1000)
     
     ))

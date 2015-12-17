@@ -123,6 +123,9 @@
       (tween current-position :to new-position)
       (tween current-rotation :to new-rotation))))
 
+(defn move-off-screen [object3d]
+  (let [off-screen [{:x (- js/window.innerWidth) :y 0 :z 0}]]
+    (morph object3d :into off-screen)))
 
 (m/on :window/resize (fn []
                        (set!  (. camera -aspect) (get-aspect-ratio))
