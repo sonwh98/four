@@ -67,7 +67,7 @@
                        js/window.innerHeight))
   (def domElement (. renderer -domElement))
   (set! (.. domElement -style -position) "absolute")
-  (. (dom/by-id "container") appendChild domElement)
+  (. js/document.body appendChild domElement)
 
   (letfn [(render-scene []
                         (. renderer (render scene camera)))]
