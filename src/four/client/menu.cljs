@@ -17,9 +17,6 @@
         category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))
         off-screen-left [{:x (- js/window.innerWidth) :y 0 :z 0}]
         x-far-left (/ js/window.innerWidth -2)
-        top-left {:x x-far-left
-                  :y (/ js/window.innerHeight 2)
-                  :z 0}
         categories  (for [category catalog
                           :let [color (-> (* (rand) 0.5) (+ 0.25))
                                 products (:products category)
@@ -82,7 +79,7 @@
     (m/postpone (fn []
                   (set-active-category-container (first category-buttons))
                   (let [category-button-container-div (dom/by-id "category-selection-container")
-                        top-left (update-in top-left [:x] #(+ %
+                        top-left (update-in (four/get-top-left) [:x] #(+ %
                                                               (/ (. category-button-container-div -clientWidth)
                                                                  2)
                                                               10))
@@ -91,8 +88,6 @@
                                                                  -2)
                                                               -10
                                                               ))]
-                    (println "boo " top-left)
-                    (println "w=" (. category-button-container-div -clientWidth))
                     (four/morph [category-button-container-css3d-object]
                            :into
                            [top-left])))

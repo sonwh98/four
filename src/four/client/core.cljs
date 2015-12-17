@@ -7,6 +7,11 @@
 
 (defrecord Point [x y z])
 
+(defn get-top-left []
+  {:x (/ js/window.innerWidth -2)
+   :y (/ js/window.innerHeight 2)
+   :z 0})
+
 (defn get-aspect-ratio []
   (/ js/window.innerWidth
      js/window.innerHeight))
