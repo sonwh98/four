@@ -2,7 +2,49 @@
   (:require [cljsjs.three]
             [cljsjs.tween]))
 
+(defn get-aspect-ratio []
+  (/ js/window.innerWidth
+     js/window.innerHeight))
+
+(defn degree->radian [degree]
+  (* degree (/ js/Math.PI 180)))
+
+(defn radian->degree [radian]
+  (* radian (/ 180 js/Math.PI)))
+
+(defn get-vertical-fov
+  "vertical field of view in radians"
+  [camera]
+  (degree->radian (. camera -fov)))
+
+(defn get-hortizontal-fov [camera]
+  (let [aspect-ratio (get-aspect-ratio)
+        vfov (get-vertical-fov camera)]
+    (-> (/ vfov 2) js/Math.tan (* aspect-ratio) js/Math.atan (* 2))))
+
+(defn get-visible-height [camera]
+  (let [fov (get-vertical-fov camera)
+        distance (.. camera -position -z)]
+    (* 2 (js/Math.tan (/ fov 2)) distance)))
+
+(defn get-visible-width [camera]
+  (let [aspect-ratio (get-aspect-ratio)
+        hfov (get-hortizontal-fov camera)
+        distance (.. camera -position -z)]
+    (* (/ hfov 2) js/Math.tan (* 2 distance))))
+
+(defn calculate-fov [height distance]
+  (->  height (/ distance) (/ 2) js/Math.atan (* 2)))
+
+
 (defonce scene (js/THREE.Scene.))
+(defonce camera (let [z-distance 1000
+                      fov  (->  (calculate-fov js/window.innerHeight z-distance)
+                                radian->degree)]
+                  (js/THREE.PerspectiveCamera. fov
+                                               (get-aspect-ratio)
+                                               1000
+                                               1)))
 (defonce id-index (atom {}))
 
 (defn id->object3d [id]
@@ -53,36 +95,3 @@
      (animation-fn time)
      (js/requestAnimationFrame animation-loop))))
 
-(defn get-aspect-ratio []
-  (/ js/window.innerWidth
-     js/window.innerHeight))
-
-(defn degree->radian [degree]
-  (* degree (/ js/Math.PI 180)))
-
-(defn radian->degree [radian]
-  (* radian (/ 180 js/Math.PI)))
-
-(defn get-vertical-fov
-  "vertical field of view in radians"
-  [camera]
-  (degree->radian (. camera -fov)))
-
-(defn get-hortizontal-fov [camera]
-  (let [aspect-ratio (get-aspect-ratio)
-        vfov (get-vertical-fov camera)]
-    (-> (/ vfov 2) js/Math.tan (* aspect-ratio) js/Math.atan (* 2))))
-
-(defn get-visible-height [camera]
-  (let [fov (get-vertical-fov camera)
-        distance (.. camera -position -z)]
-    (* 2 (js/Math.tan (/ fov 2)) distance)))
-
-(defn get-visible-width [camera]
-  (let [aspect-ratio (get-aspect-ratio)
-        hfov (get-hortizontal-fov camera)
-        distance (.. camera -position -z)]
-    (* (/ hfov 2) js/Math.tan (* 2 distance))))
-
-(defn calculate-fov [height distance]
-  (->  height (/ distance) (/ 2) js/Math.atan (* 2)))

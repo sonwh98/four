@@ -6,16 +6,11 @@
             [crate.core :as c]))
 
 (declare renderer)
-(declare camera)
+
 
 (defn init []
-  (let [fov (four/radian->degree (four/calculate-fov (.-innerHeight dom/window)
-                                                     1000))]
-    (def camera (js/THREE.PerspectiveCamera. fov
-                                             (four/get-aspect-ratio)
-                                             1000
-                                             1)))
-  (set! (.. camera -position -z) 1000)
+  
+  (set! (.. four/camera -position -z) 1000)
   
   (def renderer (js/THREE.CSS3DRenderer.))
   (. renderer (setSize (. dom/window -innerWidth)
@@ -25,7 +20,7 @@
   
 
   (letfn [(render-scene []
-                        (. renderer (render four/scene camera)))]
+                        (. renderer (render four/scene four/camera)))]
     (four/animate (fn [time]
                     (.. js/TWEEN update)
                     (render-scene)))))
@@ -139,5 +134,5 @@
 (send-get-catalog)
 
 (m/on :window/resize (fn []
-                       (set!  (. camera -aspect) (four/get-aspect-ratio))
+                       (set!  (. four/camera -aspect) (four/get-aspect-ratio))
                        (. renderer setSize js/window.innerWidth js/window.innerHeight)))
