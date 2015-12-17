@@ -5,7 +5,6 @@
             [four.messaging :as m]
             [crate.core :as c]))
 
-
 (declare scene)
 (declare renderer)
 (declare camera)
@@ -105,8 +104,9 @@
                         (.. scene (add css3d-object))
                         css3d-object))
         get-category-container (fn [category-button]
-                                 (let [category-name (. category-button -id)]
-                                   (@four/scene-graph (str "category-" category-name))))
+                                 (let [category-name (. category-button -id)
+                                       id (str "category-" category-name)]
+                                   (four/id->object3d id)))
 
         set-active-category-container (fn [category-button]
                                         (let [category-container-css3dobj (get-category-container category-button)
