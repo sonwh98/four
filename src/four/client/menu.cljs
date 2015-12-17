@@ -66,10 +66,8 @@
     (four/animate (fn [time]
                     (.. js/TWEEN update)
                     (render-scene)))))
-
-(init)
-
 (defn build-scene [catalog]
+  (init)
   (let [id->css3dobj (atom {})
         active-category-button (atom nil)
         active-category-container (atom nil)
@@ -170,9 +168,7 @@
     ))
 
 (defmethod process-msg :catalog [[_ catalog]]
-  (build-scene catalog)
-  
-  )
+  (build-scene catalog))
 
 (defn send-get-catalog []
   (dom/whenever-dom-ready #(ws/send! [:get-catalog true])))
