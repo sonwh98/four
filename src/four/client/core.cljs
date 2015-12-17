@@ -2,6 +2,8 @@
   (:require [cljsjs.three]
             [cljsjs.tween]))
 
+(def scene-graph (atom {}))
+
 (defn position-map->object3d [{:keys [x y z] :as position}]
   (let [object3d (js/THREE.Object3D.)]
     (set! (.. object3d -position -x) x)
@@ -19,6 +21,7 @@
     (set! (.. css3d-obj -position -x) (-> (* (rand) 4000) (- 2000)))
     (set! (.. css3d-obj -position -y) (-> (* (rand) 4000) (- 2000)))
     (set! (.. css3d-obj -position -z) (-> (* (rand) 4000) (- 2000)))
+    (swap! scene-graph assoc (. div -id) css3d-obj)
     css3d-obj))
 
 (defn tween [property _ new-val]

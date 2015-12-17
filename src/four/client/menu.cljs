@@ -68,8 +68,7 @@
                     (render-scene)))))
 (defn build-scene [catalog]
   (init)
-  (let [id->css3dobj (atom {})
-        active-category-button (atom nil)
+  (let [active-category-button (atom nil)
         active-category-container (atom nil)
         category-button-container-template [:div {:id "category-selection-container"}
                                             (for [category catalog
@@ -102,12 +101,12 @@
                                         [:div  (:product/name p)]])]
                                 css3d-object (div->css3d-object (c/html div))]]
                       (do
-                        (swap! id->css3dobj assoc id css3d-object)
+                        
                         (.. scene (add css3d-object))
                         css3d-object))
         get-category-container (fn [category-button]
                                  (let [category-name (. category-button -id)]
-                                   (@id->css3dobj (str "category-" category-name))))
+                                   (@four/scene-graph (str "category-" category-name))))
 
         set-active-category-container (fn [category-button]
                                         (let [category-container-css3dobj (get-category-container category-button)
@@ -136,8 +135,6 @@
     
     (.. scene (add category-button-container-css3d-object))
     
-    (def id->css3dobj id->css3dobj)
-
     (doseq [category categories]
       (morph [category] :into off-screen-left))
     
