@@ -2,7 +2,8 @@
   (:require [cljsjs.three]
             [cljsjs.tween]))
 
-(def id-index (atom {}))
+(defonce scene (js/THREE.Scene.))
+(defonce id-index (atom {}))
 
 (defn id->object3d [id]
   (@id-index id)

@@ -5,7 +5,6 @@
             [four.messaging :as m]
             [crate.core :as c]))
 
-(declare scene)
 (declare renderer)
 (declare camera)
 
@@ -44,7 +43,6 @@
   (->  height (/ distance) (/ 2) js/Math.atan (* 2)))
 
 (defn init []
-  (def scene (js/THREE.Scene.))
   (let [fov (radian->degree (calculate-fov (.-innerHeight dom/window)
                                            1000))]
     (def camera (js/THREE.PerspectiveCamera. fov
@@ -61,7 +59,7 @@
   
 
   (letfn [(render-scene []
-                        (. renderer (render scene camera)))]
+                        (. renderer (render four/scene camera)))]
     (four/animate (fn [time]
                     (.. js/TWEEN update)
                     (render-scene)))))
@@ -101,7 +99,7 @@
                                 css3d-object (div->css3d-object (c/html div))]]
                       (do
                         
-                        (.. scene (add css3d-object))
+                        (.. four/scene (add css3d-object))
                         css3d-object))
         get-category-container (fn [category-button]
                                  (let [category-name (. category-button -id)
@@ -133,7 +131,7 @@
                                                                                        :z 0}])
                                           ))]
     
-    (.. scene (add category-button-container-css3d-object))
+    (.. four/scene (add category-button-container-css3d-object))
     
     (doseq [category categories]
       (morph [category] :into off-screen-left))
