@@ -70,14 +70,14 @@
 
 (defonce id-index (atom {}))
 (defn id->object3d [id]
-  (@id-index id)
-  )
+  (@id-index id))
 
 (defn position-map->object3d [{:keys [x y z] :as position}]
-  (let [object3d (js/THREE.Object3D.)]
-    (set! (.. object3d -position -x) x)
-    (set! (.. object3d -position -y) y)
-    (set! (.. object3d -position -z) z)
+  (let [object3d (js/THREE.Object3D.)
+        position (. object3d -position)]
+    (set! (. position -x) x)
+    (set! (. position -y) y)
+    (set! (. position -z) z)
     object3d))
 
 (defn property->map [property]
