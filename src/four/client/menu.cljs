@@ -90,28 +90,28 @@
         top-left {:x x-far-left
                   :y (/ js/window.innerHeight 2)
                   :z 0}
-        categories  (doall  (for [category catalog
-                                  :let [color (-> (* (rand) 0.5) (+ 0.25))
-                                        products (:products category)
-                                        id (str "category-" (:category/name category))
+        categories  (for [category catalog
+                          :let [color (-> (* (rand) 0.5) (+ 0.25))
+                                products (:products category)
+                                id (str "category-" (:category/name category))
 
-                                        div [:div {:id    id
-                                                   :class "category"
-                                                   :style {:backgroundColor (str "rgb(0,127,127)")
-                                                           :border-style "solid"
-                                                           :border-color "white"
-                                                           :width "40%"}}
-                                             (for [p products]
-                                               [:button {:id (:product/sku p)
-                                                         :class "product"}
-                                                [:img {:src (or (:url p) "http://www.creattor.com/files/10/652/drinks-icons-screenshots-1.png")
-                                                       :class "product-img"}]
-                                                [:div  (:product/name p)]])]
-                                        css3d-object (div->css3d-object (c/html div))]]
-                              (do
-                                (swap! id->css3dobj assoc id css3d-object)
-                                (.. scene (add css3d-object))
-                                css3d-object)))
+                                div [:div {:id    id
+                                           :class "category"
+                                           :style {:backgroundColor (str "rgb(0,127,127)")
+                                                   :border-style "solid"
+                                                   :border-color "white"
+                                                   :width "40%"}}
+                                     (for [p products]
+                                       [:button {:id (:product/sku p)
+                                                 :class "product"}
+                                        [:img {:src (or (:url p) "http://www.creattor.com/files/10/652/drinks-icons-screenshots-1.png")
+                                               :class "product-img"}]
+                                        [:div  (:product/name p)]])]
+                                css3d-object (div->css3d-object (c/html div))]]
+                      (do
+                        (swap! id->css3dobj assoc id css3d-object)
+                        (.. scene (add css3d-object))
+                        css3d-object))
         get-category-container (fn [category-button]
                                  (let [category-name (. category-button -id)]
                                    (@id->css3dobj (str "category-" category-name))))
