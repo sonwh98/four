@@ -4,6 +4,8 @@
             [four.messaging :as m]
             [four.client.dom :as dom]))
 
+(defrecord Point [x y z])
+
 (defn get-aspect-ratio []
   (/ js/window.innerWidth
      js/window.innerHeight))
@@ -72,7 +74,7 @@
 (defn id->object3d [id]
   (@id-index id))
 
-(defn position-map->object3d [{:keys [x y z] :as position}]
+(defn map->object3d [{:keys [x y z] :as position}]
   (let [object3d (js/THREE.Object3D.)
         position (. object3d -position)]
     (set! (. position -x) x)
@@ -103,7 +105,7 @@
         (start))))
 
 (defn morph [css3d-objects _ seq-of-points]
-  (let [seq-of-object3d (map position-map->object3d seq-of-points)]
+  (let [seq-of-object3d (map map->object3d seq-of-points)]
     (doseq [ [css3d-obj object3d] (partition 2 (interleave css3d-objects seq-of-object3d))
              :let [current-position (. css3d-obj -position)
                    current-rotation (. css3d-obj -rotation)
