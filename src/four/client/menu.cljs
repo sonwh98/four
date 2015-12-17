@@ -48,7 +48,8 @@
                                                           (let [category-container-div (. active-container -element)
                                                                 div-width (. category-container-div -clientWidth)]
                                                             (four/morph [category-container-css3dobj] :into [{:x (+ x-far-left
-                                                                                                                    (/ div-width 2))
+                                                                                                                    (/ div-width 2)
+                                                                                                                    10)
                                                                                                               :y -40
                                                                                                               :z 0}])))]
                                           (if (nil? @active-category-button)
