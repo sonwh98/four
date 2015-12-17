@@ -5,27 +5,8 @@
             [four.messaging :as m]
             [crate.core :as c]))
 
-(declare renderer)
-
-
-(defn init []
-  
-  (set! (.. four/camera -position -z) 1000)
-  
-  (def renderer (js/THREE.CSS3DRenderer.))
-  (. renderer (setSize (. dom/window -innerWidth)
-                       (. dom/window -innerHeight)))
-  (def domElement (. renderer -domElement))
-  (set! (.. domElement -style -position) "absolute")
-  
-
-  (letfn [(render-scene []
-                        (. renderer (render four/scene four/camera)))]
-    (four/animate (fn [time]
-                    (.. js/TWEEN update)
-                    (render-scene)))))
 (defn build-scene [catalog]
-  (init)
+  (four/init)
   (let [active-category-button (atom nil)
         active-category-container (atom nil)
         category-button-container-template [:div {:id "category-selection-container"}
@@ -100,9 +81,6 @@
     (doseq [category-button category-buttons]
       (dom/on category-button "click" #(set-active-category-container category-button)))
 
-    
-    (. (dom/by-id "container") appendChild domElement)
-
     (m/postpone (fn []
                   (set-active-category-container (first category-buttons))
                   (let [top-left (update-in top-left [:x] #(+ %
@@ -133,6 +111,4 @@
 
 (send-get-catalog)
 
-(m/on :window/resize (fn []
-                       (set!  (. four/camera -aspect) (four/get-aspect-ratio))
-                       (. renderer setSize js/window.innerWidth js/window.innerHeight)))
+

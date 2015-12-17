@@ -1,6 +1,8 @@
 (ns four.client.core
   (:require [cljsjs.three]
-            [cljsjs.tween]))
+            [cljsjs.tween]
+            [four.messaging :as m]
+            [four.client.dom :as dom]))
 
 (defn get-aspect-ratio []
   (/ js/window.innerWidth
@@ -36,17 +38,37 @@
 (defn calculate-fov [height distance]
   (->  height (/ distance) (/ 2) js/Math.atan (* 2)))
 
+(defn animate [animation-fn]
+  ((fn animation-loop [time]
+     (animation-fn time)
+     (js/requestAnimationFrame animation-loop))))
 
-(defonce scene (js/THREE.Scene.))
-(defonce camera (let [z-distance 1000
-                      fov  (->  (calculate-fov js/window.innerHeight z-distance)
-                                radian->degree)]
-                  (js/THREE.PerspectiveCamera. fov
-                                               (get-aspect-ratio)
-                                               1000
-                                               1)))
+
+(defn init []
+  (defonce scene (js/THREE.Scene.))
+  (defonce camera (let [z-distance 1000
+                        fov  (->  (calculate-fov js/window.innerHeight z-distance)
+                                  radian->degree)]
+                    (js/THREE.PerspectiveCamera. fov
+                                                 (get-aspect-ratio)
+                                                 1000
+                                                 1)))
+  (set! (.. camera -position -z) 1000)
+  
+  (defonce renderer (js/THREE.CSS3DRenderer.))
+  (. renderer (setSize js/window.innerWidth
+                       js/window.innerHeight))
+  (def domElement (. renderer -domElement))
+  (set! (.. domElement -style -position) "absolute")
+  (. (dom/by-id "container") appendChild domElement)  
+
+  (letfn [(render-scene []
+                        (. renderer (render scene camera)))]
+    (animate (fn [time]
+               (.. js/TWEEN update)
+               (render-scene)))))
+
 (defonce id-index (atom {}))
-
 (defn id->object3d [id]
   (@id-index id)
   )
@@ -90,8 +112,8 @@
       (tween current-position :to new-position)
       (tween current-rotation :to new-rotation))))
 
-(defn animate [animation-fn]
-  ((fn animation-loop [time]
-     (animation-fn time)
-     (js/requestAnimationFrame animation-loop))))
 
+(m/on :window/resize (fn []
+                       (set!  (. camera -aspect) (get-aspect-ratio))
+                       ;; (. renderer setSize js/window.innerWidth js/window.innerHeight)
+                       ))
