@@ -56,11 +56,14 @@
                                           (reset! active-category-button category-button)
                                           (reset! active-category-container category-container-css3dobj)
                                           (set! (.. @active-category-button -style -backgroundColor) "rgb(100,100,100)")
-                                          (four/morph [category-container-css3dobj] :into [{:x (+ x-far-left
-                                                                                                  (/ (. category-container-div -clientWidth)
-                                                                                                     2))
-                                                                                            :y -40
-                                                                                            :z 0}])
+                                          (defn slide-out [active-container]
+                                            (let [category-container-div (. active-container -element)
+                                                  div-width (. category-container-div -clientWidth)]
+                                              (four/morph [category-container-css3dobj] :into [{:x (+ x-far-left
+                                                                                                      (/ div-width 2))
+                                                                                                :y -40
+                                                                                                :z 0}])))
+                                          (slide-out @active-category-container)
                                           ))]
     
     (four/add category-button-container-css3d-object)
