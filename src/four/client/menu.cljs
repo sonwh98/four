@@ -43,7 +43,6 @@
 
         set-active-category-container (fn [category-button]
                                         (let [category-container-css3dobj (get-category-container category-button)
-                                              category-container-div (. category-container-css3dobj -element)
                                               x-far-left (:x (four/get-top-left))
                                               slide-out (fn [active-container]
                                                           (let [category-container-div (. active-container -element)
