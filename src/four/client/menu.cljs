@@ -16,7 +16,6 @@
         category-button-container-css3d-object (four/hiccup->css3d-object category-button-container-div)
         category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))
         off-screen-left [{:x (- js/window.innerWidth) :y 0 :z 0}]
-        x-far-left (/ js/window.innerWidth -2)
         categories  (for [category catalog
                           :let [color (-> (* (rand) 0.5) (+ 0.25))
                                 products (:products category)
@@ -46,10 +45,7 @@
         set-active-category-container (fn [category-button]
                                         (let [category-container-css3dobj (get-category-container category-button)
                                               category-container-div (. category-container-css3dobj -element)
-                                              category-container-width (. category-container-div -clientWidth)
-                                              category-container-height (. category-container-div -clientHeight)
-                                              
-                                              ]
+                                              x-far-left (:x (four/get-top-left))]
                                           (if (nil? @active-category-button)
                                             (do
                                               (reset! active-category-button category-button)
