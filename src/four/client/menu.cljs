@@ -78,7 +78,7 @@
   (let [id->css3dobj (atom {})
         active-category-button (atom nil)
         active-category-container (atom nil)
-        category-button-container-template [:div {:id "category-menu"}
+        category-button-container-template [:div {:id "category-selection-container"}
                                             (for [category catalog
                                                   :let [cat-name (:category/name category)]]
                                               [:button {:id cat-name} cat-name])]
