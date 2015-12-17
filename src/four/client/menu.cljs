@@ -25,7 +25,7 @@
                                            :style {:backgroundColor (str "rgb(0,127,127)")
                                                    :border-style "solid"
                                                    :border-color "white"
-                                                   :width "40%"}}
+                                                   }}
                                      (for [p products]
                                        [:button {:id (:product/sku p)
                                                  :class "product"}
