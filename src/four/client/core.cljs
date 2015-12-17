@@ -2,7 +2,8 @@
   (:require [cljsjs.three]
             [cljsjs.tween]
             [four.messaging :as m]
-            [four.client.dom :as dom]))
+            [four.client.dom :as dom]
+            [crate.core :as c]))
 
 (defrecord Point [x y z])
 
@@ -55,13 +56,13 @@
                                                  1000
                                                  1)))
   (set! (.. camera -position -z) 1000)
-  
+
   (defonce renderer (js/THREE.CSS3DRenderer.))
   (. renderer (setSize js/window.innerWidth
                        js/window.innerHeight))
   (def domElement (. renderer -domElement))
   (set! (.. domElement -style -position) "absolute")
-  (. (dom/by-id "container") appendChild domElement)  
+  (. (dom/by-id "container") appendChild domElement)
 
   (letfn [(render-scene []
                         (. renderer (render scene camera)))]
@@ -89,12 +90,13 @@
    :y (aget property "y")
    :z (aget property "z")})
 
-(defn div->css3d-object [div]
-  (let [css3d-obj (js/THREE.CSS3DObject. div)]
+(defn hiccup->css3d-object [div]
+  (let [dom-div (c/html div)
+        css3d-obj (js/THREE.CSS3DObject. dom-div)]
     (set! (.. css3d-obj -position -x) (-> (* (rand) 4000) (- 2000)))
     (set! (.. css3d-obj -position -y) (-> (* (rand) 4000) (- 2000)))
     (set! (.. css3d-obj -position -z) (-> (* (rand) 4000) (- 2000)))
-    (swap! id-index assoc (. div -id) css3d-obj)
+    (swap! id-index assoc (. dom-div -id) css3d-obj)
     css3d-obj))
 
 (defn tween [property _ new-val]
