@@ -40,8 +40,7 @@
                                         [:div  (:product/name p)]])]
                                 css3d-object (div->css3d-object (c/html div))]]
                       (do
-                        
-                        (.. four/scene (add css3d-object))
+                        (four/add css3d-object)
                         css3d-object))
         get-category-container (fn [category-button]
                                  (let [category-name (. category-button -id)
@@ -73,7 +72,7 @@
                                                                                        :z 0}])
                                           ))]
     
-    (.. four/scene (add category-button-container-css3d-object))
+    (four/add category-button-container-css3d-object)
     
     (doseq [category categories]
       (morph [category] :into off-screen-left))

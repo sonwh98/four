@@ -45,7 +45,6 @@
      (animation-fn time)
      (js/requestAnimationFrame animation-loop))))
 
-
 (defn init []
   (defonce scene (js/THREE.Scene.))
   (defonce camera (let [z-distance 1000
@@ -73,6 +72,9 @@
 (defonce id-index (atom {}))
 (defn id->object3d [id]
   (@id-index id))
+
+(defn add [object3d]
+  (. scene add object3d))
 
 (defn map->object3d [{:keys [x y z] :as position}]
   (let [object3d (js/THREE.Object3D.)
