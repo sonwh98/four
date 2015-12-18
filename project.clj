@@ -14,7 +14,6 @@
                  [org.clojure/clojurescript "1.7.170"]
                  [org.clojure/core.logic "0.8.10"]
                  
-                 [reagent "0.5.1"]
                  [cljsjs/three "0.0.72-css3d"]
                  [cljsjs/tween "16.3.1"]
                  [krate "0.2.5-SNAPSHOT"]
@@ -30,7 +29,10 @@
                  [jarohen/chord "0.6.0"]
                  
                  [com.cognitect/transit-clj "0.8.285"]
-                 [com.cognitect/transit-cljs "0.8.225"]]
+                 [com.cognitect/transit-cljs "0.8.225"]
+
+                 [cljsjs/react "0.14.3-0"] ;
+                 [rum "0.6.0"]]
 
   :plugins [[lein-cljsbuild "1.1.1"]
             [lein-figwheel "0.5.0-2"]

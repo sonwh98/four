@@ -3,17 +3,29 @@
             [four.client.dom :as dom]
             [four.client.ws :as ws :refer [process-msg]]
             [four.messaging :as m]
-            [crate.core :as c]))
+            [crate.core :as c]
+            [rum.core :as rum]))
+
+(rum/defc category-selection-container [catalog]
+  [:div {:id "category-selection-container"}
+   (for [category catalog
+         :let [cat-name (:category/name category)]]
+     [:button {:id cat-name
+               :key cat-name} cat-name])])
+
+
 
 (defn build-scene [catalog]
   (four/init)
+  (let [categories (category-selection-container catalog)
+        categories2 (category-selection-container catalog)]
+    (rum/mount categories (dom/by-id "root"))
+
+    )
+
   (let [active-category-button (atom nil)
         active-category-container (atom nil)
-        category-button-container-div  [:div {:id "category-selection-container"}
-                                        (for [category catalog
-                                              :let [cat-name (:category/name category)]]
-                                          [:button {:id cat-name} cat-name])]
-        category-button-container-css3d-object (four/hiccup->css3d-object category-button-container-div)
+        category-button-container-css3d-object (four/element->css3d-object (dom/by-id "category-selection-container"))
         category-buttons (array-seq (.. category-button-container-css3d-object -element (querySelectorAll "button")))
         categories  (for [category catalog
                           :let [color (-> (* (rand) 0.5) (+ 0.25))
@@ -91,7 +103,8 @@
                                 [top-left])))
                 1000)
     
-    ))
+    )
+  )
 
 (defmethod process-msg :catalog [[_ catalog]]
   (build-scene catalog))
@@ -102,5 +115,6 @@
 (defn on-js-reload [])
 
 (send-get-catalog)
+
 
 
