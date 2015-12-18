@@ -17,11 +17,8 @@
 
 (defn build-scene [catalog]
   (four/init)
-  (let [categories (category-selection-container catalog)
-        categories2 (category-selection-container catalog)]
-    (rum/mount categories (dom/by-id "root"))
-
-    )
+  (let [categories (category-selection-container catalog)]
+    (rum/mount categories (dom/by-id "root")))
 
   (let [active-category-button (atom nil)
         active-category-container (atom nil)
@@ -31,7 +28,6 @@
                           :let [color (-> (* (rand) 0.5) (+ 0.25))
                                 products (:products category)
                                 id (str "category-" (:category/name category))
-
                                 div [:div {:id    id
                                            :class "category"
                                            :style {:backgroundColor (str "rgb(0,127,127)")
