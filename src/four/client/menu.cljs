@@ -3,7 +3,10 @@
             [four.client.dom :as dom]
             [four.client.ws :as ws :refer [process-msg]]
             [four.messaging :as m]
-            [crate.core :as c]))
+            [crate.core :as c]
+            [reagent.core :as r]))
+
+(defonce catalog (r/atom nil))
 
 (defn build-scene [catalog]
   (four/init)
