@@ -104,6 +104,13 @@
     (swap! id-index assoc (. dom-div -id) css3d-obj)
     css3d-obj))
 
+(defn element->css3d-object [element]
+  (let [css3d-obj (js/THREE.CSS3DObject. element)
+        id (. element -id)]
+    (if id
+      (swap! id-index assoc id css3d-obj))
+    css3d-obj))
+
 (defn tween [property _ new-val]
   (let [duration 500]
     (.. (js/TWEEN.Tween. property)
