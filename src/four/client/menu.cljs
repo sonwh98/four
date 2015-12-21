@@ -96,8 +96,9 @@
     
     ))
 
-(defmethod process-msg :catalog [[_ catalog]]
-  (build-scene catalog))
+(defmethod process-msg :catalog [[_ catalog-from-server]]
+  (reset! catalog catalog-from-server)
+  (build-scene @catalog))
 
 (defn send-get-catalog []
   (dom/whenever-dom-ready #(ws/send! [:get-catalog true])))
