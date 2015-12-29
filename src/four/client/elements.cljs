@@ -74,7 +74,7 @@
           :let [color (-> (* (rand) 0.5) (+ 0.25))
                 div [:div {:id    i
                            :class "element"
-                           :style {:backgroundColor (str "rgb(0,127,127)")}}
+                           :style {:backgroundColor (str "rgba(0,127,127," color ")")}}
                      [:div {:class "number"} i]
                      [:div {:class "symbol"} (:element/symbol element)]
                      [:div {:class "details"} (:element/name element)]]
